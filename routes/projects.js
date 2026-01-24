@@ -1,36 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
 const crypto = require('crypto');
 const { ensureAuthenticated, ensureProjectOwner } = require('../middleware/auth');
 const Project = require('../models/Project');
 const { generateDesign, getStyles, getRoomTypes } = require('../utils/homedesigns');
+const { uploadProjectImages, deleteImage } = require('../config/cloudinary');
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/projects');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (extname && mimetype) {
-      return cb(null, true);
-    }
-    cb(new Error('Only image files are allowed'));
-  }
-});
+// Use Cloudinary storage for uploads
+const upload = uploadProjectImages;
 
 // List all projects
 router.get('/', ensureAuthenticated, async (req, res) => {
@@ -84,9 +61,10 @@ router.post('/', ensureAuthenticated, upload.array('images', 5), async (req, res
     // Generate share token
     const shareToken = crypto.randomBytes(16).toString('hex');
 
-    // Process uploaded images
+    // Process uploaded images (Cloudinary URLs)
     const originalImages = req.files ? req.files.map(file => ({
-      url: `/uploads/projects/${file.filename}`,
+      url: file.path, // Cloudinary returns full URL in file.path
+      publicId: file.filename, // Cloudinary public ID for deletion
       uploadedAt: new Date()
     })) : [];
 
@@ -216,11 +194,12 @@ router.put('/:id', ensureAuthenticated, upload.array('images', 5), async (req, r
     project.budget.max = budgetMax ? parseFloat(budgetMax) : undefined;
     project.visibility = visibility;
 
-    // Add new images if uploaded
+    // Add new images if uploaded (Cloudinary URLs)
     if (req.files && req.files.length > 0) {
       req.files.forEach(file => {
         project.originalImages.push({
-          url: `/uploads/projects/${file.filename}`,
+          url: file.path, // Cloudinary URL
+          publicId: file.filename,
           uploadedAt: new Date()
         });
       });
@@ -254,6 +233,76 @@ router.delete('/:id', ensureAuthenticated, async (req, res) => {
   }
 });
 
+// Upload Images to Existing Project
+router.post('/:id/upload', ensureAuthenticated, upload.array('images', 5), async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No images uploaded' });
+    }
+
+    // Add new images (Cloudinary URLs)
+    req.files.forEach(file => {
+      project.originalImages.push({
+        url: file.path, // Cloudinary URL
+        publicId: file.filename,
+        uploadedAt: new Date()
+      });
+    });
+
+    await project.save();
+
+    res.json({
+      success: true,
+      images: project.originalImages,
+      message: `${req.files.length} image(s) uploaded successfully`
+    });
+  } catch (err) {
+    console.error('Upload images error:', err);
+    res.status(500).json({ error: 'An error occurred uploading images' });
+  }
+});
+
+// Delete Image from Project
+router.delete('/:id/images/:imageId', ensureAuthenticated, async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    const image = project.originalImages.id(req.params.imageId);
+    if (image && image.publicId) {
+      // Delete from Cloudinary
+      await deleteImage(image.publicId);
+    }
+
+    // Remove from project
+    project.originalImages.pull(req.params.imageId);
+    await project.save();
+
+    res.json({
+      success: true,
+      message: 'Image deleted successfully'
+    });
+  } catch (err) {
+    console.error('Delete image error:', err);
+    res.status(500).json({ error: 'An error occurred deleting image' });
+  }
+});
+
 // Generate AI Design
 router.post('/:id/generate', ensureAuthenticated, async (req, res) => {
   try {
@@ -274,8 +323,8 @@ router.post('/:id/generate', ensureAuthenticated, async (req, res) => {
     project.status = 'generating';
     await project.save();
 
-    // Get the first image URL
-    const imageUrl = `${process.env.APP_URL}${project.originalImages[0].url}`;
+    // Get the first image URL (already a full Cloudinary URL)
+    const imageUrl = project.originalImages[0].url;
 
     // Generate design using HomeDesigns.AI
     const result = await generateDesign({

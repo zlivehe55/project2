@@ -326,16 +326,50 @@
   .file-preview {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     margin-top: var(--spacing-md);
   }
   
-  .file-preview img {
+  .preview-item {
+    position: relative;
     width: 100px;
     height: 100px;
-    object-fit: cover;
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+  }
+  
+  .preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .preview-item .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 0, 0, 0.8);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .preview-item:hover .remove-btn {
+    opacity: 1;
+  }
+  
+  .preview-item .remove-btn i {
+    width: 14px;
+    height: 14px;
   }
   
   /* Priority Sliders */
@@ -453,6 +487,7 @@
   // Drag and drop upload
   const uploadArea = document.getElementById('upload-area');
   const fileInput = document.getElementById('images');
+  const previewContainer = document.getElementById('images-preview');
   
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     uploadArea.addEventListener(eventName, preventDefaults, false);
@@ -477,5 +512,52 @@
     fileInput.files = files;
     fileInput.dispatchEvent(new Event('change'));
   });
+  
+  // Image preview
+  fileInput.addEventListener('change', function() {
+    previewContainer.innerHTML = '';
+    
+    if (this.files.length > 5) {
+      alert('Maximum 5 images allowed');
+      this.value = '';
+      return;
+    }
+    
+    Array.from(this.files).forEach((file, index) => {
+      if (file.size > 10 * 1024 * 1024) {
+        alert(`File ${file.name} is too large (max 10MB)`);
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.innerHTML = `
+          <img src="${e.target.result}" alt="Preview ${index + 1}">
+          <button type="button" class="remove-btn" onclick="removeImage(${index})">
+            <i data-lucide="x"></i>
+          </button>
+        `;
+        previewContainer.appendChild(previewItem);
+        lucide.createIcons();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+  
+  function removeImage(index) {
+    const dt = new DataTransfer();
+    const files = fileInput.files;
+    
+    for (let i = 0; i < files.length; i++) {
+      if (i !== index) {
+        dt.items.add(files[i]);
+      }
+    }
+    
+    fileInput.files = dt.files;
+    fileInput.dispatchEvent(new Event('change'));
+  }
 </script>
 
