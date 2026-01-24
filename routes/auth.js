@@ -89,12 +89,21 @@ router.post('/register', ensureGuest, [
 
     await user.save();
 
-    // Send verification email (disabled for now)
-    // const verificationUrl = `${process.env.APP_URL}/auth/verify/${verificationToken}`;
-    // await sendEmail(user.email, 'verification', [user.firstName, verificationUrl]);
-
-    req.flash('success_msg', 'Account created successfully! You can now log in.');
-    res.redirect('/auth/login');
+    // Auto-login after registration
+    req.login(user, (err) => {
+      if (err) {
+        console.error('Auto-login error:', err);
+        req.flash('success_msg', 'Account created successfully! Please log in.');
+        return res.redirect('/auth/login');
+      }
+      req.flash('success_msg', `Welcome to CraftyCrib, ${user.firstName}! 🎉`);
+      
+      // Redirect contractors to setup, clients to dashboard
+      if (user.role === 'contractor') {
+        return res.redirect('/contractors/setup');
+      }
+      res.redirect('/dashboard');
+    });
   } catch (err) {
     console.error('Registration error:', err);
     res.render('pages/auth/register', {

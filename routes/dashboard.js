@@ -11,32 +11,61 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     if (req.user.role === 'contractor') {
       // Contractor Dashboard
       const contractor = await Contractor.findOne({ user: req.user.id });
+      
       const availableProjects = await Project.find({
         visibility: 'contractors',
         status: { $in: ['completed', 'pending'] }
-      }).populate('user', 'firstName lastName').limit(10);
+      })
+        .populate('user', 'firstName lastName')
+        .sort({ createdAt: -1 })
+        .limit(10);
+      
+      const stats = {
+        profileViews: contractor?.stats?.profileViews || 0,
+        projectsReceived: contractor?.stats?.projectsReceived || 0,
+        projectsAccepted: contractor?.stats?.projectsAccepted || 0,
+        avgRating: contractor?.rating?.average || 0
+      };
 
       res.render('pages/dashboard/contractor', {
         title: 'Contractor Dashboard - CraftyCrib',
+        layout: 'layouts/dashboard',
+        activePage: 'dashboard',
         contractor,
-        availableProjects
+        availableProjects,
+        stats
       });
     } else {
       // Client Dashboard
       const projects = await Project.find({ user: req.user.id })
         .sort({ createdAt: -1 })
-        .limit(10);
+        .limit(5);
+      
+      const allProjects = await Project.find({ user: req.user.id });
+      const totalVariants = allProjects.reduce((acc, p) => acc + (p.designVariants?.length || 0), 0);
       
       const stats = {
-        totalProjects: await Project.countDocuments({ user: req.user.id }),
-        completedDesigns: await Project.countDocuments({ user: req.user.id, status: 'completed' }),
-        inProgress: await Project.countDocuments({ user: req.user.id, status: { $in: ['generating', 'in-progress'] } })
+        totalProjects: allProjects.length,
+        completedDesigns: allProjects.filter(p => p.status === 'completed').length,
+        inProgress: allProjects.filter(p => ['generating', 'in-progress', 'pending'].includes(p.status)).length,
+        totalVariants
       };
+      
+      // Recent activity (mock for now)
+      const recentActivity = [
+        { type: 'design', message: 'Your AI design is ready to view', time: '2 hours ago' },
+        { type: 'message', message: 'New message from contractor', time: '5 hours ago' },
+        { type: 'project', message: 'Project "Living Room" was updated', time: '1 day ago' }
+      ];
 
       res.render('pages/dashboard/client', {
         title: 'My Dashboard - CraftyCrib',
+        metaDescription: 'Manage your AI-powered interior design projects and connect with contractors.',
+        layout: 'layouts/dashboard',
+        activePage: 'dashboard',
         projects,
-        stats
+        stats,
+        recentActivity
       });
     }
   } catch (err) {

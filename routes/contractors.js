@@ -34,9 +34,10 @@ const upload = multer({
 // Browse Contractors (Public)
 router.get('/', async (req, res) => {
   try {
-    const { specialty, city, minRating } = req.query;
+    const { specialty, city, minRating, q } = req.query;
     
-    let query = { isActive: true, isVerified: true };
+    // For new sites, show all contractors or mock data
+    let query = {};
     
     if (specialty) {
       query.specialties = specialty;
@@ -47,16 +48,39 @@ router.get('/', async (req, res) => {
     if (minRating) {
       query['rating.average'] = { $gte: parseFloat(minRating) };
     }
+    if (q) {
+      query.$or = [
+        { companyName: { $regex: q, $options: 'i' } },
+        { specialties: { $regex: q, $options: 'i' } },
+        { 'location.city': { $regex: q, $options: 'i' } }
+      ];
+    }
 
     const contractors = await Contractor.find(query)
       .populate('user', 'firstName lastName avatar')
       .sort({ isPremium: -1, 'rating.average': -1 })
       .limit(20);
 
+    // Available specialties for filter
+    const specialties = [
+      'Interior Design',
+      'General Contractor',
+      'Kitchen & Bath',
+      'Electrical',
+      'Plumbing',
+      'Flooring',
+      'Painting',
+      'Carpentry'
+    ];
+
     res.render('pages/contractors/index', {
-      title: 'Find Contractors - CraftyCrib',
+      title: 'Find Professional Contractors - CraftyCrib',
+      metaDescription: 'Browse and connect with verified interior designers and contractors. Get quotes for your AI-generated renovation designs.',
+      layout: 'layouts/landing',
       contractors,
-      filters: { specialty, city, minRating }
+      specialties,
+      filters: { specialty, city, minRating },
+      query: q || ''
     });
   } catch (err) {
     console.error('Browse contractors error:', err);
@@ -153,7 +177,8 @@ router.post('/setup', ensureAuthenticated, ensureContractor, upload.array('portf
 router.get('/:slug', async (req, res) => {
   try {
     const contractor = await Contractor.findOne({ slug: req.params.slug })
-      .populate('user', 'firstName lastName avatar');
+      .populate('user', 'firstName lastName avatar')
+      .populate('reviews.user', 'firstName lastName');
 
     if (!contractor) {
       return res.status(404).render('pages/404', {
@@ -165,8 +190,10 @@ router.get('/:slug', async (req, res) => {
     contractor.stats.profileViews++;
     await contractor.save();
 
-    res.render('pages/contractors/profile', {
-      title: `${contractor.companyName} - CraftyCrib`,
+    res.render('pages/contractors/view', {
+      title: `${contractor.companyName} - Professional Contractor | CraftyCrib`,
+      metaDescription: `${contractor.companyName} - ${contractor.tagline || 'Professional contractor on CraftyCrib'}. View portfolio, reviews, and get quotes for your renovation project.`,
+      layout: 'layouts/landing',
       contractor
     });
   } catch (err) {

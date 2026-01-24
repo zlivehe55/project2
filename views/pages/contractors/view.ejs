@@ -1,0 +1,654 @@
+<!-- Contractor Profile Header -->
+<section class="profile-hero">
+  <div class="container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <% if (contractor.logo) { %>
+          <img src="<%= contractor.logo %>" alt="<%= contractor.companyName %>">
+        <% } else { %>
+          <span><%= contractor.companyName.charAt(0) %></span>
+        <% } %>
+        <% if (contractor.isVerified) { %>
+          <span class="verified-badge" title="Verified Contractor">
+            <i data-lucide="badge-check"></i>
+          </span>
+        <% } %>
+      </div>
+      
+      <div class="profile-info">
+        <div class="profile-title">
+          <h1><%= contractor.companyName %></h1>
+          <% if (contractor.isPremium) { %>
+            <span class="premium-badge">
+              <i data-lucide="crown"></i>
+              Premium
+            </span>
+          <% } %>
+        </div>
+        <p class="profile-tagline"><%= contractor.tagline || 'Professional Contractor' %></p>
+        
+        <div class="profile-meta">
+          <div class="meta-item">
+            <i data-lucide="star"></i>
+            <strong><%= contractor.rating?.average?.toFixed(1) || 'N/A' %></strong>
+            <span>(<%= contractor.rating?.count || 0 %> reviews)</span>
+          </div>
+          <div class="meta-item">
+            <i data-lucide="map-pin"></i>
+            <span><%= contractor.location?.city || 'France' %><%= contractor.location?.region ? ', ' + contractor.location.region : '' %></span>
+          </div>
+          <div class="meta-item">
+            <i data-lucide="calendar"></i>
+            <span>Member since <%= new Date(contractor.createdAt).getFullYear() %></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-actions">
+        <button class="btn btn-primary btn-lg" onclick="contactContractor()">
+          <i data-lucide="message-square"></i>
+          Contact
+        </button>
+        <button class="btn btn-secondary" onclick="shareProfile()">
+          <i data-lucide="share-2"></i>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hero-bg">
+    <div class="gradient-orb hero-orb-1"></div>
+    <div class="gradient-orb hero-orb-2"></div>
+  </div>
+</section>
+
+<!-- Profile Content -->
+<section class="profile-content">
+  <div class="container">
+    <div class="profile-grid">
+      <!-- Left Column - Main Info -->
+      <div class="profile-main">
+        <!-- About Section -->
+        <div class="profile-section">
+          <h2><i data-lucide="user"></i> About</h2>
+          <div class="section-content">
+            <p><%= contractor.bio || 'No bio available.' %></p>
+          </div>
+        </div>
+        
+        <!-- Specialties Section -->
+        <div class="profile-section">
+          <h2><i data-lucide="wrench"></i> Specialties</h2>
+          <div class="section-content">
+            <div class="specialty-tags">
+              <% (contractor.specialties || []).forEach(spec => { %>
+                <span class="specialty-tag"><%= spec %></span>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Portfolio Section -->
+        <div class="profile-section">
+          <h2><i data-lucide="images"></i> Portfolio</h2>
+          <div class="section-content">
+            <% if (contractor.portfolio && contractor.portfolio.length > 0) { %>
+              <div class="portfolio-grid">
+                <% contractor.portfolio.forEach((item, index) => { %>
+                  <div class="portfolio-item" onclick="openPortfolio(<%= index %>)">
+                    <img src="<%= item.imageUrl %>" alt="<%= item.title || 'Portfolio work' %>">
+                    <div class="portfolio-overlay">
+                      <h4><%= item.title || 'Project' %></h4>
+                      <span><%= item.category || 'Interior' %></span>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="empty-text">No portfolio items yet.</p>
+            <% } %>
+          </div>
+        </div>
+        
+        <!-- Reviews Section -->
+        <div class="profile-section">
+          <h2><i data-lucide="message-circle"></i> Reviews</h2>
+          <div class="section-content">
+            <% if (contractor.reviews && contractor.reviews.length > 0) { %>
+              <div class="reviews-list">
+                <% contractor.reviews.forEach(review => { %>
+                  <div class="review-item">
+                    <div class="review-header">
+                      <div class="reviewer-avatar">
+                        <%= review.user?.firstName?.charAt(0) || 'U' %>
+                      </div>
+                      <div class="reviewer-info">
+                        <strong><%= review.user?.firstName || 'Anonymous' %> <%= review.user?.lastName?.charAt(0) || '' %>.</strong>
+                        <span><%= new Date(review.createdAt).toLocaleDateString() %></span>
+                      </div>
+                      <div class="review-rating">
+                        <% for (let i = 0; i < 5; i++) { %>
+                          <i data-lucide="star" class="<%= i < review.rating ? 'filled' : '' %>"></i>
+                        <% } %>
+                      </div>
+                    </div>
+                    <p class="review-text"><%= review.comment %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="empty-text">No reviews yet. Be the first to leave a review!</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column - Sidebar -->
+      <div class="profile-sidebar">
+        <!-- Contact Card -->
+        <div class="sidebar-card">
+          <h3>Contact Information</h3>
+          <div class="contact-info">
+            <% if (contractor.contactEmail) { %>
+              <div class="contact-item">
+                <i data-lucide="mail"></i>
+                <a href="mailto:<%= contractor.contactEmail %>"><%= contractor.contactEmail %></a>
+              </div>
+            <% } %>
+            <% if (contractor.phone) { %>
+              <div class="contact-item">
+                <i data-lucide="phone"></i>
+                <a href="tel:<%= contractor.phone %>"><%= contractor.phone %></a>
+              </div>
+            <% } %>
+            <% if (contractor.website) { %>
+              <div class="contact-item">
+                <i data-lucide="globe"></i>
+                <a href="<%= contractor.website %>" target="_blank" rel="noopener">Website</a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+        
+        <!-- Service Areas -->
+        <div class="sidebar-card">
+          <h3>Service Areas</h3>
+          <div class="service-areas">
+            <% (contractor.serviceAreas || [contractor.location?.city || 'France']).forEach(area => { %>
+              <span class="area-tag">
+                <i data-lucide="map-pin"></i>
+                <%= area %>
+              </span>
+            <% }) %>
+          </div>
+        </div>
+        
+        <!-- Certifications -->
+        <% if (contractor.certifications && contractor.certifications.length > 0) { %>
+          <div class="sidebar-card">
+            <h3>Certifications</h3>
+            <div class="certifications-list">
+              <% contractor.certifications.forEach(cert => { %>
+                <div class="cert-item">
+                  <i data-lucide="award"></i>
+                  <span><%= cert %></span>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Quick Request -->
+        <div class="sidebar-card highlight">
+          <h3>Get a Quote</h3>
+          <p>Share your project details and get a personalized quote.</p>
+          <button class="btn btn-primary" style="width: 100%;" onclick="requestQuote()">
+            <i data-lucide="file-text"></i>
+            Request Quote
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .profile-hero {
+    position: relative;
+    padding: 140px 2rem 60px;
+  }
+  
+  .profile-header {
+    display: flex;
+    gap: var(--spacing-xl);
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .profile-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000;
+    flex-shrink: 0;
+  }
+  
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-avatar .verified-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+  }
+  
+  .profile-info {
+    flex: 1;
+  }
+  
+  .profile-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .profile-title h1 {
+    font-size: 2rem;
+  }
+  
+  .premium-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0.3rem 0.8rem;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+  }
+  
+  .profile-tagline {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .profile-meta {
+    display: flex;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+  }
+  
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .meta-item i {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-primary);
+  }
+  
+  .profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .profile-content {
+    padding: var(--spacing-3xl) 2rem;
+  }
+  
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-2xl);
+  }
+  
+  .profile-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+    overflow: hidden;
+  }
+  
+  .profile-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    background: var(--bg-secondary);
+  }
+  
+  .profile-section h2 i {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-primary);
+  }
+  
+  .section-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .specialty-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+  
+  .specialty-tag {
+    padding: 0.5rem 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+  }
+  
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .portfolio-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .portfolio-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+  
+  .portfolio-item:hover img {
+    transform: scale(1.05);
+  }
+  
+  .portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--spacing-md);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .portfolio-item:hover .portfolio-overlay {
+    opacity: 1;
+  }
+  
+  .portfolio-overlay h4 {
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .portfolio-overlay span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .review-item {
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .review-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .review-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .reviewer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .reviewer-info {
+    flex: 1;
+  }
+  
+  .reviewer-info strong {
+    display: block;
+  }
+  
+  .reviewer-info span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .review-rating {
+    display: flex;
+    gap: 2px;
+  }
+  
+  .review-rating i {
+    width: 14px;
+    height: 14px;
+    color: var(--border-color);
+  }
+  
+  .review-rating i.filled {
+    color: #ffd700;
+    fill: #ffd700;
+  }
+  
+  .review-text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  
+  .sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .sidebar-card h3 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .sidebar-card.highlight {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+    border-color: rgba(0, 255, 136, 0.3);
+  }
+  
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+  
+  .contact-item i {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-primary);
+  }
+  
+  .contact-item a {
+    color: var(--text-secondary);
+  }
+  
+  .contact-item a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .service-areas {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .area-tag {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .area-tag i {
+    width: 14px;
+    height: 14px;
+    color: var(--accent-primary);
+  }
+  
+  .certifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .cert-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .cert-item i {
+    width: 16px;
+    height: 16px;
+    color: #ffd700;
+  }
+  
+  .empty-text {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  
+  @media (max-width: 1024px) {
+    .profile-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .profile-sidebar {
+      order: -1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+    
+    .profile-meta {
+      justify-content: center;
+    }
+    
+    .profile-actions {
+      flex-direction: row;
+      width: 100%;
+    }
+    
+    .profile-actions .btn {
+      flex: 1;
+    }
+  }
+</style>
+
+<script>
+  function contactContractor() {
+    <% if (typeof user !== 'undefined' && user) { %>
+      window.location.href = `/dashboard/messages?contractor=<%= contractor._id %>`;
+    <% } else { %>
+      window.location.href = `/auth/login?redirect=/contractors/<%= contractor.slug %>`;
+    <% } %>
+  }
+  
+  function shareProfile() {
+    if (navigator.share) {
+      navigator.share({
+        title: '<%= contractor.companyName %> - CraftyCrib',
+        text: 'Check out this contractor on CraftyCrib',
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Profile link copied to clipboard!');
+    }
+  }
+  
+  function requestQuote() {
+    <% if (typeof user !== 'undefined' && user) { %>
+      window.location.href = `/contractors/<%= contractor._id %>/quote`;
+    <% } else { %>
+      window.location.href = `/auth/login?redirect=/contractors/<%= contractor.slug %>`;
+    <% } %>
+  }
+  
+  function openPortfolio(index) {
+    // Could implement a lightbox here
+    console.log('Open portfolio item', index);
+  }
+</script>
+

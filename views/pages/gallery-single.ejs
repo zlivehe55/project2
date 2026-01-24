@@ -1,0 +1,1083 @@
+<!-- Project Detail Header -->
+<section class="project-hero">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/"><i data-lucide="home"></i></a>
+      <span>/</span>
+      <a href="/gallery">Gallery</a>
+      <span>/</span>
+      <span><%= project.title %></span>
+    </nav>
+    
+    <div class="project-header">
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="tag room-tag"><%= project.roomType %></span>
+          <span class="tag style-tag"><%= project.style %></span>
+        </div>
+        <h1><%= project.title %></h1>
+        <p class="project-description"><%= project.description %></p>
+        
+        <div class="project-meta">
+          <div class="author-info">
+            <div class="author-avatar">
+              <%= project.user?.firstName?.charAt(0) || 'U' %>
+            </div>
+            <div>
+              <span class="author-name"><%= project.user?.firstName || 'Anonymous' %> <%= project.user?.lastName?.charAt(0) || '' %>.</span>
+              <span class="project-date">Published <%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+            </div>
+          </div>
+          
+          <div class="project-stats">
+            <span><i data-lucide="eye"></i> <%= project.views || 0 %> views</span>
+            <span><i data-lucide="heart"></i> <%= project.likes || 0 %> likes</span>
+            <span><i data-lucide="layers"></i> <%= project.designVariants?.length || 0 %> designs</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="project-actions">
+        <button class="btn btn-ghost" onclick="shareProject()">
+          <i data-lucide="share-2"></i>
+          Share
+        </button>
+        <button class="btn btn-ghost like-btn" onclick="likeProject('<%= project._id %>')">
+          <i data-lucide="heart"></i>
+          Like
+        </button>
+        <% if (user && user._id.toString() === project.user?._id.toString()) { %>
+          <a href="/projects/<%= project._id %>/edit" class="btn btn-primary">
+            <i data-lucide="edit"></i>
+            Edit Project
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="gallery-showcase">
+  <div class="container">
+    <!-- Main Image Viewer -->
+    <div class="main-viewer">
+      <div class="image-container" id="mainImageContainer">
+        <% 
+          const mainImage = project.featuredImage || 
+            (project.designVariants?.length > 0 ? project.designVariants[0].imageUrl : null) ||
+            (project.originalImages?.length > 0 ? project.originalImages[0].url : null);
+        %>
+        <% if (mainImage) { %>
+          <img src="<%= mainImage %>" alt="<%= project.title %>" id="mainImage">
+        <% } else { %>
+          <div class="placeholder-image">
+            <i data-lucide="image"></i>
+            <p>No images yet</p>
+          </div>
+        <% } %>
+        
+        <!-- Image Controls -->
+        <div class="image-controls">
+          <button class="control-btn" onclick="zoomIn()"><i data-lucide="zoom-in"></i></button>
+          <button class="control-btn" onclick="zoomOut()"><i data-lucide="zoom-out"></i></button>
+          <button class="control-btn" onclick="resetZoom()"><i data-lucide="maximize-2"></i></button>
+          <button class="control-btn" onclick="downloadImage()"><i data-lucide="download"></i></button>
+        </div>
+        
+        <!-- Navigation Arrows -->
+        <% if ((project.designVariants?.length || 0) + (project.originalImages?.length || 0) > 1) { %>
+          <button class="nav-arrow prev" onclick="prevImage()"><i data-lucide="chevron-left"></i></button>
+          <button class="nav-arrow next" onclick="nextImage()"><i data-lucide="chevron-right"></i></button>
+        <% } %>
+      </div>
+      
+      <div class="image-caption" id="imageCaption">
+        <span class="caption-label">AI Generated Design</span>
+        <span class="caption-style"><%= project.style %> Style</span>
+      </div>
+    </div>
+    
+    <!-- Thumbnail Strip -->
+    <% if ((project.designVariants?.length || 0) + (project.originalImages?.length || 0) > 0) { %>
+      <div class="thumbnail-strip">
+        <% if (project.originalImages && project.originalImages.length > 0) { %>
+          <div class="thumbnail-section">
+            <h4>Original Photos</h4>
+            <div class="thumbnails">
+              <% project.originalImages.forEach((img, index) => { %>
+                <button class="thumbnail" onclick="selectImage('<%= img.url %>', 'Original Photo', 'Before Renovation')" data-src="<%= img.url %>">
+                  <img src="<%= img.url %>" alt="Original photo <%= index + 1 %>">
+                  <span class="thumbnail-label">Before</span>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+        
+        <% if (project.designVariants && project.designVariants.length > 0) { %>
+          <div class="thumbnail-section">
+            <h4>AI Designs</h4>
+            <div class="thumbnails">
+              <% project.designVariants.forEach((variant, index) => { %>
+                <button class="thumbnail <%= index === 0 ? 'active' : '' %>" onclick="selectImage('<%= variant.imageUrl %>', 'AI Generated Design', '<%= variant.style || project.style %> Style')" data-src="<%= variant.imageUrl %>">
+                  <img src="<%= variant.imageUrl %>" alt="Design variant <%= index + 1 %>">
+                  <span class="thumbnail-label"><%= variant.style || 'Design ' + (index + 1) %></span>
+                </button>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Project Details -->
+<section class="project-details">
+  <div class="container">
+    <div class="details-grid">
+      <!-- Project Info -->
+      <div class="detail-card">
+        <h3><i data-lucide="info"></i> Project Details</h3>
+        <div class="detail-list">
+          <div class="detail-item">
+            <span class="label">Room Type</span>
+            <span class="value"><%= project.roomType %></span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Design Style</span>
+            <span class="value"><%= project.style %></span>
+          </div>
+          <% if (project.estimatedCost) { %>
+            <div class="detail-item">
+              <span class="label">Estimated Cost</span>
+              <span class="value">$<%= project.estimatedCost.toLocaleString() %></span>
+            </div>
+          <% } %>
+          <div class="detail-item">
+            <span class="label">AI Generations</span>
+            <span class="value"><%= project.designVariants?.length || 0 %></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Preferences -->
+      <% if (project.preferences && (project.preferences.colorPalette || project.preferences.materials?.length)) { %>
+        <div class="detail-card">
+          <h3><i data-lucide="palette"></i> Design Preferences</h3>
+          <div class="preference-tags">
+            <% if (project.preferences.colorPalette) { %>
+              <span class="pref-tag color"><%= project.preferences.colorPalette %></span>
+            <% } %>
+            <% if (project.preferences.materials) { %>
+              <% project.preferences.materials.forEach(mat => { %>
+                <span class="pref-tag material"><%= mat %></span>
+              <% }) %>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+      
+      <!-- Materials List -->
+      <% if (project.materials && project.materials.length > 0) { %>
+        <div class="detail-card full-width">
+          <h3><i data-lucide="package"></i> Materials List</h3>
+          <div class="materials-grid">
+            <% project.materials.forEach(material => { %>
+              <div class="material-item">
+                <div class="material-info">
+                  <h4><%= material.name %></h4>
+                  <p><%= material.description || '' %></p>
+                </div>
+                <% if (material.estimatedPrice) { %>
+                  <div class="material-price">$<%= material.estimatedPrice %></div>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-bg">
+    <div class="gradient-orb cta-orb-1"></div>
+    <div class="gradient-orb cta-orb-2"></div>
+  </div>
+  <div class="cta-content">
+    <h2>Love this design?</h2>
+    <p>Create your own AI-powered interior design. It's free to start!</p>
+    <div class="cta-buttons">
+      <a href="/auth/register" class="btn btn-primary btn-lg">
+        <i data-lucide="sparkles"></i>
+        Create Your Design
+      </a>
+      <a href="/gallery" class="btn btn-ghost btn-lg">
+        <i data-lucide="grid"></i>
+        Browse More
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Related Projects -->
+<% if (relatedProjects && relatedProjects.length > 0) { %>
+<section class="related-section">
+  <div class="container">
+    <h2><i data-lucide="grid"></i> Similar Designs</h2>
+    <div class="related-grid">
+      <% relatedProjects.forEach(related => { %>
+        <a href="/gallery/<%= related.publicSlug %>" class="related-card">
+          <div class="related-image">
+            <% 
+              const relatedImg = related.featuredImage || 
+                (related.designVariants?.length > 0 ? related.designVariants[0].imageUrl : null);
+            %>
+            <% if (relatedImg) { %>
+              <img src="<%= relatedImg %>" alt="<%= related.title %>">
+            <% } else { %>
+              <div class="placeholder-image"><i data-lucide="image"></i></div>
+            <% } %>
+          </div>
+          <div class="related-info">
+            <span class="related-tags">
+              <span><%= related.roomType %></span>
+              <span><%= related.style %></span>
+            </span>
+            <h4><%= related.title %></h4>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Share Modal -->
+<div class="modal" id="shareModal">
+  <div class="modal-backdrop" onclick="closeShareModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i data-lucide="share-2"></i> Share This Design</h3>
+      <button class="close-btn" onclick="closeShareModal()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <% const appUrl = process.env.APP_URL || 'https://craftycrib.com'; %>
+      <div class="share-url">
+        <input type="text" id="shareUrl" value="<%= canonicalUrl %>" readonly>
+        <button class="btn btn-primary" onclick="copyUrl()">
+          <i data-lucide="copy"></i>
+          Copy
+        </button>
+      </div>
+      <div class="share-socials">
+        <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(canonicalUrl) %>&text=<%= encodeURIComponent('Check out this amazing interior design!') %>" target="_blank" class="social-btn twitter">
+          <i data-lucide="twitter"></i>
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(canonicalUrl) %>" target="_blank" class="social-btn facebook">
+          <i data-lucide="facebook"></i>
+        </a>
+        <a href="https://pinterest.com/pin/create/button/?url=<%= encodeURIComponent(canonicalUrl) %>&description=<%= encodeURIComponent(project.title) %>" target="_blank" class="social-btn pinterest">
+          <i data-lucide="pinterest"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Project Hero */
+  .project-hero {
+    padding: 140px 2rem 40px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .breadcrumb a {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumb a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .breadcrumb i {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+  }
+  
+  .project-info {
+    flex: 1;
+    max-width: 700px;
+  }
+  
+  .project-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .tag {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
+  
+  .room-tag {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-primary);
+  }
+  
+  .style-tag {
+    background: rgba(124, 58, 237, 0.1);
+    color: #a855f7;
+  }
+  
+  .project-info h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .project-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+  }
+  
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .author-name {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .project-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .project-stats {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  
+  .project-stats span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  
+  .project-stats i {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .project-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  /* Gallery Showcase */
+  .gallery-showcase {
+    padding: var(--spacing-3xl) 2rem;
+  }
+  
+  .main-viewer {
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .image-container {
+    position: relative;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform var(--transition-base);
+  }
+  
+  .placeholder-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--text-muted);
+  }
+  
+  .placeholder-image i {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .image-controls {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    display: flex;
+    gap: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.7);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .image-container:hover .image-controls {
+    opacity: 1;
+  }
+  
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: white;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+  
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .control-btn i {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast), background var(--transition-fast);
+  }
+  
+  .image-container:hover .nav-arrow {
+    opacity: 1;
+  }
+  
+  .nav-arrow:hover {
+    background: var(--accent-primary);
+    color: #000;
+  }
+  
+  .nav-arrow.prev {
+    left: var(--spacing-lg);
+  }
+  
+  .nav-arrow.next {
+    right: var(--spacing-lg);
+  }
+  
+  .image-caption {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-card);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .caption-label {
+    font-weight: 500;
+  }
+  
+  /* Thumbnails */
+  .thumbnail-strip {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+  }
+  
+  .thumbnail-section h4 {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .thumbnails {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-sm);
+  }
+  
+  .thumbnail {
+    position: relative;
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .thumbnail:hover,
+  .thumbnail.active {
+    border-color: var(--accent-primary);
+  }
+  
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .thumbnail-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 0.7rem;
+    color: white;
+    text-align: center;
+  }
+  
+  /* Project Details */
+  .project-details {
+    padding: var(--spacing-3xl) 2rem;
+    background: var(--bg-secondary);
+  }
+  
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+  }
+  
+  .detail-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+  }
+  
+  .detail-card.full-width {
+    grid-column: 1 / -1;
+  }
+  
+  .detail-card h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1rem;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .detail-card h3 i {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-primary);
+  }
+  
+  .detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .detail-item .label {
+    color: var(--text-muted);
+  }
+  
+  .detail-item .value {
+    font-weight: 600;
+  }
+  
+  .preference-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+  
+  .pref-tag {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-full);
+  }
+  
+  .pref-tag.color {
+    background: rgba(255, 182, 193, 0.2);
+    color: #ff8fab;
+  }
+  
+  .pref-tag.material {
+    background: rgba(139, 69, 19, 0.2);
+    color: #d4a574;
+  }
+  
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .material-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+  }
+  
+  .material-info h4 {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .material-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .material-price {
+    font-weight: 700;
+    color: var(--accent-primary);
+  }
+  
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .modal.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+  }
+  
+  .modal-content {
+    position: relative;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 500px;
+    transform: translateY(20px);
+    transition: transform var(--transition-base);
+  }
+  
+  .modal.active .modal-content {
+    transform: translateY(0);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .modal-header h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.1rem;
+  }
+  
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+  }
+  
+  .close-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+  
+  .modal-body {
+    padding: var(--spacing-xl);
+  }
+  
+  .share-url {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .share-url input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  
+  .share-socials {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+  
+  .social-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+  }
+  
+  .social-btn.twitter {
+    background: #1da1f2;
+    color: white;
+  }
+  
+  .social-btn.facebook {
+    background: #4267b2;
+    color: white;
+  }
+  
+  .social-btn.pinterest {
+    background: #e60023;
+    color: white;
+  }
+  
+  .social-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  /* CTA Section */
+  .cta-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Related Section */
+  .related-section {
+    padding: var(--spacing-3xl) 2rem;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .related-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .related-section h2 i {
+    width: 24px;
+    height: 24px;
+    color: var(--accent-primary);
+  }
+  
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+  }
+  
+  .related-card {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+  }
+  
+  .related-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+  }
+  
+  .related-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+  
+  .related-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+  
+  .related-card:hover .related-image img {
+    transform: scale(1.05);
+  }
+  
+  .related-info {
+    padding: var(--spacing-md);
+  }
+  
+  .related-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .related-tags span {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  
+  .related-info h4 {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  
+  @media (max-width: 768px) {
+    .project-header {
+      flex-direction: column;
+    }
+    
+    .project-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .project-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  let currentImageIndex = 0;
+  let images = [];
+  let zoomLevel = 1;
+  
+  // Collect all images
+  document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+    images.push({
+      src: thumb.dataset.src,
+      label: thumb.querySelector('.thumbnail-label').textContent
+    });
+  });
+  
+  function selectImage(src, label, style) {
+    const mainImage = document.getElementById('mainImage');
+    const caption = document.getElementById('imageCaption');
+    
+    if (mainImage) {
+      mainImage.src = src;
+      resetZoom();
+    }
+    
+    if (caption) {
+      caption.innerHTML = `<span class="caption-label">${label}</span><span class="caption-style">${style}</span>`;
+    }
+    
+    // Update active thumbnail
+    document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+      if (thumb.dataset.src === src) {
+        thumb.classList.add('active');
+        currentImageIndex = index;
+      } else {
+        thumb.classList.remove('active');
+      }
+    });
+  }
+  
+  function nextImage() {
+    if (images.length > 0) {
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+      const thumb = document.querySelectorAll('.thumbnail')[currentImageIndex];
+      if (thumb) thumb.click();
+    }
+  }
+  
+  function prevImage() {
+    if (images.length > 0) {
+      currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+      const thumb = document.querySelectorAll('.thumbnail')[currentImageIndex];
+      if (thumb) thumb.click();
+    }
+  }
+  
+  function zoomIn() {
+    zoomLevel = Math.min(zoomLevel + 0.25, 3);
+    applyZoom();
+  }
+  
+  function zoomOut() {
+    zoomLevel = Math.max(zoomLevel - 0.25, 0.5);
+    applyZoom();
+  }
+  
+  function resetZoom() {
+    zoomLevel = 1;
+    applyZoom();
+  }
+  
+  function applyZoom() {
+    const img = document.getElementById('mainImage');
+    if (img) {
+      img.style.transform = `scale(${zoomLevel})`;
+    }
+  }
+  
+  function downloadImage() {
+    const img = document.getElementById('mainImage');
+    if (img && img.src) {
+      const link = document.createElement('a');
+      link.href = img.src;
+      link.download = 'craftycrib-design.jpg';
+      link.click();
+    }
+  }
+  
+  function shareProject() {
+    document.getElementById('shareModal').classList.add('active');
+  }
+  
+  function closeShareModal() {
+    document.getElementById('shareModal').classList.remove('active');
+  }
+  
+  function copyUrl() {
+    const input = document.getElementById('shareUrl');
+    input.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = input.nextElementSibling;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check"></i> Copied!';
+    lucide.createIcons();
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      lucide.createIcons();
+    }, 2000);
+  }
+  
+  function likeProject(projectId) {
+    // TODO: Implement like functionality with API call
+    const btn = document.querySelector('.like-btn');
+    btn.classList.toggle('liked');
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
+    if (e.key === 'Escape') closeShareModal();
+  });
+</script>
+

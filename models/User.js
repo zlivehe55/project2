@@ -52,6 +52,46 @@ const userSchema = new mongoose.Schema({
   verificationExpires: Date,
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  // Subscription System
+  subscription: {
+    type: {
+      type: String,
+      enum: ['free', 'partner', 'advanced', 'credits'],
+      default: 'free'
+    },
+    // Partner subscription - free with contractor contract
+    partnerContractId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Contract'
+    },
+    // Advanced subscription
+    plan: {
+      type: String,
+      enum: ['monthly', 'quarterly', 'yearly'],
+      default: 'monthly'
+    },
+    startDate: Date,
+    endDate: Date,
+    // Credits system
+    credits: {
+      type: Number,
+      default: 3 // Free users get 3 credits
+    },
+    creditsUsed: {
+      type: Number,
+      default: 0
+    },
+    // Stripe/Payment
+    stripeCustomerId: String,
+    stripeSubscriptionId: String,
+    // Status
+    status: {
+      type: String,
+      enum: ['active', 'cancelled', 'expired', 'pending'],
+      default: 'active'
+    }
+  },
+  // Legacy field for backwards compatibility
   isPremium: {
     type: Boolean,
     default: false

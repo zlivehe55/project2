@@ -101,6 +101,27 @@ const projectSchema = new mongoose.Schema({
     enum: ['private', 'contractors', 'public'],
     default: 'private'
   },
+  // Public gallery fields
+  isPublished: {
+    type: Boolean,
+    default: false
+  },
+  publishedAt: Date,
+  publicSlug: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  likes: {
+    type: Number,
+    default: 0
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
+  tags: [String],
+  featuredImage: String, // Main image for gallery display
   shareToken: String,
   isDIY: {
     type: Boolean,

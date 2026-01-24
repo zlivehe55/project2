@@ -3,10 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib' %></title>
+  
+  <!-- SEO Meta Tags -->
+  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib - Account' %></title>
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Access your CraftyCrib account to create AI-powered interior designs and connect with professional contractors.' %>">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'CraftyCrib' %>">
+  <meta property="og:description" content="AI-Powered Interior Design Platform">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/fullogo.png">
+  <meta property="og:site_name" content="CraftyCrib">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/assets/logoicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/logoicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/logoicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/logoicon.png">
+  <meta name="theme-color" content="#00ff88">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,8 +39,8 @@
     <!-- Left Side - Branding -->
     <div class="auth-brand">
       <div class="auth-brand-content">
-        <a href="/" class="auth-logo">
-          <img src="/assets/fullogo.png" alt="CraftyCrib">
+        <a href="/" class="auth-logo" aria-label="CraftyCrib Home">
+          <img src="/assets/fullogo.png" alt="CraftyCrib - AI Interior Design">
         </a>
         
         <div class="auth-tagline">
@@ -61,6 +75,22 @@
               <h4>Pro Contractors</h4>
               <p>Connect with qualified professionals</p>
             </div>
+          </div>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="auth-trust">
+          <div class="trust-item">
+            <i data-lucide="shield-check"></i>
+            <span>Secure & Private</span>
+          </div>
+          <div class="trust-item">
+            <i data-lucide="lock"></i>
+            <span>SSL Encrypted</span>
+          </div>
+          <div class="trust-item">
+            <i data-lucide="star"></i>
+            <span>4.8/5 Rating</span>
           </div>
         </div>
       </div>
@@ -103,7 +133,57 @@
   <script src="/js/main.js"></script>
   <script>
     lucide.createIcons();
+    
+    // Form validation enhancement
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Please wait...';
+          lucide.createIcons();
+        }
+      });
+    });
   </script>
+  
+  <style>
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .auth-trust {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .trust-item i {
+      width: 16px;
+      height: 16px;
+      color: var(--accent-primary);
+    }
+    
+    @media (max-width: 768px) {
+      .auth-trust {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </body>
 </html>
-

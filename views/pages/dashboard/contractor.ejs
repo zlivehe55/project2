@@ -1,182 +1,255 @@
-<div class="dashboard">
-  <div class="dashboard-header">
-    <div>
-      <h1>Welcome, <%= user.firstName %>! 👷</h1>
-      <p class="text-muted">Manage your contractor dashboard</p>
-    </div>
-    <% if (!contractor) { %>
-      <a href="/contractors/setup" class="btn btn-primary">
-        <i data-lucide="user-plus"></i>
-        Complete Profile
-      </a>
-    <% } %>
+<!-- Dashboard Header -->
+<div class="dashboard-page-header">
+  <div>
+    <h1>Welcome, <%= user.firstName %>! 👷</h1>
+    <p class="subtitle">Manage your contractor dashboard and find new projects</p>
   </div>
-  
-  <% if (!contractor) { %>
-    <!-- Setup Profile CTA -->
-    <div class="setup-cta">
-      <div class="setup-icon">
-        <i data-lucide="alert-circle"></i>
-      </div>
-      <div class="setup-content">
-        <h3>Complete Your Professional Profile</h3>
-        <p>Set up your contractor profile to start receiving project requests from homeowners.</p>
-        <a href="/contractors/setup" class="btn btn-primary">
-          <i data-lucide="arrow-right"></i>
-          Set Up Now
-        </a>
-      </div>
-    </div>
+  <% if (contractor) { %>
+    <a href="/contractors/<%= contractor.slug %>" class="btn btn-secondary" target="_blank">
+      <i data-lucide="external-link"></i>
+      View Public Profile
+    </a>
   <% } else { %>
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #00ff88, #00d4ff);">
-          <i data-lucide="eye"></i>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value"><%= contractor.stats.profileViews || 0 %></span>
-          <span class="stat-label">Profile Views</span>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
-          <i data-lucide="folder"></i>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value"><%= contractor.stats.projectsReceived || 0 %></span>
-          <span class="stat-label">Projects Received</span>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
-          <i data-lucide="check-circle"></i>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value"><%= contractor.stats.projectsAccepted || 0 %></span>
-          <span class="stat-label">Projects Accepted</span>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-          <i data-lucide="star"></i>
-        </div>
-        <div class="stat-info">
-          <span class="stat-value"><%= contractor.rating.average || 'N/A' %></span>
-          <span class="stat-label">Average Rating</span>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Availability Status -->
-    <div class="dashboard-section">
-      <div class="availability-card">
-        <div class="availability-info">
-          <h3>Your Availability</h3>
-          <span class="availability-status status-<%= contractor.availability.status %>">
-            <span class="status-dot"></span>
-            <%= contractor.availability.status === 'available' ? 'Available for Projects' : 
-                contractor.availability.status === 'busy' ? 'Busy - Limited Capacity' : 'Not Available' %>
-          </span>
-        </div>
-        <a href="/contractors/profile/edit" class="btn btn-secondary btn-sm">
-          <i data-lucide="settings"></i>
-          Update
-        </a>
-      </div>
-    </div>
-    
-    <!-- Available Projects -->
-    <div class="dashboard-section">
-      <div class="section-header-inline">
-        <h2>Available Projects</h2>
-        <a href="/contractors/projects/available" class="btn btn-ghost btn-sm">View All</a>
-      </div>
-      
-      <% if (availableProjects && availableProjects.length > 0) { %>
-        <div class="projects-list">
-          <% availableProjects.forEach(project => { %>
-            <div class="project-list-item">
-              <div class="project-thumb">
-                <% if (project.designVariants && project.designVariants.length > 0) { %>
-                  <img src="<%= project.designVariants[0].imageUrl %>" alt="<%= project.title %>">
-                <% } else { %>
-                  <div class="placeholder-thumb">
-                    <i data-lucide="image"></i>
-                  </div>
-                <% } %>
-              </div>
-              <div class="project-details">
-                <h3><%= project.title %></h3>
-                <div class="project-meta">
-                  <span><i data-lucide="home"></i> <%= project.roomType %></span>
-                  <span><i data-lucide="user"></i> <%= project.user.firstName %> <%= project.user.lastName.charAt(0) %>.</span>
-                  <% if (project.budget && project.budget.max) { %>
-                    <span><i data-lucide="euro"></i> Budget: €<%= project.budget.max.toLocaleString() %></span>
-                  <% } %>
-                </div>
-                <p class="project-desc"><%= project.description.substring(0, 120) %>...</p>
-              </div>
-              <div class="project-actions-side">
-                <a href="/projects/share/<%= project.shareToken %>" class="btn btn-secondary btn-sm">View Details</a>
-                <button class="btn btn-primary btn-sm" onclick="expressInterest('<%= project._id %>')">
-                  <i data-lucide="hand"></i> Express Interest
-                </button>
-              </div>
-            </div>
-          <% }) %>
-        </div>
-      <% } else { %>
-        <div class="empty-state">
-          <div class="empty-icon">
-            <i data-lucide="search"></i>
-          </div>
-          <h3>No matching projects</h3>
-          <p>Projects matching your specialties will appear here.</p>
-        </div>
-      <% } %>
-    </div>
+    <a href="/contractors/setup" class="btn btn-primary">
+      <i data-lucide="user-plus"></i>
+      Complete Profile
+    </a>
   <% } %>
 </div>
 
+<% if (!contractor) { %>
+  <!-- Setup Profile CTA -->
+  <div class="setup-banner">
+    <div class="setup-banner-icon">
+      <i data-lucide="alert-circle"></i>
+    </div>
+    <div class="setup-banner-content">
+      <h3>Complete Your Professional Profile</h3>
+      <p>Set up your contractor profile to start receiving project requests from homeowners. Showcase your work and grow your business!</p>
+    </div>
+    <a href="/contractors/setup" class="btn btn-primary btn-lg">
+      <i data-lucide="arrow-right"></i>
+      Set Up Profile
+    </a>
+  </div>
+<% } else { %>
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <i data-lucide="eye"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= stats.profileViews %></div>
+        <div class="stat-label">Profile Views</div>
+        <div class="stat-trend up">
+          <i data-lucide="trending-up"></i> +12% this week
+        </div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <i data-lucide="briefcase"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= stats.projectsReceived %></div>
+        <div class="stat-label">Projects Received</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <i data-lucide="check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= stats.projectsAccepted %></div>
+        <div class="stat-label">Projects Accepted</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <i data-lucide="star"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value"><%= stats.avgRating > 0 ? stats.avgRating.toFixed(1) : 'N/A' %></div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Availability Banner -->
+  <div class="availability-banner <%= contractor.availability?.status || 'available' %>">
+    <div class="availability-info">
+      <span class="availability-dot"></span>
+      <span class="availability-text">
+        <% if (contractor.availability?.status === 'available') { %>
+          You're <strong>Available</strong> for new projects
+        <% } else if (contractor.availability?.status === 'busy') { %>
+          You're currently <strong>Busy</strong> - Limited capacity
+        <% } else { %>
+          You're marked as <strong>Unavailable</strong>
+        <% } %>
+      </span>
+    </div>
+    <a href="/contractors/profile/edit" class="btn btn-sm btn-secondary">
+      <i data-lucide="settings"></i>
+      Update Status
+    </a>
+  </div>
+  
+  <!-- Main Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- Left Column - Available Projects -->
+    <div>
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>🔥 Available Projects</h2>
+          <a href="/contractors/projects/available" class="btn btn-sm btn-ghost">View All</a>
+        </div>
+        
+        <% if (availableProjects && availableProjects.length > 0) { %>
+          <div class="projects-list">
+            <% availableProjects.forEach(project => { %>
+              <div class="project-item marketplace-item">
+                <div class="project-thumb">
+                  <% if (project.designVariants && project.designVariants.length > 0) { %>
+                    <img src="<%= project.designVariants[0].imageUrl || project.designVariants[0].thumbnailUrl %>" alt="<%= project.title %>">
+                  <% } else if (project.originalImages && project.originalImages.length > 0) { %>
+                    <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
+                  <% } else { %>
+                    <div class="project-thumb-placeholder">
+                      <i data-lucide="image"></i>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="project-details">
+                  <h3><%= project.title %></h3>
+                  <div class="project-meta">
+                    <span><i data-lucide="home"></i> <%= project.roomType %></span>
+                    <span><i data-lucide="user"></i> <%= project.user.firstName %> <%= project.user.lastName.charAt(0) %>.</span>
+                    <% if (project.budget && project.budget.max) { %>
+                      <span class="budget-tag"><i data-lucide="euro"></i> €<%= project.budget.max.toLocaleString() %></span>
+                    <% } %>
+                  </div>
+                  <p class="project-excerpt"><%= project.description.substring(0, 80) %>...</p>
+                </div>
+                <div class="project-actions" style="flex-direction: column;">
+                  <a href="/projects/share/<%= project.shareToken %>" class="btn btn-sm btn-secondary">
+                    <i data-lucide="eye"></i> View
+                  </a>
+                  <button class="btn btn-sm btn-primary" onclick="expressInterest('<%= project._id %>')">
+                    <i data-lucide="hand"></i> Apply
+                  </button>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="section-content">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i data-lucide="search"></i>
+              </div>
+              <h3>No matching projects</h3>
+              <p>New projects matching your specialties will appear here.</p>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    
+    <!-- Right Column -->
+    <div>
+      <!-- Profile Completion -->
+      <div class="dashboard-section" style="margin-bottom: var(--spacing-lg);">
+        <div class="section-header">
+          <h2>Profile Status</h2>
+        </div>
+        <div class="section-content">
+          <div class="profile-completion">
+            <div class="completion-header">
+              <span>Profile Completion</span>
+              <span class="completion-percent">75%</span>
+            </div>
+            <div class="completion-bar">
+              <div class="completion-fill" style="width: 75%"></div>
+            </div>
+            <ul class="completion-checklist">
+              <li class="completed"><i data-lucide="check-circle"></i> Basic information</li>
+              <li class="completed"><i data-lucide="check-circle"></i> Contact details</li>
+              <li class="completed"><i data-lucide="check-circle"></i> Service areas</li>
+              <li><i data-lucide="circle"></i> Add portfolio photos</li>
+              <li><i data-lucide="circle"></i> Upload certifications</li>
+            </ul>
+            <a href="/contractors/profile/edit" class="btn btn-sm btn-outline" style="width: 100%; margin-top: var(--spacing-md);">
+              Complete Profile
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="dashboard-section" style="margin-bottom: var(--spacing-lg);">
+        <div class="section-header">
+          <h2>Quick Actions</h2>
+        </div>
+        <div class="section-content">
+          <div class="quick-actions-grid">
+            <a href="/contractors/projects/available" class="quick-action">
+              <i data-lucide="briefcase"></i>
+              <span>Browse Projects</span>
+            </a>
+            <a href="/contractors/profile/edit" class="quick-action">
+              <i data-lucide="building-2"></i>
+              <span>Edit Profile</span>
+            </a>
+            <a href="/dashboard/messages" class="quick-action">
+              <i data-lucide="message-square"></i>
+              <span>Messages</span>
+            </a>
+            <a href="/dashboard/settings" class="quick-action">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Premium CTA -->
+      <% if (!contractor.isPremium) { %>
+        <div class="dashboard-section" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1)); border-color: rgba(255, 215, 0, 0.3);">
+          <div class="section-content" style="text-align: center; padding: var(--spacing-xl);">
+            <div style="font-size: 2.5rem; margin-bottom: var(--spacing-md);">👑</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">Boost Your Profile</h3>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg); font-size: 0.9rem;">
+              Get featured placement, priority notifications, and a verified badge.
+            </p>
+            <a href="/pricing" class="btn btn-primary">
+              <i data-lucide="crown"></i>
+              Go Premium
+            </a>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
 <style>
-  .dashboard {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: var(--spacing-xl);
-  }
-  
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-2xl);
-  }
-  
-  .dashboard-header h1 {
-    font-size: 1.75rem;
-    margin-bottom: var(--spacing-xs);
-  }
-  
-  .text-muted {
-    color: var(--text-muted);
-  }
-  
-  .setup-cta {
+  .setup-banner {
     display: flex;
     align-items: center;
     gap: var(--spacing-xl);
     padding: var(--spacing-2xl);
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
     border: 1px solid rgba(0, 255, 136, 0.3);
     border-radius: var(--radius-xl);
     margin-bottom: var(--spacing-2xl);
   }
   
-  .setup-icon {
+  .setup-banner-icon {
     width: 80px;
     height: 80px;
     display: flex;
@@ -188,232 +261,145 @@
     flex-shrink: 0;
   }
   
-  .setup-icon i {
+  .setup-banner-icon i {
     width: 40px;
     height: 40px;
   }
   
-  .setup-content h3 {
-    font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .setup-content p {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-2xl);
-  }
-  
-  .stat-card {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-xl);
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-  }
-  
-  .stat-icon {
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    color: #000;
-  }
-  
-  .stat-icon i {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .stat-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .stat-info .stat-value {
-    font-size: 1.75rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-  }
-  
-  .stat-info .stat-label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-  }
-  
-  .dashboard-section {
-    margin-bottom: var(--spacing-2xl);
-  }
-  
-  .section-header-inline {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .section-header-inline h2 {
-    font-size: 1.25rem;
-  }
-  
-  .availability-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-xl);
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-  }
-  
-  .availability-info h3 {
-    font-size: 1rem;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .availability-status {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    font-size: 0.9rem;
-  }
-  
-  .status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  
-  .status-available .status-dot { background: var(--success); }
-  .status-busy .status-dot { background: var(--warning); }
-  .status-unavailable .status-dot { background: var(--error); }
-  
-  .projects-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-  
-  .project-list-item {
-    display: flex;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    transition: all var(--transition-base);
-  }
-  
-  .project-list-item:hover {
-    border-color: var(--border-color-hover);
-  }
-  
-  .project-thumb {
-    width: 120px;
-    height: 100px;
-    flex-shrink: 0;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-  
-  .project-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .project-details {
+  .setup-banner-content {
     flex: 1;
   }
   
-  .project-details h3 {
-    font-size: 1.1rem;
+  .setup-banner-content h3 {
+    font-size: 1.25rem;
     margin-bottom: var(--spacing-sm);
   }
   
-  .project-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-muted);
-    font-size: 0.85rem;
-  }
-  
-  .project-meta span {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    text-transform: capitalize;
-  }
-  
-  .project-meta i {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .project-desc {
-    font-size: 0.9rem;
+  .setup-banner-content p {
     color: var(--text-secondary);
   }
   
-  .project-actions-side {
+  .availability-banner {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    justify-content: center;
-  }
-  
-  .empty-state {
-    text-align: center;
-    padding: var(--spacing-3xl);
-    background: var(--bg-card);
-    border: 1px dashed var(--border-color);
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-xl);
     border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
   }
   
-  .empty-icon {
-    width: 80px;
-    height: 80px;
+  .availability-banner.available {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+  }
+  
+  .availability-banner.busy {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  
+  .availability-banner.unavailable {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+  
+  .availability-info {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: var(--bg-secondary);
+    gap: var(--spacing-md);
+  }
+  
+  .availability-dot {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    margin: 0 auto var(--spacing-lg);
+  }
+  
+  .available .availability-dot { background: var(--success); }
+  .busy .availability-dot { background: #f59e0b; }
+  .unavailable .availability-dot { background: var(--error); }
+  
+  .marketplace-item {
+    cursor: pointer;
+  }
+  
+  .project-excerpt {
+    font-size: 0.85rem;
     color: var(--text-muted);
+    margin-top: var(--spacing-sm);
   }
   
-  .empty-icon i {
-    width: 40px;
-    height: 40px;
+  .budget-tag {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-primary);
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
   }
   
-  .empty-state h3 {
+  .profile-completion {
+    padding: var(--spacing-sm);
+  }
+  
+  .completion-header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: var(--spacing-sm);
+    font-size: 0.9rem;
   }
   
-  .empty-state p {
-    color: var(--text-muted);
+  .completion-percent {
+    font-weight: 700;
+    color: var(--accent-primary);
   }
   
-  .placeholder-thumb {
+  .completion-bar {
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-lg);
+    overflow: hidden;
+  }
+  
+  .completion-fill {
+    height: 100%;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-full);
+  }
+  
+  .completion-checklist {
+    list-style: none;
+  }
+  
+  .completion-checklist li {
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 100%;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+    font-size: 0.85rem;
     color: var(--text-muted);
+  }
+  
+  .completion-checklist li.completed {
+    color: var(--success);
+  }
+  
+  .completion-checklist li i {
+    width: 16px;
+    height: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .setup-banner {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .availability-banner {
+      flex-direction: column;
+      gap: var(--spacing-md);
+      text-align: center;
+    }
   }
 </style>
 
@@ -429,16 +415,16 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, quotation })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        alert('Error: ' + data.error);
+    .then(res => {
+      if (res.ok) {
+        CraftyCrib.showToast('Interest expressed successfully!');
+        setTimeout(() => window.location.reload(), 1500);
       } else {
-        alert('Interest expressed successfully!');
-        window.location.reload();
+        return res.json().then(data => {
+          CraftyCrib.showToast(data.error || 'Failed to express interest', 'error');
+        });
       }
     })
-    .catch(() => alert('An error occurred'));
+    .catch(() => CraftyCrib.showToast('An error occurred', 'error'));
   }
 </script>
-

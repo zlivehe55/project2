@@ -356,5 +356,107 @@ router.get('/share/:token', async (req, res) => {
   }
 });
 
+// Publish Project to Public Gallery
+router.post('/:id/publish', ensureAuthenticated, async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    // Check if project has designs to publish
+    if (!project.designVariants || project.designVariants.length === 0) {
+      return res.status(400).json({ 
+        error: 'Generate at least one AI design before publishing' 
+      });
+    }
+
+    // Generate a public slug if not exists
+    if (!project.publicSlug) {
+      const slugify = require('slugify');
+      const baseSlug = slugify(project.title, { lower: true, strict: true });
+      project.publicSlug = `${baseSlug}-${Date.now().toString(36)}`;
+    }
+
+    // Set featured image if not set
+    if (!project.featuredImage && project.designVariants.length > 0) {
+      project.featuredImage = project.designVariants[0].imageUrl;
+    }
+
+    project.isPublished = true;
+    project.publishedAt = new Date();
+    project.visibility = 'public';
+
+    await project.save();
+
+    res.json({
+      success: true,
+      message: 'Project published to gallery!',
+      galleryUrl: `/gallery/${project.publicSlug}`
+    });
+  } catch (err) {
+    console.error('Publish project error:', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
+// Unpublish Project from Gallery
+router.post('/:id/unpublish', ensureAuthenticated, async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    project.isPublished = false;
+    project.visibility = 'private';
+
+    await project.save();
+
+    res.json({
+      success: true,
+      message: 'Project removed from gallery'
+    });
+  } catch (err) {
+    console.error('Unpublish project error:', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
+// Set Featured Image
+router.post('/:id/set-featured', ensureAuthenticated, async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    
+    const project = await Project.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    project.featuredImage = imageUrl;
+    await project.save();
+
+    res.json({
+      success: true,
+      message: 'Featured image updated'
+    });
+  } catch (err) {
+    console.error('Set featured image error:', err);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
 module.exports = router;
 

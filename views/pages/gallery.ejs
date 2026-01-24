@@ -1,0 +1,502 @@
+<!-- Gallery Hero -->
+<section class="gallery-hero">
+  <div class="container">
+    <span class="hero-badge">
+      <i data-lucide="images"></i>
+      Community Gallery
+    </span>
+    <h1>Get Inspired by <span class="gradient-text">AI Designs</span></h1>
+    <p class="hero-subtitle">Browse stunning interior transformations created by our community using AI technology.</p>
+  </div>
+  
+  <div class="hero-bg">
+    <div class="gradient-orb hero-orb-1"></div>
+    <div class="gradient-orb hero-orb-2"></div>
+  </div>
+</section>
+
+<!-- Filters Section -->
+<section class="gallery-filters">
+  <div class="container">
+    <form action="/gallery" method="GET" class="filters-form">
+      <div class="filter-group">
+        <label>Room Type</label>
+        <select name="room" onchange="this.form.submit()">
+          <option value="">All Rooms</option>
+          <% roomTypes.forEach(room => { %>
+            <option value="<%= room.id %>" <%= filters.room === room.id ? 'selected' : '' %>><%= room.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label>Style</label>
+        <select name="style" onchange="this.form.submit()">
+          <option value="">All Styles</option>
+          <% styles.forEach(style => { %>
+            <option value="<%= style.id %>" <%= filters.style === style.id ? 'selected' : '' %>><%= style.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select name="sort" onchange="this.form.submit()">
+          <option value="newest" <%= filters.sort === 'newest' || !filters.sort ? 'selected' : '' %>>Newest</option>
+          <option value="popular" <%= filters.sort === 'popular' ? 'selected' : '' %>>Most Popular</option>
+          <option value="views" <%= filters.sort === 'views' ? 'selected' : '' %>>Most Viewed</option>
+        </select>
+      </div>
+      
+      <% if (filters.room || filters.style || filters.sort) { %>
+        <a href="/gallery" class="btn btn-ghost btn-sm">
+          <i data-lucide="x"></i>
+          Clear Filters
+        </a>
+      <% } %>
+    </form>
+    
+    <div class="results-count">
+      <p><strong><%= pagination.total %></strong> designs found</p>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="gallery-section">
+  <div class="container">
+    <% if (projects && projects.length > 0) { %>
+      <div class="gallery-grid">
+        <% projects.forEach(project => { %>
+          <article class="gallery-card">
+            <a href="/gallery/<%= project.publicSlug %>" class="card-image">
+              <% 
+                const featuredImg = project.featuredImage || 
+                  (project.designVariants?.length > 0 ? project.designVariants[0].imageUrl : null) ||
+                  (project.originalImages?.length > 0 ? project.originalImages[0].url : null);
+              %>
+              <% if (featuredImg) { %>
+                <img src="<%= featuredImg %>" alt="<%= project.title %>" loading="lazy">
+              <% } else { %>
+                <div class="placeholder-image">
+                  <i data-lucide="image"></i>
+                </div>
+              <% } %>
+              <div class="card-overlay">
+                <span class="view-btn">
+                  <i data-lucide="eye"></i>
+                  View Design
+                </span>
+              </div>
+            </a>
+            
+            <div class="card-content">
+              <div class="card-tags">
+                <span class="tag room-tag"><%= project.roomType %></span>
+                <span class="tag style-tag"><%= project.style %></span>
+              </div>
+              <h3><a href="/gallery/<%= project.publicSlug %>"><%= project.title %></a></h3>
+              <p class="card-description"><%= project.description.substring(0, 80) %>...</p>
+              
+              <div class="card-footer">
+                <div class="card-author">
+                  <div class="author-avatar">
+                    <%= project.user?.firstName?.charAt(0) || 'U' %>
+                  </div>
+                  <span><%= project.user?.firstName || 'User' %> <%= project.user?.lastName?.charAt(0) || '' %>.</span>
+                </div>
+                <div class="card-stats">
+                  <span><i data-lucide="eye"></i> <%= project.views || 0 %></span>
+                  <span><i data-lucide="heart"></i> <%= project.likes || 0 %></span>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+      
+      <!-- Pagination -->
+      <% if (pagination.totalPages > 1) { %>
+        <div class="pagination">
+          <% if (pagination.page > 1) { %>
+            <a href="/gallery?page=<%= pagination.page - 1 %><%= filters.style ? '&style=' + filters.style : '' %><%= filters.room ? '&room=' + filters.room : '' %><%= filters.sort ? '&sort=' + filters.sort : '' %>" class="pagination-btn">
+              <i data-lucide="chevron-left"></i>
+            </a>
+          <% } %>
+          
+          <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+            <a href="/gallery?page=<%= i %><%= filters.style ? '&style=' + filters.style : '' %><%= filters.room ? '&room=' + filters.room : '' %><%= filters.sort ? '&sort=' + filters.sort : '' %>" class="pagination-btn <%= pagination.page === i ? 'active' : '' %>">
+              <%= i %>
+            </a>
+          <% } %>
+          
+          <% if (pagination.page < pagination.totalPages) { %>
+            <a href="/gallery?page=<%= pagination.page + 1 %><%= filters.style ? '&style=' + filters.style : '' %><%= filters.room ? '&room=' + filters.room : '' %><%= filters.sort ? '&sort=' + filters.sort : '' %>" class="pagination-btn">
+              <i data-lucide="chevron-right"></i>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+      
+    <% } else { %>
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i data-lucide="image-off"></i>
+        </div>
+        <h3>No designs found</h3>
+        <p>Be the first to publish a design! Create a project and share it with the community.</p>
+        <a href="/auth/register" class="btn btn-primary">
+          <i data-lucide="plus"></i>
+          Create Your First Design
+        </a>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-bg">
+    <div class="gradient-orb cta-orb-1"></div>
+    <div class="gradient-orb cta-orb-2"></div>
+  </div>
+  <div class="cta-content">
+    <h2>Ready to Create Your Own?</h2>
+    <p>Transform your space with AI-powered design. Start free, no credit card required.</p>
+    <a href="/auth/register" class="btn btn-primary btn-lg">
+      <i data-lucide="sparkles"></i>
+      Get Started Free
+    </a>
+  </div>
+</section>
+
+<style>
+  /* Gallery Hero */
+  .gallery-hero {
+    position: relative;
+    padding: 140px 2rem 60px;
+    text-align: center;
+  }
+  
+  .gallery-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .gallery-hero .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* Filters */
+  .gallery-filters {
+    padding: var(--spacing-xl) 2rem;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .gallery-filters .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+  
+  .filters-form {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+  }
+  
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .filter-group label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .filter-group select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .results-count {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  
+  /* Gallery Grid */
+  .gallery-section {
+    padding: var(--spacing-3xl) 2rem;
+  }
+  
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-xl);
+  }
+  
+  .gallery-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .gallery-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+  }
+  
+  .card-image {
+    display: block;
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+  
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+  }
+  
+  .gallery-card:hover .card-image img {
+    transform: scale(1.05);
+  }
+  
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+  }
+  
+  .placeholder-image i {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .gallery-card:hover .card-overlay {
+    opacity: 1;
+  }
+  
+  .view-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0.75rem 1.5rem;
+    background: var(--accent-primary);
+    color: #000;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+  }
+  
+  .card-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .card-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
+  
+  .room-tag {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-primary);
+  }
+  
+  .style-tag {
+    background: rgba(124, 58, 237, 0.1);
+    color: #a855f7;
+  }
+  
+  .card-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .card-content h3 a {
+    color: var(--text-primary);
+    transition: color var(--transition-fast);
+  }
+  
+  .card-content h3 a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .card-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.5;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .card-author {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  
+  .author-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .card-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .card-stats span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  
+  .card-stats i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-3xl);
+  }
+  
+  .pagination-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+  }
+  
+  .pagination-btn:hover,
+  .pagination-btn.active {
+    background: var(--accent-primary);
+    color: #000;
+    border-color: var(--accent-primary);
+  }
+  
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-3xl);
+  }
+  
+  .empty-state-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    margin: 0 auto var(--spacing-xl);
+  }
+  
+  .empty-state-icon i {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+  }
+  
+  .empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  @media (max-width: 768px) {
+    .filters-form {
+      width: 100%;
+    }
+    
+    .filter-group {
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

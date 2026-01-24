@@ -1,0 +1,515 @@
+<!-- Hero Section -->
+<section class="contractors-hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-badge">
+        <i data-lucide="hard-hat"></i>
+        Verified Professionals
+      </span>
+      <h1>Find Trusted Contractors<br>For Your <span class="gradient-text">Renovation Project</span></h1>
+      <p class="hero-subtitle">Connect with vetted interior designers, contractors, and craftsmen who can bring your AI-generated designs to life.</p>
+      
+      <!-- Search Box -->
+      <div class="contractor-search">
+        <form action="/contractors" method="GET" class="search-form">
+          <div class="search-input-wrapper">
+            <i data-lucide="search"></i>
+            <input type="text" name="q" placeholder="Search by specialty or location..." value="<%= typeof query !== 'undefined' ? query : '' %>" class="search-input">
+          </div>
+          <select name="specialty" class="search-select">
+            <option value="">All Specialties</option>
+            <% if (typeof specialties !== 'undefined') { %>
+              <% specialties.forEach(spec => { %>
+                <option value="<%= spec %>" <%= typeof filters !== 'undefined' && filters.specialty === spec ? 'selected' : '' %>><%= spec %></option>
+              <% }) %>
+            <% } %>
+          </select>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="search"></i>
+            Search
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hero-bg">
+    <div class="gradient-orb hero-orb-1"></div>
+    <div class="gradient-orb hero-orb-2"></div>
+  </div>
+</section>
+
+<!-- Filters & Results -->
+<section class="contractors-section">
+  <div class="container">
+    <!-- Filter Tags -->
+    <div class="filter-bar">
+      <div class="filter-tags">
+        <button class="filter-tag active" data-filter="all">All</button>
+        <button class="filter-tag" data-filter="interior-design">Interior Design</button>
+        <button class="filter-tag" data-filter="general-contractor">General Contractor</button>
+        <button class="filter-tag" data-filter="kitchen-bath">Kitchen & Bath</button>
+        <button class="filter-tag" data-filter="electrical">Electrical</button>
+        <button class="filter-tag" data-filter="plumbing">Plumbing</button>
+      </div>
+      
+      <div class="sort-dropdown">
+        <select name="sort" id="sortSelect">
+          <option value="rating">Highest Rated</option>
+          <option value="reviews">Most Reviews</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="results-info">
+      <p>Showing <strong><%= typeof contractors !== 'undefined' ? contractors.length : 0 %></strong> contractors</p>
+    </div>
+    
+    <!-- Contractors Grid -->
+    <div class="contractors-grid">
+      <% if (typeof contractors !== 'undefined' && contractors.length > 0) { %>
+        <% contractors.forEach(contractor => { %>
+          <article class="contractor-card">
+            <div class="contractor-header">
+              <div class="contractor-avatar">
+                <% if (contractor.logo) { %>
+                  <img src="<%= contractor.logo %>" alt="<%= contractor.companyName %>">
+                <% } else { %>
+                  <span><%= contractor.companyName.charAt(0) %></span>
+                <% } %>
+                <% if (contractor.isVerified) { %>
+                  <span class="verified-badge" title="Verified Contractor">
+                    <i data-lucide="badge-check"></i>
+                  </span>
+                <% } %>
+              </div>
+              <div class="contractor-info">
+                <h3><%= contractor.companyName %></h3>
+                <p class="contractor-tagline"><%= contractor.tagline || 'Professional Contractor' %></p>
+              </div>
+            </div>
+            
+            <div class="contractor-body">
+              <div class="contractor-stats">
+                <div class="stat">
+                  <i data-lucide="star"></i>
+                  <span><%= contractor.rating?.average?.toFixed(1) || 'N/A' %></span>
+                  <span class="stat-label">(<%= contractor.rating?.count || 0 %> reviews)</span>
+                </div>
+                <div class="stat">
+                  <i data-lucide="map-pin"></i>
+                  <span><%= contractor.location?.city || 'France' %></span>
+                </div>
+              </div>
+              
+              <div class="contractor-specialties">
+                <% (contractor.specialties || []).slice(0, 3).forEach(spec => { %>
+                  <span class="specialty-tag"><%= spec %></span>
+                <% }) %>
+                <% if (contractor.specialties && contractor.specialties.length > 3) { %>
+                  <span class="specialty-tag more">+<%= contractor.specialties.length - 3 %></span>
+                <% } %>
+              </div>
+              
+              <p class="contractor-bio"><%= contractor.bio ? contractor.bio.substring(0, 120) + '...' : 'No bio available' %></p>
+            </div>
+            
+            <div class="contractor-footer">
+              <a href="/contractors/<%= contractor.slug %>" class="btn btn-secondary">
+                View Profile
+              </a>
+              <button class="btn btn-primary" onclick="contactContractor('<%= contractor._id %>')">
+                <i data-lucide="message-square"></i>
+                Contact
+              </button>
+            </div>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i data-lucide="hard-hat"></i>
+          </div>
+          <h3>No contractors found</h3>
+          <p>We couldn't find any contractors matching your criteria. Try adjusting your filters or check back later.</p>
+          <a href="/contractors" class="btn btn-secondary">Clear Filters</a>
+        </div>
+      <% } %>
+    </div>
+    
+    <!-- Pagination -->
+    <% if (typeof pagination !== 'undefined' && pagination.pages > 1) { %>
+      <div class="pagination">
+        <% if (pagination.page > 1) { %>
+          <a href="/contractors?page=<%= pagination.page - 1 %>" class="pagination-btn">
+            <i data-lucide="chevron-left"></i>
+          </a>
+        <% } %>
+        
+        <% for (let i = 1; i <= pagination.pages; i++) { %>
+          <a href="/contractors?page=<%= i %>" class="pagination-btn <%= pagination.page === i ? 'active' : '' %>">
+            <%= i %>
+          </a>
+        <% } %>
+        
+        <% if (pagination.page < pagination.pages) { %>
+          <a href="/contractors?page=<%= pagination.page + 1 %>" class="pagination-btn">
+            <i data-lucide="chevron-right"></i>
+          </a>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-bg">
+    <div class="gradient-orb cta-orb-1"></div>
+    <div class="gradient-orb cta-orb-2"></div>
+  </div>
+  <div class="cta-content">
+    <h2>Are You a Contractor?</h2>
+    <p>Join CraftyCrib and connect with homeowners who have ready-to-build AI designs.</p>
+    <a href="/auth/register?role=contractor" class="btn btn-primary btn-lg">
+      <i data-lucide="building-2"></i>
+      Join as Contractor
+    </a>
+    <p class="cta-note">Free to join • Get qualified leads • Build your portfolio</p>
+  </div>
+</section>
+
+<style>
+  /* Contractors Page Styles */
+  .contractors-hero {
+    position: relative;
+    padding: 140px 2rem 80px;
+    text-align: center;
+  }
+  
+  .contractors-hero .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .contractors-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .contractors-hero .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .contractor-search {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  .search-form {
+    display: flex;
+    gap: var(--spacing-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: 0.5rem;
+  }
+  
+  .search-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+  }
+  
+  .search-input-wrapper i {
+    color: var(--text-muted);
+    width: 18px;
+    height: 18px;
+  }
+  
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+  
+  .search-input:focus { outline: none; }
+  
+  .search-select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  
+  .contractors-section {
+    padding: var(--spacing-3xl) 2rem;
+  }
+  
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+  }
+  
+  .filter-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+  
+  .filter-tag {
+    padding: 0.5rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .filter-tag:hover,
+  .filter-tag.active {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+  
+  .sort-dropdown select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+  }
+  
+  .results-info {
+    margin-bottom: var(--spacing-xl);
+    color: var(--text-muted);
+  }
+  
+  .contractors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--spacing-xl);
+  }
+  
+  .contractor-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .contractor-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+  }
+  
+  .contractor-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+  }
+  
+  .contractor-avatar {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+    flex-shrink: 0;
+  }
+  
+  .contractor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .verified-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 22px;
+    height: 22px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+  }
+  
+  .verified-badge i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .contractor-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .contractor-tagline {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .contractor-body {
+    padding: var(--spacing-lg);
+  }
+  
+  .contractor-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .contractor-stats .stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.9rem;
+  }
+  
+  .contractor-stats .stat i {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-primary);
+  }
+  
+  .contractor-stats .stat-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  
+  .contractor-specialties {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .specialty-tag {
+    padding: 0.25rem 0.6rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+  
+  .specialty-tag.more {
+    background: var(--bg-card-hover);
+  }
+  
+  .contractor-bio {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  
+  .contractor-footer {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .contractor-footer .btn {
+    flex: 1;
+  }
+  
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--spacing-3xl);
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-3xl);
+  }
+  
+  .pagination-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+  }
+  
+  .pagination-btn:hover,
+  .pagination-btn.active {
+    background: var(--accent-primary);
+    color: #000;
+    border-color: var(--accent-primary);
+  }
+  
+  @media (max-width: 768px) {
+    .search-form {
+      flex-direction: column;
+      border-radius: var(--radius-lg);
+    }
+    
+    .search-input-wrapper {
+      padding: var(--spacing-md);
+    }
+    
+    .search-select {
+      margin: 0 var(--spacing-sm);
+    }
+    
+    .contractors-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  function contactContractor(contractorId) {
+    <% if (typeof user !== 'undefined' && user) { %>
+      window.location.href = `/dashboard/messages?contractor=${contractorId}`;
+    <% } else { %>
+      window.location.href = `/auth/login?redirect=/contractors&message=Please login to contact contractors`;
+    <% } %>
+  }
+</script>
+

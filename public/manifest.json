@@ -1,0 +1,27 @@
+{
+  "name": "CraftyCrib - AI Interior Design",
+  "short_name": "CraftyCrib",
+  "description": "Transform your living space with AI-powered interior design. Upload a photo, get instant 3D mockups, and connect with professional contractors.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#00ff88",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/logoicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logoicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "design", "productivity"],
+  "lang": "en-US"
+}
+
