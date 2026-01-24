@@ -1,0 +1,183 @@
+<!-- Language Selector Component -->
+<div class="language-selector" id="language-selector">
+  <button class="language-btn" id="language-btn" aria-label="Select Language">
+    <i data-lucide="globe"></i>
+    <span class="current-lang">EN</span>
+    <i data-lucide="chevron-down" class="chevron"></i>
+  </button>
+  
+  <div class="language-dropdown" id="language-dropdown">
+    <div class="language-dropdown-header">
+      <i data-lucide="languages"></i>
+      <span>Select Language</span>
+    </div>
+    <div class="language-options">
+      <button class="language-option" data-lang="en" data-label="EN">
+        <span class="lang-flag">🇬🇧</span>
+        <span class="lang-name">English</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="fr" data-label="FR">
+        <span class="lang-flag">🇫🇷</span>
+        <span class="lang-name">Français</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="de" data-label="DE">
+        <span class="lang-flag">🇩🇪</span>
+        <span class="lang-name">Deutsch</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="es" data-label="ES">
+        <span class="lang-flag">🇪🇸</span>
+        <span class="lang-name">Español</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="it" data-label="IT">
+        <span class="lang-flag">🇮🇹</span>
+        <span class="lang-name">Italiano</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="nl" data-label="NL">
+        <span class="lang-flag">🇳🇱</span>
+        <span class="lang-name">Nederlands</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="pt" data-label="PT">
+        <span class="lang-flag">🇵🇹</span>
+        <span class="lang-name">Português</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="pl" data-label="PL">
+        <span class="lang-flag">🇵🇱</span>
+        <span class="lang-name">Polski</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="ru" data-label="RU">
+        <span class="lang-flag">🇷🇺</span>
+        <span class="lang-name">Русский</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="zh-CN" data-label="中文">
+        <span class="lang-flag">🇨🇳</span>
+        <span class="lang-name">中文</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="ja" data-label="日本">
+        <span class="lang-flag">🇯🇵</span>
+        <span class="lang-name">日本語</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+      <button class="language-option" data-lang="ar" data-label="عربي">
+        <span class="lang-flag">🇸🇦</span>
+        <span class="lang-name">العربية</span>
+        <i data-lucide="check" class="lang-check"></i>
+      </button>
+    </div>
+    <div class="language-footer">
+      <i data-lucide="info" style="width: 12px; height: 12px;"></i>
+      <span>Powered by Google Translate</span>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden Google Translate Element -->
+<div id="google_translate_element" style="display: none;"></div>
+
+<script>
+// Language Selector Logic
+(function() {
+  const languageBtn = document.getElementById('language-btn');
+  const languageDropdown = document.getElementById('language-dropdown');
+  const currentLangSpan = document.querySelector('.current-lang');
+  const languageOptions = document.querySelectorAll('.language-option');
+  
+  // Toggle dropdown
+  languageBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    languageDropdown.classList.toggle('active');
+    languageBtn.classList.toggle('active');
+  });
+  
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.language-selector')) {
+      languageDropdown?.classList.remove('active');
+      languageBtn?.classList.remove('active');
+    }
+  });
+  
+  // Handle language selection
+  languageOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const lang = option.dataset.lang;
+      const label = option.dataset.label;
+      
+      // Update UI
+      currentLangSpan.textContent = label;
+      languageOptions.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      
+      // Close dropdown
+      languageDropdown.classList.remove('active');
+      languageBtn.classList.remove('active');
+      
+      // Trigger Google Translate
+      changeLanguage(lang);
+      
+      // Store preference
+      localStorage.setItem('preferredLanguage', lang);
+      localStorage.setItem('preferredLanguageLabel', label);
+    });
+  });
+  
+  // Restore saved language
+  const savedLang = localStorage.getItem('preferredLanguage');
+  const savedLabel = localStorage.getItem('preferredLanguageLabel');
+  if (savedLang && savedLabel) {
+    currentLangSpan.textContent = savedLabel;
+    languageOptions.forEach(opt => {
+      if (opt.dataset.lang === savedLang) {
+        opt.classList.add('selected');
+      }
+    });
+  } else {
+    // Default to English
+    document.querySelector('[data-lang="en"]')?.classList.add('selected');
+  }
+})();
+
+// Google Translate Functions
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+function changeLanguage(lang) {
+  // Wait for Google Translate to be ready
+  const checkGT = setInterval(() => {
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      clearInterval(checkGT);
+      select.value = lang;
+      select.dispatchEvent(new Event('change'));
+    }
+  }, 100);
+  
+  // Timeout after 5 seconds
+  setTimeout(() => clearInterval(checkGT), 5000);
+}
+
+// Auto-translate if language was saved
+window.addEventListener('load', () => {
+  const savedLang = localStorage.getItem('preferredLanguage');
+  if (savedLang && savedLang !== 'en') {
+    setTimeout(() => changeLanguage(savedLang), 1000);
+  }
+});
+</script>
+
+<!-- Google Translate Script -->
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+

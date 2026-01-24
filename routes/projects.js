@@ -17,6 +17,8 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 
     res.render('pages/projects/index', {
       title: 'My Projects - CraftyCrib',
+      layout: 'layouts/dashboard',
+      activePage: 'projects',
       projects
     });
   } catch (err) {
@@ -30,6 +32,8 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 router.get('/new', ensureAuthenticated, (req, res) => {
   res.render('pages/projects/new', {
     title: 'New Project - CraftyCrib',
+    layout: 'layouts/dashboard',
+    activePage: 'new-project',
     styles: getStyles(),
     roomTypes: getRoomTypes()
   });
@@ -126,6 +130,8 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
 
     res.render('pages/projects/view', {
       title: `${project.title} - CraftyCrib`,
+      layout: 'layouts/dashboard',
+      activePage: 'projects',
       project,
       styles: getStyles(),
       roomTypes: getRoomTypes()
@@ -152,6 +158,8 @@ router.get('/:id/edit', ensureAuthenticated, async (req, res) => {
 
     res.render('pages/projects/edit', {
       title: `Edit ${project.title} - CraftyCrib`,
+      layout: 'layouts/dashboard',
+      activePage: 'projects',
       project,
       styles: getStyles(),
       roomTypes: getRoomTypes()

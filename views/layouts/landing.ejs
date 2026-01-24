@@ -91,6 +91,7 @@
       </div>
       
       <div class="nav-actions">
+        <%- include('../partials/language-selector') %>
         <% if (typeof user !== 'undefined' && user) { %>
           <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
         <% } else { %>
