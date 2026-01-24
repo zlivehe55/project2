@@ -1,9 +1,10 @@
-<div class="messages-page">
+<div class="messages-container">
   <div class="messages-sidebar">
-    <div class="messages-sidebar-header">
+    <div class="messages-header">
       <h2>Messages</h2>
-      <button class="btn btn-icon" title="New Message" id="new-message-btn">
-        <i data-lucide="edit"></i>
+      <button class="btn btn-primary btn-sm" id="new-message-btn">
+        <i data-lucide="plus"></i>
+        New
       </button>
     </div>
     
@@ -12,10 +13,9 @@
       <input type="text" placeholder="Search conversations..." class="search-input">
     </div>
     
-    <div class="conversations-tabs">
-      <button class="tab-btn active" data-tab="all">All</button>
-      <button class="tab-btn" data-tab="unread">Unread</button>
-      <button class="tab-btn" data-tab="archived">Archived</button>
+    <div class="messages-tabs">
+      <button class="tab-btn active">All</button>
+      <button class="tab-btn">Unread</button>
     </div>
     
     <div class="conversations-list">
@@ -25,13 +25,12 @@
             <div class="conversation-avatar">
               <% const otherUser = convo.participants.find(p => p._id.toString() !== user._id.toString()); %>
               <%= otherUser ? otherUser.firstName.charAt(0) + otherUser.lastName.charAt(0) : 'U' %>
-              <span class="online-indicator"></span>
             </div>
             <div class="conversation-content">
-              <div class="conversation-top">
-                <span class="conversation-name"><%= otherUser ? otherUser.firstName + ' ' + otherUser.lastName : 'Unknown User' %></span>
+              <div class="conversation-header">
+                <span class="conversation-name"><%= otherUser ? otherUser.firstName + ' ' + otherUser.lastName : 'Unknown' %></span>
                 <span class="conversation-time">
-                  <%= convo.lastMessage?.createdAt ? formatTime(convo.lastMessage.createdAt) : '' %>
+                  <%= convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt).toLocaleDateString() : '' %>
                 </span>
               </div>
               <% if (convo.project) { %>
@@ -40,7 +39,7 @@
                 </span>
               <% } %>
               <p class="conversation-preview">
-                <%= convo.lastMessage?.content ? convo.lastMessage.content.substring(0, 50) + '...' : 'Start a conversation' %>
+                <%= convo.lastMessage?.content ? convo.lastMessage.content.substring(0, 40) + '...' : 'Start a conversation' %>
               </p>
             </div>
             <% if (convo.unreadCount > 0) { %>
@@ -53,10 +52,9 @@
           <div class="empty-icon">
             <i data-lucide="message-circle"></i>
           </div>
-          <h3>No conversations yet</h3>
-          <p>When you connect with contractors or clients, your conversations will appear here.</p>
+          <h3>No conversations</h3>
+          <p>Start a conversation with a contractor</p>
           <a href="/contractors" class="btn btn-primary btn-sm">
-            <i data-lucide="hard-hat"></i>
             Find Contractors
           </a>
         </div>
@@ -65,164 +63,97 @@
   </div>
   
   <div class="messages-main">
-    <div class="no-conversation-selected">
-      <div class="empty-chat-illustration">
-        <div class="chat-bubbles">
-          <div class="bubble bubble-1"></div>
-          <div class="bubble bubble-2"></div>
-          <div class="bubble bubble-3"></div>
-        </div>
-        <i data-lucide="message-square-text"></i>
+    <div class="empty-chat">
+      <div class="empty-icon">
+        <i data-lucide="message-square"></i>
       </div>
       <h3>Select a conversation</h3>
-      <p>Choose a conversation from the list to view messages, or start a new one.</p>
-    </div>
-  </div>
-</div>
-
-<!-- New Message Modal -->
-<div class="modal" id="new-message-modal">
-  <div class="modal-overlay"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>New Message</h3>
-      <button class="modal-close" id="close-modal">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Send to</label>
-        <select class="form-select" id="recipient-select">
-          <option value="">Select a contractor or project</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Subject (Optional)</label>
-        <input type="text" class="form-input" placeholder="Re: Kitchen Renovation">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Message</label>
-        <textarea class="form-textarea" rows="4" placeholder="Write your message here..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="cancel-modal">Cancel</button>
-      <button class="btn btn-primary">
-        <i data-lucide="send"></i>
-        Send Message
-      </button>
+      <p>Choose a conversation from the list to view messages</p>
     </div>
   </div>
 </div>
 
 <style>
-.messages-page {
-  height: calc(100vh - 140px);
+.messages-container {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  background: var(--bg-primary);
+  grid-template-columns: 320px 1fr;
+  height: calc(100vh - 120px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--border-color);
 }
 
-/* Sidebar */
 .messages-sidebar {
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
   border-right: 1px solid var(--border-color);
+  background: var(--bg-card);
 }
 
-.messages-sidebar-header {
+.messages-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
 }
 
-.messages-sidebar-header h2 {
-  font-size: 1.25rem;
+.messages-header h2 {
+  font-size: 1.125rem;
   font-weight: 600;
-}
-
-.btn-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent-gradient);
-  border: none;
-  border-radius: var(--radius-md);
-  color: #000;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.btn-icon:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
-}
-
-.btn-icon i {
-  width: 18px;
-  height: 18px;
 }
 
 .messages-search {
   position: relative;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .messages-search i {
   position: absolute;
-  left: calc(var(--spacing-lg) + 12px);
+  left: calc(var(--spacing-md) + 10px);
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 .messages-search .search-input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  font-size: 0.8125rem;
 }
 
-.conversations-tabs {
+.messages-tabs {
   display: flex;
+  padding: var(--spacing-sm) var(--spacing-md);
   gap: var(--spacing-xs);
-  padding: 0 var(--spacing-lg) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab-btn {
   flex: 1;
-  padding: var(--spacing-sm);
+  padding: 0.375rem 0.75rem;
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 500;
   border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .tab-btn:hover {
   color: var(--text-primary);
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
 }
 
 .tab-btn.active {
-  background: rgba(0, 255, 136, 0.1);
-  color: var(--accent-primary);
+  background: var(--accent-primary);
+  color: #ffffff;
 }
 
 .conversations-list {
@@ -232,56 +163,33 @@
 
 .conversation-item {
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  transition: all var(--transition-fast);
-  position: relative;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
 }
 
 .conversation-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-tertiary);
 }
 
 .conversation-item.active {
-  background: rgba(0, 255, 136, 0.05);
-}
-
-.conversation-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--accent-gradient);
+  background: rgba(16, 185, 129, 0.05);
+  border-left: 2px solid var(--accent-primary);
 }
 
 .conversation-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--accent-primary);
   border-radius: var(--radius-md);
   font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
+  font-size: 0.8125rem;
+  color: #ffffff;
   flex-shrink: 0;
-  position: relative;
-}
-
-.online-indicator {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  background: var(--success);
-  border: 2px solid var(--bg-card);
-  border-radius: 50%;
 }
 
 .conversation-content {
@@ -289,7 +197,7 @@
   min-width: 0;
 }
 
-.conversation-top {
+.conversation-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -297,12 +205,13 @@
 }
 
 .conversation-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--text-primary);
 }
 
 .conversation-time {
-  font-size: 0.7rem;
+  font-size: 0.6875rem;
   color: var(--text-muted);
 }
 
@@ -310,9 +219,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.75rem;
-  color: var(--accent-secondary);
-  margin-bottom: 4px;
+  font-size: 0.6875rem;
+  color: var(--accent-primary);
+  margin-bottom: 2px;
 }
 
 .conversation-project i {
@@ -321,26 +230,25 @@
 }
 
 .conversation-preview {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.4;
 }
 
 .unread-badge {
-  min-width: 20px;
-  height: 20px;
+  min-width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-gradient);
-  color: #000;
-  font-size: 0.7rem;
-  font-weight: 700;
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 600;
   border-radius: var(--radius-full);
-  padding: 0 6px;
+  padding: 0 5px;
 }
 
 .empty-conversations {
@@ -349,204 +257,76 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-xl);
   text-align: center;
 }
 
 .empty-icon {
-  width: 80px;
-  height: 80px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 255, 136, 0.1);
+  background: var(--bg-tertiary);
   border-radius: 50%;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .empty-icon i {
-  width: 40px;
-  height: 40px;
-  color: var(--accent-primary);
+  width: 24px;
+  height: 24px;
+  color: var(--text-muted);
 }
 
 .empty-conversations h3 {
-  font-size: 1.1rem;
-  margin-bottom: var(--spacing-sm);
+  font-size: 0.9375rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .empty-conversations p {
+  font-size: 0.8125rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-bottom: var(--spacing-lg);
-  max-width: 250px;
+  margin-bottom: var(--spacing-md);
 }
 
-/* Main Chat Area */
 .messages-main {
   display: flex;
   flex-direction: column;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
 }
 
-.no-conversation-selected {
+.empty-chat {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-2xl);
-}
-
-.empty-chat-illustration {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: var(--spacing-xl);
-}
-
-.empty-chat-illustration > i {
-  width: 64px;
-  height: 64px;
-  color: var(--text-muted);
-  opacity: 0.5;
-}
-
-.chat-bubbles {
-  position: absolute;
-  inset: 0;
-}
-
-.bubble {
-  position: absolute;
-  border-radius: var(--radius-full);
-  opacity: 0.6;
-}
-
-.bubble-1 {
-  width: 20px;
-  height: 20px;
-  background: var(--accent-primary);
-  top: 10px;
-  left: 20px;
-  animation: float 3s ease-in-out infinite;
-}
-
-.bubble-2 {
-  width: 14px;
-  height: 14px;
-  background: var(--accent-secondary);
-  top: 30px;
-  right: 15px;
-  animation: float 3s ease-in-out infinite 0.5s;
-}
-
-.bubble-3 {
-  width: 10px;
-  height: 10px;
-  background: #a855f7;
-  bottom: 20px;
-  left: 30px;
-  animation: float 3s ease-in-out infinite 1s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.no-conversation-selected h3 {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-sm);
-}
-
-.no-conversation-selected p {
-  color: var(--text-muted);
-  max-width: 300px;
+  padding: var(--spacing-xl);
   text-align: center;
 }
 
-/* Modal Styles */
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
+.empty-chat .empty-icon {
+  width: 72px;
+  height: 72px;
 }
 
-.modal.active {
-  display: flex;
-}
-
-.modal-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-.modal-content {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.modal-header h3 {
-  font-size: 1.1rem;
-}
-
-.modal-close {
+.empty-chat .empty-icon i {
   width: 32px;
   height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
+}
+
+.empty-chat h3 {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.empty-chat p {
   color: var(--text-muted);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
 }
 
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
-}
-
-.modal-body {
-  padding: var(--spacing-xl);
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-top: 1px solid var(--border-color);
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .messages-page {
+@media (max-width: 768px) {
+  .messages-container {
     grid-template-columns: 1fr;
   }
   
@@ -555,34 +335,3 @@
   }
 }
 </style>
-
-<script>
-// Modal functionality
-const newMessageBtn = document.getElementById('new-message-btn');
-const modal = document.getElementById('new-message-modal');
-const closeModal = document.getElementById('close-modal');
-const cancelModal = document.getElementById('cancel-modal');
-const overlay = modal?.querySelector('.modal-overlay');
-
-function openModal() {
-  modal?.classList.add('active');
-}
-
-function closeModalFn() {
-  modal?.classList.remove('active');
-}
-
-newMessageBtn?.addEventListener('click', openModal);
-closeModal?.addEventListener('click', closeModalFn);
-cancelModal?.addEventListener('click', closeModalFn);
-overlay?.addEventListener('click', closeModalFn);
-
-// Tab functionality
-const tabs = document.querySelectorAll('.tab-btn');
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-  });
-});
-</script>

@@ -1,230 +1,179 @@
 <!-- Dashboard Header -->
-<div class="dashboard-hero">
-  <div class="hero-content">
-    <div class="greeting">
-      <span class="greeting-time" id="greeting-time">Good morning</span>
-      <h1>Welcome back, <%= user.firstName %>! ✨</h1>
-      <p class="hero-subtitle">Here's what's happening with your projects today</p>
-    </div>
+<div class="dashboard-page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="subtitle">Welcome back, <%= user.firstName %>. Here's your project overview.</p>
   </div>
-  <div class="hero-actions">
-    <a href="/projects/new" class="btn btn-primary btn-lg">
+  <div style="display: flex; gap: var(--spacing-sm);">
+    <a href="/projects/new" class="btn btn-primary">
       <i data-lucide="plus"></i>
       New Project
-    </a>
-    <a href="/contractors" class="btn btn-secondary btn-lg">
-      <i data-lucide="hard-hat"></i>
-      Find Contractors
     </a>
   </div>
 </div>
 
 <!-- Stats Row -->
-<div class="stats-grid">
-  <div class="stat-card gradient-1">
-    <div class="stat-card-inner">
-      <div class="stat-icon">
-        <i data-lucide="folder"></i>
-      </div>
-      <div class="stat-details">
-        <span class="stat-value"><%= stats.totalProjects %></span>
-        <span class="stat-label">Total Projects</span>
-      </div>
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon green">
+      <i data-lucide="folder"></i>
     </div>
-    <div class="stat-decoration">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-        <circle cx="80" cy="80" r="60" fill="rgba(255,255,255,0.1)"/>
-      </svg>
+    <div class="stat-content">
+      <div class="stat-value"><%= stats.totalProjects %></div>
+      <div class="stat-label">Total Projects</div>
     </div>
   </div>
   
-  <div class="stat-card gradient-2">
-    <div class="stat-card-inner">
-      <div class="stat-icon">
-        <i data-lucide="sparkles"></i>
-      </div>
-      <div class="stat-details">
-        <span class="stat-value"><%= stats.totalVariants %></span>
-        <span class="stat-label">AI Designs</span>
-      </div>
+  <div class="stat-card">
+    <div class="stat-icon purple">
+      <i data-lucide="sparkles"></i>
     </div>
-    <div class="stat-decoration">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-        <circle cx="80" cy="80" r="60" fill="rgba(255,255,255,0.1)"/>
-      </svg>
+    <div class="stat-content">
+      <div class="stat-value"><%= stats.totalVariants %></div>
+      <div class="stat-label">AI Designs</div>
     </div>
   </div>
   
-  <div class="stat-card gradient-3">
-    <div class="stat-card-inner">
-      <div class="stat-icon">
-        <i data-lucide="clock"></i>
-      </div>
-      <div class="stat-details">
-        <span class="stat-value"><%= stats.inProgress %></span>
-        <span class="stat-label">In Progress</span>
-      </div>
+  <div class="stat-card">
+    <div class="stat-icon orange">
+      <i data-lucide="clock"></i>
     </div>
-    <div class="stat-decoration">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-        <circle cx="80" cy="80" r="60" fill="rgba(255,255,255,0.1)"/>
-      </svg>
+    <div class="stat-content">
+      <div class="stat-value"><%= stats.inProgress %></div>
+      <div class="stat-label">In Progress</div>
     </div>
   </div>
   
-  <div class="stat-card gradient-4">
-    <div class="stat-card-inner">
-      <div class="stat-icon">
-        <i data-lucide="check-circle"></i>
-      </div>
-      <div class="stat-details">
-        <span class="stat-value"><%= stats.completedDesigns %></span>
-        <span class="stat-label">Completed</span>
-      </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">
+      <i data-lucide="check-circle"></i>
     </div>
-    <div class="stat-decoration">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-        <circle cx="80" cy="80" r="60" fill="rgba(255,255,255,0.1)"/>
-      </svg>
+    <div class="stat-content">
+      <div class="stat-value"><%= stats.completedDesigns %></div>
+      <div class="stat-label">Completed</div>
     </div>
   </div>
 </div>
 
-<!-- Main Dashboard Content -->
-<div class="dashboard-content">
-  <!-- Left Column -->
-  <div class="dashboard-main">
+<!-- Main Dashboard Grid -->
+<div class="dashboard-grid">
+  <!-- Left Column - Projects -->
+  <div>
     <!-- AI Credits Card -->
-    <div class="credits-banner">
-      <div class="credits-icon">
-        <i data-lucide="zap"></i>
+    <div class="credits-card">
+      <div class="credits-header">
+        <h4><i data-lucide="zap"></i> AI Credits</h4>
+        <a href="/pricing" class="btn btn-sm btn-ghost">Get More</a>
       </div>
-      <div class="credits-info">
-        <div class="credits-header">
-          <span class="credits-title">AI Generation Credits</span>
-          <span class="credits-plan"><%= user.subscription?.plan || 'Free' %> Plan</span>
+      <div class="credits-value"><%= user.subscription?.credits || 3 %></div>
+      <div class="credits-label"><%= user.isPremium ? 'Unlimited plan' : 'of 10 free credits' %></div>
+      <% if (!user.isPremium) { %>
+        <div class="credits-bar">
+          <div class="credits-bar-fill" style="width: <%= ((user.subscription?.credits || 3) / 10) * 100 %>%"></div>
         </div>
-        <div class="credits-progress">
-          <div class="credits-bar">
-            <div class="credits-fill" style="width: <%= user.isPremium ? '100' : '30' %>%"></div>
-          </div>
-          <span class="credits-count">
-            <strong><%= user.subscription?.credits || 3 %></strong> 
-            <%= user.isPremium ? 'unlimited' : 'of 10 credits remaining' %>
-          </span>
-        </div>
-      </div>
-      <a href="/pricing" class="btn btn-accent btn-sm">
-        <i data-lucide="arrow-up-right"></i>
-        <%= user.isPremium ? 'Manage' : 'Upgrade' %>
-      </a>
+      <% } %>
     </div>
     
     <!-- Recent Projects -->
-    <div class="section-card">
+    <div class="dashboard-section">
       <div class="section-header">
-        <h2><i data-lucide="folder-open"></i> Recent Projects</h2>
-        <a href="/projects" class="view-all">View All <i data-lucide="arrow-right"></i></a>
+        <h2>Recent Projects</h2>
+        <a href="/projects" class="btn btn-sm btn-ghost">View All</a>
       </div>
       
       <% if (projects && projects.length > 0) { %>
-        <div class="projects-grid-compact">
-          <% projects.slice(0, 4).forEach(project => { %>
-            <a href="/projects/<%= project._id %>" class="project-card-compact">
-              <div class="project-image">
+        <div class="projects-list">
+          <% projects.slice(0, 5).forEach(project => { %>
+            <a href="/projects/<%= project._id %>" class="project-item">
+              <div class="project-thumb">
                 <% if (project.designVariants && project.designVariants.length > 0) { %>
                   <img src="<%= project.designVariants[project.designVariants.length - 1].imageUrl || project.designVariants[project.designVariants.length - 1].thumbnailUrl %>" alt="<%= project.title %>">
                 <% } else if (project.originalImages && project.originalImages.length > 0) { %>
                   <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
                 <% } else { %>
-                  <div class="project-placeholder">
+                  <div class="project-thumb-placeholder">
                     <i data-lucide="image"></i>
                   </div>
                 <% } %>
-                <span class="project-badge <%= project.status %>"><%= project.status %></span>
               </div>
-              <div class="project-info">
+              <div class="project-details">
                 <h3><%= project.title %></h3>
-                <div class="project-tags">
+                <div class="project-meta">
                   <span><i data-lucide="home"></i> <%= project.roomType %></span>
                   <% if (project.style) { %>
                     <span><i data-lucide="palette"></i> <%= project.style %></span>
                   <% } %>
                 </div>
-              </div>
-              <div class="project-hover-action">
-                <span class="btn btn-primary btn-sm">
-                  <% if (project.status === 'draft' || project.status === 'pending') { %>
-                    <i data-lucide="sparkles"></i> Generate
-                  <% } else { %>
-                    <i data-lucide="eye"></i> View
-                  <% } %>
-                </span>
+                <span class="project-status <%= project.status %>"><%= project.status %></span>
               </div>
             </a>
           <% }) %>
         </div>
       <% } else { %>
-        <div class="empty-projects">
-          <div class="empty-icon">
-            <i data-lucide="folder-plus"></i>
+        <div class="section-content">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i data-lucide="folder-plus"></i>
+            </div>
+            <h3>No projects yet</h3>
+            <p>Create your first project and let AI transform your space</p>
+            <a href="/projects/new" class="btn btn-primary">
+              <i data-lucide="plus"></i>
+              Create Project
+            </a>
           </div>
-          <h3>Start Your First Project</h3>
-          <p>Upload a photo of any room and let AI create stunning design variations</p>
-          <a href="/projects/new" class="btn btn-primary">
-            <i data-lucide="plus"></i>
-            Create Project
-          </a>
         </div>
       <% } %>
     </div>
   </div>
   
   <!-- Right Column -->
-  <div class="dashboard-sidebar">
+  <div>
     <!-- Quick Actions -->
-    <div class="section-card">
+    <div class="dashboard-section" style="margin-bottom: var(--spacing-md);">
       <div class="section-header">
-        <h2><i data-lucide="zap"></i> Quick Actions</h2>
+        <h2>Quick Actions</h2>
       </div>
-      <div class="quick-actions">
-        <a href="/projects/new" class="quick-action-item">
-          <div class="action-icon gradient-1">
+      <div class="section-content">
+        <div class="quick-actions-grid">
+          <a href="/projects/new" class="quick-action">
             <i data-lucide="plus-circle"></i>
-          </div>
-          <span>New Project</span>
-        </a>
-        <a href="/contractors" class="quick-action-item">
-          <div class="action-icon gradient-2">
+            <span>New Project</span>
+          </a>
+          <a href="/contractors" class="quick-action">
             <i data-lucide="hard-hat"></i>
-          </div>
-          <span>Find Contractors</span>
-        </a>
-        <a href="/dashboard/messages" class="quick-action-item">
-          <div class="action-icon gradient-3">
+            <span>Contractors</span>
+          </a>
+          <a href="/dashboard/messages" class="quick-action">
             <i data-lucide="message-square"></i>
-          </div>
-          <span>Messages</span>
-        </a>
-        <a href="/gallery" class="quick-action-item">
-          <div class="action-icon gradient-4">
+            <span>Messages</span>
+          </a>
+          <a href="/gallery" class="quick-action">
             <i data-lucide="images"></i>
-          </div>
-          <span>Inspiration</span>
-        </a>
+            <span>Gallery</span>
+          </a>
+        </div>
       </div>
     </div>
     
     <!-- Recent Activity -->
-    <div class="section-card">
+    <div class="dashboard-section">
       <div class="section-header">
-        <h2><i data-lucide="activity"></i> Recent Activity</h2>
+        <h2>Recent Activity</h2>
       </div>
-      <div class="activity-timeline">
+      <div class="activity-feed">
         <% if (recentActivity && recentActivity.length > 0) { %>
           <% recentActivity.forEach(activity => { %>
             <div class="activity-item">
-              <div class="activity-dot <%= activity.type %>"></div>
+              <div class="activity-icon">
+                <% if (activity.type === 'design') { %>
+                  <i data-lucide="sparkles" style="color: var(--accent-primary);"></i>
+                <% } else if (activity.type === 'message') { %>
+                  <i data-lucide="message-square" style="color: #3b82f6;"></i>
+                <% } else { %>
+                  <i data-lucide="folder" style="color: #8b5cf6;"></i>
+                <% } %>
+              </div>
               <div class="activity-content">
                 <p><%= activity.message %></p>
                 <span class="activity-time"><%= activity.time %></span>
@@ -232,8 +181,8 @@
             </div>
           <% }) %>
         <% } else { %>
-          <div class="no-activity">
-            <p>No recent activity</p>
+          <div class="section-content">
+            <p style="color: var(--text-muted); text-align: center; font-size: 0.875rem;">No recent activity</p>
           </div>
         <% } %>
       </div>
@@ -241,19 +190,14 @@
     
     <!-- Upgrade CTA -->
     <% if (!user.isPremium) { %>
-      <div class="upgrade-card">
-        <div class="upgrade-glow"></div>
-        <div class="upgrade-content">
-          <span class="upgrade-badge">PRO</span>
-          <h3>Unlock Full Potential</h3>
-          <ul class="upgrade-features">
-            <li><i data-lucide="check"></i> Unlimited AI generations</li>
-            <li><i data-lucide="check"></i> HD quality exports</li>
-            <li><i data-lucide="check"></i> Priority support</li>
-            <li><i data-lucide="check"></i> Advanced styles</li>
-          </ul>
-          <a href="/pricing" class="btn btn-upgrade">
-            <i data-lucide="crown"></i>
+      <div class="dashboard-section" style="margin-top: var(--spacing-md); background: linear-gradient(135deg, #f0fdf4, #ecfeff); border-color: rgba(16, 185, 129, 0.2);">
+        <div class="section-content" style="text-align: center; padding: var(--spacing-lg);">
+          <div style="font-size: 1.5rem; margin-bottom: var(--spacing-sm);">⚡</div>
+          <h3 style="font-size: 1rem; margin-bottom: var(--spacing-xs);">Upgrade to Pro</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md); font-size: 0.8125rem;">
+            Get unlimited AI generations and HD exports
+          </p>
+          <a href="/pricing" class="btn btn-primary btn-sm">
             Upgrade Now
           </a>
         </div>
@@ -261,637 +205,3 @@
     <% } %>
   </div>
 </div>
-
-<style>
-/* Dashboard Hero */
-.dashboard-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-xl) 0;
-  margin-bottom: var(--spacing-xl);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.greeting-time {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--accent-primary);
-  font-weight: 500;
-  margin-bottom: var(--spacing-xs);
-}
-
-.greeting h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-xs);
-}
-
-.hero-subtitle {
-  color: var(--text-muted);
-  font-size: 1rem;
-}
-
-.hero-actions {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.btn-lg {
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: 0.95rem;
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-2xl);
-}
-
-.stat-card {
-  position: relative;
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  overflow: hidden;
-  color: #fff;
-}
-
-.stat-card.gradient-1 { background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%); }
-.stat-card.gradient-2 { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); }
-.stat-card.gradient-3 { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
-.stat-card.gradient-4 { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); }
-
-.stat-card-inner {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.stat-card .stat-icon {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg);
-}
-
-.stat-card .stat-icon i {
-  width: 28px;
-  height: 28px;
-}
-
-.stat-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-card .stat-value {
-  font-size: 2rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.stat-card .stat-label {
-  font-size: 0.85rem;
-  opacity: 0.9;
-  margin-top: 4px;
-}
-
-.stat-decoration {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 120px;
-  height: 100%;
-  overflow: hidden;
-}
-
-.stat-decoration svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* Dashboard Content */
-.dashboard-content {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: var(--spacing-xl);
-}
-
-.section-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-lg);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.section-header h2 {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.section-header h2 i {
-  width: 20px;
-  height: 20px;
-  color: var(--accent-primary);
-}
-
-.view-all {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: 0.85rem;
-  color: var(--accent-primary);
-  transition: gap var(--transition-fast);
-}
-
-.view-all:hover {
-  gap: var(--spacing-sm);
-}
-
-.view-all i {
-  width: 16px;
-  height: 16px;
-}
-
-/* Credits Banner */
-.credits-banner {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) var(--spacing-xl);
-  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
-  border: 1px solid rgba(0, 255, 136, 0.2);
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--spacing-lg);
-}
-
-.credits-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-lg);
-  color: #000;
-}
-
-.credits-icon i {
-  width: 24px;
-  height: 24px;
-}
-
-.credits-info {
-  flex: 1;
-}
-
-.credits-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-.credits-title {
-  font-weight: 600;
-}
-
-.credits-plan {
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  background: rgba(0, 255, 136, 0.2);
-  color: var(--accent-primary);
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.credits-progress {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.credits-bar {
-  flex: 1;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.credits-fill {
-  height: 100%;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-full);
-}
-
-.credits-count {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.credits-count strong {
-  color: var(--accent-primary);
-}
-
-.btn-accent {
-  background: rgba(0, 255, 136, 0.15);
-  border: 1px solid rgba(0, 255, 136, 0.3);
-  color: var(--accent-primary);
-}
-
-.btn-accent:hover {
-  background: rgba(0, 255, 136, 0.25);
-}
-
-/* Projects Grid Compact */
-.projects-grid-compact {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-}
-
-.project-card-compact {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
-}
-
-.project-card-compact:hover {
-  border-color: var(--accent-primary);
-  transform: translateY(-4px);
-}
-
-.project-card-compact:hover .project-hover-action {
-  opacity: 1;
-}
-
-.project-image {
-  position: relative;
-  aspect-ratio: 16/10;
-  overflow: hidden;
-}
-
-.project-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--transition-base);
-}
-
-.project-card-compact:hover .project-image img {
-  transform: scale(1.05);
-}
-
-.project-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-card);
-  color: var(--text-muted);
-}
-
-.project-placeholder i {
-  width: 32px;
-  height: 32px;
-}
-
-.project-badge {
-  position: absolute;
-  top: var(--spacing-sm);
-  left: var(--spacing-sm);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.project-badge.draft { background: rgba(107, 114, 128, 0.9); }
-.project-badge.pending { background: rgba(59, 130, 246, 0.9); }
-.project-badge.generating { background: rgba(245, 158, 11, 0.9); }
-.project-badge.completed { background: rgba(0, 255, 136, 0.9); color: #000; }
-
-.project-info {
-  padding: var(--spacing-md);
-}
-
-.project-info h3 {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.project-tags {
-  display: flex;
-  gap: var(--spacing-sm);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.project-tags span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.project-tags i {
-  width: 12px;
-  height: 12px;
-}
-
-.project-hover-action {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.empty-projects {
-  text-align: center;
-  padding: var(--spacing-3xl);
-}
-
-.empty-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto var(--spacing-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 255, 136, 0.1);
-  border-radius: 50%;
-}
-
-.empty-icon i {
-  width: 40px;
-  height: 40px;
-  color: var(--accent-primary);
-}
-
-.empty-projects h3 {
-  font-size: 1.25rem;
-  margin-bottom: var(--spacing-sm);
-}
-
-.empty-projects p {
-  color: var(--text-muted);
-  margin-bottom: var(--spacing-lg);
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Quick Actions */
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-sm);
-}
-
-.quick-action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  transition: all var(--transition-fast);
-}
-
-.quick-action-item:hover {
-  border-color: var(--accent-primary);
-  transform: translateY(-2px);
-}
-
-.action-icon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  color: #fff;
-}
-
-.action-icon.gradient-1 { background: linear-gradient(135deg, #00ff88, #00d4ff); }
-.action-icon.gradient-2 { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-.action-icon.gradient-3 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-.action-icon.gradient-4 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
-
-.action-icon i {
-  width: 20px;
-  height: 20px;
-}
-
-.quick-action-item span {
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-/* Activity Timeline */
-.activity-timeline {
-  display: flex;
-  flex-direction: column;
-}
-
-.activity-item {
-  display: flex;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) 0;
-  position: relative;
-}
-
-.activity-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 24px;
-  bottom: 0;
-  width: 2px;
-  background: var(--border-color);
-}
-
-.activity-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.activity-dot.design { background: var(--accent-primary); }
-.activity-dot.message { background: #3b82f6; }
-.activity-dot.project { background: #a855f7; }
-
-.activity-content p {
-  font-size: 0.85rem;
-  margin-bottom: 2px;
-}
-
-.activity-time {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.no-activity {
-  text-align: center;
-  padding: var(--spacing-lg);
-  color: var(--text-muted);
-}
-
-/* Upgrade Card */
-.upgrade-card {
-  position: relative;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
-  overflow: hidden;
-}
-
-.upgrade-glow {
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.upgrade-content {
-  position: relative;
-  z-index: 1;
-}
-
-.upgrade-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  color: #000;
-  font-size: 0.7rem;
-  font-weight: 800;
-  border-radius: var(--radius-full);
-  margin-bottom: var(--spacing-md);
-}
-
-.upgrade-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: var(--spacing-md);
-}
-
-.upgrade-features {
-  list-style: none;
-  margin-bottom: var(--spacing-lg);
-}
-
-.upgrade-features li {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.upgrade-features i {
-  width: 16px;
-  height: 16px;
-  color: var(--accent-primary);
-}
-
-.btn-upgrade {
-  width: 100%;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  border: none;
-  justify-content: center;
-}
-
-.btn-upgrade:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-  .dashboard-content {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-hero {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-lg);
-  }
-  
-  .hero-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .hero-actions .btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .projects-grid-compact {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
-
-<script>
-// Dynamic greeting based on time
-const greetingEl = document.getElementById('greeting-time');
-if (greetingEl) {
-  const hour = new Date().getHours();
-  let greeting = 'Good evening';
-  if (hour < 12) greeting = 'Good morning';
-  else if (hour < 18) greeting = 'Good afternoon';
-  greetingEl.textContent = greeting;
-}
-</script>
