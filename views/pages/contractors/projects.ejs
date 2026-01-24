@@ -1,0 +1,236 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Available Projects</h1>
+    <p class="text-muted">Projects looking for contractors like you</p>
+  </div>
+  
+  <% if (projects && projects.length > 0) { %>
+    <div class="projects-grid">
+      <% projects.forEach(project => { %>
+        <div class="project-card">
+          <div class="project-image">
+            <% if (project.designVariants && project.designVariants.length > 0) { %>
+              <img src="<%= project.designVariants[0].imageUrl %>" alt="<%= project.title %>">
+            <% } else if (project.originalImages && project.originalImages.length > 0) { %>
+              <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
+            <% } else { %>
+              <div class="placeholder-image">
+                <i data-lucide="image"></i>
+              </div>
+            <% } %>
+          </div>
+          
+          <div class="project-content">
+            <div class="project-tags">
+              <span class="tag"><%= project.roomType %></span>
+              <% if (project.style) { %>
+                <span class="tag"><%= project.style %></span>
+              <% } %>
+            </div>
+            
+            <h3><%= project.title %></h3>
+            <p class="project-desc"><%= project.description ? project.description.substring(0, 100) + '...' : '' %></p>
+            
+            <div class="project-meta">
+              <span class="client">
+                <i data-lucide="user"></i>
+                <%= project.user.firstName %> <%= project.user.lastName.charAt(0) %>.
+              </span>
+              <span class="date">
+                <i data-lucide="calendar"></i>
+                <%= new Date(project.createdAt).toLocaleDateString() %>
+              </span>
+            </div>
+            
+            <% if (project.budget && (project.budget.min || project.budget.max)) { %>
+              <div class="project-budget">
+                <i data-lucide="wallet"></i>
+                <% if (project.budget.min && project.budget.max) { %>
+                  €<%= project.budget.min.toLocaleString() %> - €<%= project.budget.max.toLocaleString() %>
+                <% } else if (project.budget.max) { %>
+                  Up to €<%= project.budget.max.toLocaleString() %>
+                <% } else { %>
+                  From €<%= project.budget.min.toLocaleString() %>
+                <% } %>
+              </div>
+            <% } %>
+            
+            <form action="/contractors/projects/<%= project._id %>/interest" method="POST" class="interest-form">
+              <div class="form-group">
+                <input type="number" name="quotation" class="form-input" placeholder="Your quote (€)">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i data-lucide="send"></i>
+                Express Interest
+              </button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <i data-lucide="folder-search"></i>
+      <h3>No projects available</h3>
+      <p>Check back later for new project opportunities matching your specialties.</p>
+    </div>
+  <% } %>
+</div>
+
+<style>
+  .page-container {
+    padding: var(--spacing-xl);
+  }
+  
+  .page-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-xl);
+  }
+  
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  
+  .project-image {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .placeholder-image i {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+  }
+  
+  .project-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .project-tags {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .tag {
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    text-transform: capitalize;
+  }
+  
+  .project-content h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .project-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .project-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .project-meta span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  
+  .project-meta i {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .project-budget {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .project-budget i {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .interest-form {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+  
+  .interest-form .form-group {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .btn-block {
+    width: 100%;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+  }
+  
+  .empty-state i {
+    width: 64px;
+    height: 64px;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+  }
+</style>
+

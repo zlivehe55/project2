@@ -78,7 +78,10 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 // Profile Settings
 router.get('/settings', ensureAuthenticated, (req, res) => {
   res.render('pages/dashboard/settings', {
-    title: 'Account Settings - CraftyCrib'
+    title: 'Account Settings - CraftyCrib',
+    layout: 'layouts/dashboard',
+    activePage: 'settings',
+    pageTitle: 'Settings'
   });
 });
 
@@ -114,6 +117,9 @@ router.get('/messages', ensureAuthenticated, async (req, res) => {
 
     res.render('pages/dashboard/messages', {
       title: 'Messages - CraftyCrib',
+      layout: 'layouts/dashboard',
+      activePage: 'messages',
+      pageTitle: 'Messages',
       conversations
     });
   } catch (err) {
@@ -142,6 +148,8 @@ router.get('/messages/:id', ensureAuthenticated, async (req, res) => {
 
     res.render('pages/dashboard/conversation', {
       title: 'Conversation - CraftyCrib',
+      layout: 'layouts/dashboard',
+      activePage: 'messages',
       conversation,
       messages
     });
@@ -191,7 +199,10 @@ router.post('/messages/:id', ensureAuthenticated, async (req, res) => {
 // Notifications
 router.get('/notifications', ensureAuthenticated, (req, res) => {
   res.render('pages/dashboard/notifications', {
-    title: 'Notifications - CraftyCrib'
+    title: 'Notifications - CraftyCrib',
+    layout: 'layouts/dashboard',
+    activePage: 'notifications',
+    pageTitle: 'Notifications'
   });
 });
 

@@ -4,9 +4,9 @@ const crypto = require('crypto');
 const { ensureAuthenticated, ensureProjectOwner } = require('../middleware/auth');
 const Project = require('../models/Project');
 const { generateDesign, getStyles, getRoomTypes } = require('../utils/homedesigns');
-const { uploadProjectImages, deleteImage } = require('../config/cloudinary');
+const { uploadProjectImages, deleteImage, getImageUrl, isCloudinaryConfigured } = require('../config/cloudinary');
 
-// Use Cloudinary storage for uploads
+// Use Cloudinary storage for uploads (or local fallback)
 const upload = uploadProjectImages;
 
 // List all projects
@@ -65,10 +65,10 @@ router.post('/', ensureAuthenticated, upload.array('images', 5), async (req, res
     // Generate share token
     const shareToken = crypto.randomBytes(16).toString('hex');
 
-    // Process uploaded images (Cloudinary URLs)
+    // Process uploaded images (works with both Cloudinary and local storage)
     const originalImages = req.files ? req.files.map(file => ({
-      url: file.path, // Cloudinary returns full URL in file.path
-      publicId: file.filename, // Cloudinary public ID for deletion
+      url: getImageUrl(file),
+      publicId: file.filename || file.public_id,
       uploadedAt: new Date()
     })) : [];
 
@@ -202,12 +202,12 @@ router.put('/:id', ensureAuthenticated, upload.array('images', 5), async (req, r
     project.budget.max = budgetMax ? parseFloat(budgetMax) : undefined;
     project.visibility = visibility;
 
-    // Add new images if uploaded (Cloudinary URLs)
+    // Add new images if uploaded (works with both Cloudinary and local storage)
     if (req.files && req.files.length > 0) {
       req.files.forEach(file => {
         project.originalImages.push({
-          url: file.path, // Cloudinary URL
-          publicId: file.filename,
+          url: getImageUrl(file),
+          publicId: file.filename || file.public_id,
           uploadedAt: new Date()
         });
       });
@@ -257,11 +257,11 @@ router.post('/:id/upload', ensureAuthenticated, upload.array('images', 5), async
       return res.status(400).json({ error: 'No images uploaded' });
     }
 
-    // Add new images (Cloudinary URLs)
+    // Add new images (works with both Cloudinary and local storage)
     req.files.forEach(file => {
       project.originalImages.push({
-        url: file.path, // Cloudinary URL
-        publicId: file.filename,
+        url: getImageUrl(file),
+        publicId: file.filename || file.public_id,
         uploadedAt: new Date()
       });
     });
@@ -331,8 +331,13 @@ router.post('/:id/generate', ensureAuthenticated, async (req, res) => {
     project.status = 'generating';
     await project.save();
 
-    // Get the first image URL (already a full Cloudinary URL)
-    const imageUrl = project.originalImages[0].url;
+    // Get the first image URL
+    let imageUrl = project.originalImages[0].url;
+    
+    // If it's a local URL, construct full URL (for AI API to access)
+    if (imageUrl.startsWith('/')) {
+      imageUrl = `${process.env.APP_URL || 'http://localhost:3000'}${imageUrl}`;
+    }
 
     // Generate design using HomeDesigns.AI
     const result = await generateDesign({

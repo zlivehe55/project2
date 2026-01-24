@@ -1,0 +1,113 @@
+<div class="page-container">
+  <div class="page-header">
+    <a href="/dashboard" class="back-link">
+      <i data-lucide="arrow-left"></i>
+      Back to Dashboard
+    </a>
+    <h1>Edit Company Profile</h1>
+  </div>
+  
+  <form action="/contractors/profile?_method=PUT" method="POST" class="edit-form">
+    <div class="form-section">
+      <h2>Business Information</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Company Name *</label>
+        <input type="text" name="companyName" class="form-input" value="<%= contractor.companyName %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Description *</label>
+        <textarea name="description" class="form-textarea" rows="4" required><%= contractor.description %></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Specialties</label>
+        <div class="checkbox-grid">
+          <% const allSpecialties = ['Interior Design', 'General Contractor', 'Kitchen & Bath', 'Electrical', 'Plumbing', 'Flooring', 'Painting', 'Carpentry']; %>
+          <% allSpecialties.forEach(spec => { %>
+            <label class="checkbox-item">
+              <input type="checkbox" name="specialties" value="<%= spec %>" <%= contractor.specialties.includes(spec) ? 'checked' : '' %>>
+              <span><%= spec %></span>
+            </label>
+          <% }) %>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Availability Status</label>
+        <select name="availabilityStatus" class="form-select">
+          <option value="available" <%= contractor.availability?.status === 'available' ? 'selected' : '' %>>Available</option>
+          <option value="busy" <%= contractor.availability?.status === 'busy' ? 'selected' : '' %>>Busy</option>
+          <option value="unavailable" <%= contractor.availability?.status === 'unavailable' ? 'selected' : '' %>>Unavailable</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <a href="/dashboard" class="btn btn-ghost">Cancel</a>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="save"></i>
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>
+
+<style>
+  .page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .form-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-sm);
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+  }
+</style>
+

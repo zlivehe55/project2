@@ -1,0 +1,284 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Set Up Your Contractor Profile</h1>
+    <p class="text-muted">Complete your profile to start receiving project requests</p>
+  </div>
+  
+  <form action="/contractors/setup" method="POST" enctype="multipart/form-data" class="setup-form">
+    <!-- Basic Info -->
+    <div class="form-section">
+      <h2><span class="step-num">1</span> Business Information</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Company Name *</label>
+        <input type="text" name="companyName" class="form-input" placeholder="Your Company Name" required>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Description *</label>
+        <textarea name="description" class="form-textarea" rows="4" placeholder="Describe your services and expertise..." required></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Specialties *</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Interior Design">
+            <span>Interior Design</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="General Contractor">
+            <span>General Contractor</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Kitchen & Bath">
+            <span>Kitchen & Bath</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Electrical">
+            <span>Electrical</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Plumbing">
+            <span>Plumbing</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Flooring">
+            <span>Flooring</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Painting">
+            <span>Painting</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="specialties" value="Carpentry">
+            <span>Carpentry</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Years of Experience</label>
+        <input type="number" name="experienceYears" class="form-input" placeholder="10" min="0">
+      </div>
+    </div>
+    
+    <!-- Contact -->
+    <div class="form-section">
+      <h2><span class="step-num">2</span> Contact Information</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" name="phone" class="form-input" placeholder="+1 (555) 123-4567">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Website</label>
+          <input type="url" name="website" class="form-input" placeholder="https://yourcompany.com">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Location -->
+    <div class="form-section">
+      <h2><span class="step-num">3</span> Service Area</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" name="city" class="form-input" placeholder="New York">
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <input type="text" name="state" class="form-input" placeholder="NY">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Service Cities</label>
+        <input type="text" name="serviceCities" class="form-input" placeholder="Manhattan, Brooklyn, Queens">
+        <p class="form-hint">Separate cities with commas</p>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Service Radius (miles)</label>
+        <input type="number" name="serviceRadius" class="form-input" placeholder="50" min="1">
+      </div>
+    </div>
+    
+    <!-- Pricing -->
+    <div class="form-section">
+      <h2><span class="step-num">4</span> Pricing</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Hourly Rate ($)</label>
+          <input type="number" name="hourlyRate" class="form-input" placeholder="75" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Minimum Project ($)</label>
+          <input type="number" name="minimumProject" class="form-input" placeholder="500" min="0">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Portfolio -->
+    <div class="form-section">
+      <h2><span class="step-num">5</span> Portfolio</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Upload Portfolio Images</label>
+        <div class="upload-area">
+          <input type="file" name="portfolioImages" id="portfolioImages" multiple accept="image/*" class="file-input">
+          <label for="portfolioImages" class="upload-label">
+            <i data-lucide="upload-cloud"></i>
+            <span>Drop images here or click to browse</span>
+            <span class="upload-hint">Max 10 images, 5MB each</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Submit -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i data-lucide="check"></i>
+        Create Profile
+      </button>
+    </div>
+  </form>
+</div>
+
+<style>
+  .page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .page-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .form-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .step-num {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-sm);
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .checkbox-item:hover {
+    border-color: var(--accent-primary);
+  }
+  
+  .checkbox-item input:checked + span {
+    color: var(--accent-primary);
+  }
+  
+  .upload-area {
+    position: relative;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+  }
+  
+  .upload-area:hover {
+    border-color: var(--accent-primary);
+  }
+  
+  .file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-3xl);
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .upload-label i {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+  }
+  
+  .upload-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

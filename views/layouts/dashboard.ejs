@@ -143,22 +143,72 @@
           <i data-lucide="menu"></i>
         </button>
         
-        <div class="topbar-search">
-          <i data-lucide="search"></i>
-          <input type="text" placeholder="Search projects, contractors..." class="search-input">
+        <div class="topbar-left">
+          <div class="breadcrumb">
+            <a href="/dashboard">Dashboard</a>
+            <% if (typeof activePage !== 'undefined' && activePage !== 'dashboard') { %>
+              <i data-lucide="chevron-right"></i>
+              <span class="current"><%= typeof pageTitle !== 'undefined' ? pageTitle : activePage.charAt(0).toUpperCase() + activePage.slice(1) %></span>
+            <% } %>
+          </div>
         </div>
         
-        <div class="topbar-actions">
-          <button class="topbar-btn" title="Notifications">
-            <i data-lucide="bell"></i>
-            <span class="notification-dot"></span>
-          </button>
-          <a href="/dashboard/messages" class="topbar-btn" title="Messages">
-            <i data-lucide="message-square"></i>
-          </a>
-          <a href="/" class="topbar-btn" title="Back to Website">
-            <i data-lucide="external-link"></i>
-          </a>
+        <div class="topbar-center">
+          <div class="topbar-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search projects, contractors, designs..." class="search-input" id="global-search">
+            <div class="search-shortcut">
+              <kbd>⌘</kbd><kbd>K</kbd>
+            </div>
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <div class="topbar-actions">
+            <button class="topbar-btn theme-toggle" title="Toggle Theme" id="theme-toggle">
+              <i data-lucide="moon"></i>
+            </button>
+            <a href="/dashboard/notifications" class="topbar-btn" title="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="notification-dot"></span>
+            </a>
+            <a href="/dashboard/messages" class="topbar-btn" title="Messages">
+              <i data-lucide="message-square"></i>
+            </a>
+          </div>
+          
+          <div class="topbar-divider"></div>
+          
+          <div class="topbar-user" id="topbar-user">
+            <div class="topbar-avatar">
+              <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+            </div>
+            <div class="topbar-user-info">
+              <span class="topbar-user-name"><%= user.firstName %></span>
+              <span class="topbar-user-plan"><%= user.subscription?.plan || 'Free' %></span>
+            </div>
+            <i data-lucide="chevron-down" class="topbar-user-arrow"></i>
+            
+            <div class="topbar-dropdown" id="user-dropdown">
+              <a href="/dashboard/settings" class="dropdown-item">
+                <i data-lucide="user"></i>
+                Profile Settings
+              </a>
+              <a href="/pricing" class="dropdown-item">
+                <i data-lucide="crown"></i>
+                Upgrade Plan
+              </a>
+              <a href="/" class="dropdown-item">
+                <i data-lucide="home"></i>
+                Back to Website
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="/auth/logout" class="dropdown-item text-danger">
+                <i data-lucide="log-out"></i>
+                Log Out
+              </a>
+            </div>
+          </div>
         </div>
       </header>
       

@@ -98,7 +98,9 @@ router.get('/setup', ensureAuthenticated, ensureContractor, async (req, res) => 
   }
 
   res.render('pages/contractors/setup', {
-    title: 'Set Up Your Profile - CraftyCrib'
+    title: 'Set Up Your Profile - CraftyCrib',
+    layout: 'layouts/dashboard',
+    activePage: 'profile'
   });
 });
 
@@ -213,6 +215,8 @@ router.get('/profile/edit', ensureAuthenticated, ensureContractor, async (req, r
 
     res.render('pages/contractors/edit', {
       title: 'Edit Profile - CraftyCrib',
+      layout: 'layouts/dashboard',
+      activePage: 'profile',
       contractor
     });
   } catch (err) {
@@ -273,6 +277,8 @@ router.get('/projects/available', ensureAuthenticated, ensureContractor, async (
 
     res.render('pages/contractors/projects', {
       title: 'Available Projects - CraftyCrib',
+      layout: 'layouts/dashboard',
+      activePage: 'available-projects',
       projects,
       contractor
     });
