@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib' %></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logoicon.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <!-- Left Side - Branding -->
+    <div class="auth-brand">
+      <div class="auth-brand-content">
+        <a href="/" class="auth-logo">
+          <img src="/assets/fullogo.png" alt="CraftyCrib">
+        </a>
+        
+        <div class="auth-tagline">
+          <h1>Transform Your Space<br>With <span class="gradient-text">AI Magic</span></h1>
+          <p>Upload a photo, describe your vision, and watch AI create stunning interior designs in seconds.</p>
+        </div>
+        
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="feature-icon">
+              <i data-lucide="wand-2"></i>
+            </div>
+            <div>
+              <h4>AI-Powered Design</h4>
+              <p>Generate realistic 3D mockups instantly</p>
+            </div>
+          </div>
+          <div class="auth-feature">
+            <div class="feature-icon">
+              <i data-lucide="palette"></i>
+            </div>
+            <div>
+              <h4>Multiple Styles</h4>
+              <p>Explore different design aesthetics</p>
+            </div>
+          </div>
+          <div class="auth-feature">
+            <div class="feature-icon">
+              <i data-lucide="users"></i>
+            </div>
+            <div>
+              <h4>Pro Contractors</h4>
+              <p>Connect with qualified professionals</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="auth-brand-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+      </div>
+    </div>
+    
+    <!-- Right Side - Form -->
+    <div class="auth-form-container">
+      <!-- Flash Messages -->
+      <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success">
+          <i data-lucide="check-circle"></i>
+          <%= success_msg %>
+        </div>
+      <% } %>
+      
+      <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-error">
+          <i data-lucide="alert-circle"></i>
+          <%= error_msg %>
+        </div>
+      <% } %>
+      
+      <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+        <div class="alert alert-error">
+          <i data-lucide="alert-circle"></i>
+          <%= error %>
+        </div>
+      <% } %>
+      
+      <%- body %>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+

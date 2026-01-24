@@ -1,0 +1,261 @@
+<div class="page-container">
+  <div class="page-header-flex">
+    <div>
+      <h1>My Projects</h1>
+      <p class="text-muted">Manage all your renovation projects</p>
+    </div>
+    <a href="/projects/new" class="btn btn-primary">
+      <i data-lucide="plus"></i>
+      New Project
+    </a>
+  </div>
+  
+  <% if (projects && projects.length > 0) { %>
+    <div class="projects-grid">
+      <% projects.forEach(project => { %>
+        <div class="project-card">
+          <div class="project-thumbnail">
+            <% if (project.designVariants && project.designVariants.length > 0) { %>
+              <img src="<%= project.designVariants[project.designVariants.length - 1].imageUrl || project.designVariants[project.designVariants.length - 1].thumbnailUrl %>" alt="<%= project.title %>">
+            <% } else if (project.originalImages && project.originalImages.length > 0) { %>
+              <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
+            <% } else { %>
+              <div class="placeholder-thumb">
+                <i data-lucide="image"></i>
+              </div>
+            <% } %>
+            <span class="project-status status-<%= project.status %>"><%= project.status %></span>
+            <% if (project.designVariants && project.designVariants.length > 0) { %>
+              <span class="variants-badge"><%= project.designVariants.length %> designs</span>
+            <% } %>
+          </div>
+          <div class="project-info">
+            <h3><%= project.title %></h3>
+            <p class="project-desc"><%= project.description.substring(0, 100) %>...</p>
+            <div class="project-meta">
+              <span><i data-lucide="home"></i> <%= project.roomType %></span>
+              <% if (project.style) { %>
+                <span><i data-lucide="palette"></i> <%= project.style %></span>
+              <% } %>
+              <span><i data-lucide="calendar"></i> <%= new Date(project.createdAt).toLocaleDateString() %></span>
+            </div>
+            <div class="project-actions">
+              <a href="/projects/<%= project._id %>" class="btn btn-sm btn-secondary">
+                <i data-lucide="eye"></i> View
+              </a>
+              <a href="/projects/<%= project._id %>/edit" class="btn btn-sm btn-ghost">
+                <i data-lucide="edit"></i> Edit
+              </a>
+              <form action="/projects/<%= project._id %>?_method=DELETE" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete this project?')">
+                <button type="submit" class="btn btn-sm btn-ghost btn-danger">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i data-lucide="folder-plus"></i>
+      </div>
+      <h3>No projects yet</h3>
+      <p>Start your first renovation project and see the magic of AI design!</p>
+      <a href="/projects/new" class="btn btn-primary">
+        <i data-lucide="plus"></i>
+        Create Your First Project
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<style>
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .page-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .page-header-flex h1 {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-xl);
+  }
+  
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .project-card:hover {
+    border-color: var(--border-color-hover);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .project-thumbnail {
+    position: relative;
+    height: 200px;
+    background: var(--bg-secondary);
+  }
+  
+  .project-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+  }
+  
+  .placeholder-thumb i {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .project-status {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  
+  .status-completed { color: var(--success); }
+  .status-generating { color: var(--warning); }
+  .status-draft { color: var(--text-muted); }
+  .status-pending { color: var(--accent-secondary); }
+  
+  .variants-badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    padding: 0.25rem 0.75rem;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #000;
+  }
+  
+  .project-info {
+    padding: var(--spacing-lg);
+  }
+  
+  .project-info h3 {
+    font-size: 1.15rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+  }
+  
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  
+  .project-meta span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-transform: capitalize;
+  }
+  
+  .project-meta i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .project-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+  
+  .inline-form {
+    display: inline;
+  }
+  
+  .btn-danger {
+    color: var(--error);
+  }
+  
+  .btn-danger:hover {
+    background: rgba(255, 71, 87, 0.1);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+  }
+  
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    margin: 0 auto var(--spacing-xl);
+    color: var(--text-muted);
+  }
+  
+  .empty-icon i {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xl);
+  }
+</style>
+

@@ -1,0 +1,549 @@
+<div class="page-container">
+  <div class="page-header">
+    <a href="/projects" class="back-link">
+      <i data-lucide="arrow-left"></i>
+      Back to Projects
+    </a>
+    <div class="page-header-flex">
+      <div>
+        <h1><%= project.title %></h1>
+        <span class="project-status-badge status-<%= project.status %>"><%= project.status %></span>
+      </div>
+      <div class="page-actions">
+        <a href="/projects/<%= project._id %>/edit" class="btn btn-secondary">
+          <i data-lucide="edit"></i>
+          Edit
+        </a>
+        <button class="btn btn-primary" onclick="generateDesign()" id="generate-btn">
+          <i data-lucide="sparkles"></i>
+          Generate Design
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="project-layout">
+    <!-- Main Content -->
+    <div class="project-main">
+      <!-- Design Gallery -->
+      <div class="section-card">
+        <h2>Design Variants</h2>
+        
+        <% if (project.designVariants && project.designVariants.length > 0) { %>
+          <div class="design-gallery">
+            <% project.designVariants.forEach((variant, index) => { %>
+              <div class="design-variant <%= variant.isSelected ? 'selected' : '' %>">
+                <div class="variant-image">
+                  <img src="<%= variant.imageUrl || '/images/placeholder.png' %>" alt="<%= variant.name %>">
+                  <div class="variant-overlay">
+                    <button class="btn btn-sm btn-primary" onclick="viewFullscreen('<%= variant.imageUrl %>')">
+                      <i data-lucide="maximize-2"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="variant-info">
+                  <h4><%= variant.name || 'Design ' + (index + 1) %></h4>
+                  <% if (variant.style) { %>
+                    <span class="tag"><%= variant.style %></span>
+                  <% } %>
+                  <% if (variant.budgetLevel) { %>
+                    <span class="tag"><%= variant.budgetLevel %></span>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="empty-designs">
+            <i data-lucide="image"></i>
+            <p>No designs generated yet</p>
+            <button class="btn btn-primary" onclick="generateDesign()">
+              <i data-lucide="sparkles"></i>
+              Generate First Design
+            </button>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Original Images -->
+      <% if (project.originalImages && project.originalImages.length > 0) { %>
+        <div class="section-card">
+          <h2>Original Photos</h2>
+          <div class="original-gallery">
+            <% project.originalImages.forEach(img => { %>
+              <div class="original-image">
+                <img src="<%= img.url %>" alt="Original">
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+      
+      <!-- Description -->
+      <div class="section-card">
+        <h2>Project Description</h2>
+        <p class="description-text"><%= project.description %></p>
+      </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="project-sidebar">
+      <!-- Details -->
+      <div class="sidebar-card">
+        <h3>Details</h3>
+        <div class="detail-list">
+          <div class="detail-item">
+            <span class="detail-label">Room Type</span>
+            <span class="detail-value"><%= project.roomType %></span>
+          </div>
+          <% if (project.style) { %>
+            <div class="detail-item">
+              <span class="detail-label">Style</span>
+              <span class="detail-value"><%= project.style %></span>
+            </div>
+          <% } %>
+          <% if (project.budget && (project.budget.min || project.budget.max)) { %>
+            <div class="detail-item">
+              <span class="detail-label">Budget</span>
+              <span class="detail-value">
+                <%= project.budget.min ? '€' + project.budget.min.toLocaleString() : '' %>
+                <%= project.budget.min && project.budget.max ? ' - ' : '' %>
+                <%= project.budget.max ? '€' + project.budget.max.toLocaleString() : '' %>
+              </span>
+            </div>
+          <% } %>
+          <% if (project.dimensions && (project.dimensions.length || project.dimensions.width)) { %>
+            <div class="detail-item">
+              <span class="detail-label">Dimensions</span>
+              <span class="detail-value">
+                <%= project.dimensions.length || '?' %>m × <%= project.dimensions.width || '?' %>m
+                <% if (project.dimensions.height) { %> × <%= project.dimensions.height %>m<% } %>
+              </span>
+            </div>
+          <% } %>
+          <div class="detail-item">
+            <span class="detail-label">Created</span>
+            <span class="detail-value"><%= new Date(project.createdAt).toLocaleDateString() %></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Share -->
+      <div class="sidebar-card">
+        <h3>Share Project</h3>
+        <div class="share-link">
+          <input type="text" value="<%= process.env.APP_URL || 'http://localhost:3000' %>/projects/share/<%= project.shareToken %>" readonly class="form-input" id="share-url">
+          <button class="btn btn-secondary" onclick="copyShareLink()">
+            <i data-lucide="copy"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Visibility -->
+      <div class="sidebar-card">
+        <h3>Visibility</h3>
+        <select class="form-select" onchange="updateVisibility(this.value)">
+          <option value="private" <%= project.visibility === 'private' ? 'selected' : '' %>>Private</option>
+          <option value="contractors" <%= project.visibility === 'contractors' ? 'selected' : '' %>>Visible to Contractors</option>
+          <option value="public" <%= project.visibility === 'public' ? 'selected' : '' %>>Public</option>
+        </select>
+      </div>
+      
+      <% if (!project.isDIY) { %>
+        <!-- Contractor Requests -->
+        <div class="sidebar-card">
+          <h3>Contractor Requests</h3>
+          <% if (project.contractorRequests && project.contractorRequests.length > 0) { %>
+            <div class="contractor-list">
+              <% project.contractorRequests.forEach(req => { %>
+                <div class="contractor-request">
+                  <div class="contractor-info">
+                    <strong><%= req.contractor.companyName %></strong>
+                    <% if (req.quotation) { %>
+                      <span class="quote">€<%= req.quotation.toLocaleString() %></span>
+                    <% } %>
+                  </div>
+                  <span class="request-status status-<%= req.status %>"><%= req.status %></span>
+                </div>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="empty-text">No requests yet. Make your project visible to contractors to receive quotes.</p>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Fullscreen Modal -->
+<div class="fullscreen-modal" id="fullscreen-modal" onclick="closeFullscreen()">
+  <img src="" alt="Design" id="fullscreen-image">
+  <button class="close-fullscreen"><i data-lucide="x"></i></button>
+</div>
+
+<style>
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .page-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .back-link:hover {
+    color: var(--text-primary);
+  }
+  
+  .page-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+  }
+  
+  .page-header-flex h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .project-status-badge {
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  
+  .status-completed { color: var(--success); border-color: rgba(0, 255, 136, 0.3); }
+  .status-generating { color: var(--warning); border-color: rgba(255, 165, 2, 0.3); }
+  .status-draft { color: var(--text-muted); }
+  
+  .page-actions {
+    display: flex;
+    gap: var(--spacing-md);
+  }
+  
+  .project-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--spacing-xl);
+  }
+  
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .section-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .design-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+  }
+  
+  .design-variant {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .design-variant:hover {
+    border-color: var(--accent-primary);
+  }
+  
+  .design-variant.selected {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+  }
+  
+  .variant-image {
+    position: relative;
+    height: 180px;
+  }
+  
+  .variant-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .variant-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .variant-image:hover .variant-overlay {
+    opacity: 1;
+  }
+  
+  .variant-info {
+    padding: var(--spacing-md);
+  }
+  
+  .variant-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .empty-designs {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    color: var(--text-muted);
+  }
+  
+  .empty-designs i {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .original-gallery {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+  }
+  
+  .original-image {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  
+  .original-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .description-text {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  
+  /* Sidebar */
+  .sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .sidebar-card h3 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+  
+  .detail-label {
+    color: var(--text-muted);
+  }
+  
+  .detail-value {
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .share-link {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+  
+  .share-link input {
+    flex: 1;
+    font-size: 0.8rem;
+  }
+  
+  .empty-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  
+  .contractor-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .contractor-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+  }
+  
+  .contractor-info strong {
+    display: block;
+    font-size: 0.9rem;
+  }
+  
+  .contractor-info .quote {
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+  }
+  
+  .request-status {
+    font-size: 0.75rem;
+    text-transform: capitalize;
+  }
+  
+  /* Fullscreen Modal */
+  .fullscreen-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: var(--spacing-xl);
+  }
+  
+  .fullscreen-modal.active {
+    display: flex;
+  }
+  
+  .fullscreen-modal img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: var(--radius-lg);
+  }
+  
+  .close-fullscreen {
+    position: absolute;
+    top: var(--spacing-xl);
+    right: var(--spacing-xl);
+    background: var(--bg-card);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @media (max-width: 1024px) {
+    .project-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const projectId = '<%= project._id %>';
+  
+  async function generateDesign() {
+    const btn = document.getElementById('generate-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Generating...';
+    
+    try {
+      const response = await fetch(`/projects/${projectId}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        CraftyCrib.showToast('Design generated successfully!');
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        CraftyCrib.showToast(data.error || 'Failed to generate design', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="sparkles"></i> Generate Design';
+        lucide.createIcons();
+      }
+    } catch (err) {
+      CraftyCrib.showToast('An error occurred', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="sparkles"></i> Generate Design';
+      lucide.createIcons();
+    }
+  }
+  
+  function copyShareLink() {
+    const input = document.getElementById('share-url');
+    input.select();
+    document.execCommand('copy');
+    CraftyCrib.showToast('Link copied to clipboard!');
+  }
+  
+  async function updateVisibility(visibility) {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visibility })
+      });
+      CraftyCrib.showToast('Visibility updated');
+    } catch (err) {
+      CraftyCrib.showToast('Failed to update visibility', 'error');
+    }
+  }
+  
+  function viewFullscreen(imageUrl) {
+    const modal = document.getElementById('fullscreen-modal');
+    const img = document.getElementById('fullscreen-image');
+    img.src = imageUrl;
+    modal.classList.add('active');
+  }
+  
+  function closeFullscreen() {
+    document.getElementById('fullscreen-modal').classList.remove('active');
+  }
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFullscreen();
+  });
+</script>
+

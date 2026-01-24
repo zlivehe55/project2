@@ -1,0 +1,214 @@
+<div class="messages-page">
+  <div class="messages-header">
+    <h1>Messages</h1>
+  </div>
+  
+  <div class="messages-layout">
+    <!-- Conversations List -->
+    <div class="conversations-list">
+      <% if (conversations && conversations.length > 0) { %>
+        <% conversations.forEach(convo => { %>
+          <a href="/dashboard/messages/<%= convo._id %>" class="conversation-item">
+            <div class="conversation-avatar">
+              <% const otherUser = convo.participants.find(p => p._id.toString() !== user._id.toString()); %>
+              <%= otherUser ? otherUser.firstName.charAt(0) + otherUser.lastName.charAt(0) : 'U' %>
+            </div>
+            <div class="conversation-info">
+              <div class="conversation-header">
+                <strong><%= otherUser ? otherUser.firstName + ' ' + otherUser.lastName : 'Unknown User' %></strong>
+                <span class="conversation-time">
+                  <%= convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt).toLocaleDateString() : '' %>
+                </span>
+              </div>
+              <% if (convo.project) { %>
+                <span class="conversation-project">
+                  <i data-lucide="folder"></i> <%= convo.project.title %>
+                </span>
+              <% } %>
+              <p class="conversation-preview">
+                <%= convo.lastMessage?.content ? convo.lastMessage.content.substring(0, 50) + '...' : 'No messages yet' %>
+              </p>
+            </div>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <div class="empty-conversations">
+          <i data-lucide="message-circle"></i>
+          <h3>No conversations yet</h3>
+          <p>When you connect with contractors or clients, your conversations will appear here.</p>
+        </div>
+      <% } %>
+    </div>
+    
+    <!-- Message Area (for when no conversation is selected) -->
+    <div class="message-area">
+      <div class="no-conversation-selected">
+        <i data-lucide="message-square"></i>
+        <h3>Select a conversation</h3>
+        <p>Choose a conversation from the list to view messages</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .messages-page {
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .messages-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .messages-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .messages-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    overflow: hidden;
+  }
+  
+  .conversations-list {
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+  }
+  
+  .conversation-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    transition: background var(--transition-fast);
+  }
+  
+  .conversation-item:hover {
+    background: var(--bg-card);
+  }
+  
+  .conversation-item.active {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-primary);
+  }
+  
+  .conversation-avatar {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    font-weight: 700;
+    color: #000;
+    flex-shrink: 0;
+  }
+  
+  .conversation-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .conversation-header strong {
+    font-size: 0.95rem;
+  }
+  
+  .conversation-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  
+  .conversation-project {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.8rem;
+    color: var(--accent-secondary);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .conversation-project i {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .conversation-preview {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .empty-conversations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--text-muted);
+  }
+  
+  .empty-conversations i {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .empty-conversations h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+  }
+  
+  .message-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+  }
+  
+  .no-conversation-selected {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+  }
+  
+  .no-conversation-selected i {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+  }
+  
+  .no-conversation-selected h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+  }
+  
+  @media (max-width: 768px) {
+    .messages-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .message-area {
+      display: none;
+    }
+  }
+</style>
+

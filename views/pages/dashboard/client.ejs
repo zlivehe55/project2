@@ -1,0 +1,407 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <div>
+      <h1>Welcome back, <%= user.firstName %>! 👋</h1>
+      <p class="text-muted">Here's what's happening with your projects</p>
+    </div>
+    <a href="/projects/new" class="btn btn-primary">
+      <i data-lucide="plus"></i>
+      New Project
+    </a>
+  </div>
+  
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #00ff88, #00d4ff);">
+        <i data-lucide="folder"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value"><%= stats.totalProjects %></span>
+        <span class="stat-label">Total Projects</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
+        <i data-lucide="image"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value"><%= stats.completedDesigns %></span>
+        <span class="stat-label">Completed Designs</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+        <i data-lucide="clock"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value"><%= stats.inProgress %></span>
+        <span class="stat-label">In Progress</span>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
+        <i data-lucide="sparkles"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value"><%= user.isPremium ? '∞' : '3' %></span>
+        <span class="stat-label">AI Credits Left</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Projects -->
+  <div class="dashboard-section">
+    <div class="section-header-inline">
+      <h2>Recent Projects</h2>
+      <a href="/projects" class="btn btn-ghost btn-sm">View All</a>
+    </div>
+    
+    <% if (projects && projects.length > 0) { %>
+      <div class="projects-grid">
+        <% projects.forEach(project => { %>
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <% if (project.designVariants && project.designVariants.length > 0) { %>
+                <img src="<%= project.designVariants[project.designVariants.length - 1].imageUrl %>" alt="<%= project.title %>">
+              <% } else if (project.originalImages && project.originalImages.length > 0) { %>
+                <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
+              <% } else { %>
+                <div class="placeholder-thumb">
+                  <i data-lucide="image"></i>
+                </div>
+              <% } %>
+              <span class="project-status status-<%= project.status %>"><%= project.status %></span>
+            </div>
+            <div class="project-info">
+              <h3><%= project.title %></h3>
+              <div class="project-meta">
+                <span><i data-lucide="home"></i> <%= project.roomType %></span>
+                <% if (project.style) { %>
+                  <span><i data-lucide="palette"></i> <%= project.style %></span>
+                <% } %>
+              </div>
+              <div class="project-actions">
+                <a href="/projects/<%= project._id %>" class="btn btn-sm btn-secondary">View</a>
+                <% if (project.status === 'completed' || project.status === 'pending') { %>
+                  <button class="btn btn-sm btn-primary" onclick="generateDesign('<%= project._id %>')">
+                    <i data-lucide="sparkles"></i> Generate
+                  </button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i data-lucide="folder-plus"></i>
+        </div>
+        <h3>No projects yet</h3>
+        <p>Start your first renovation project and see the magic of AI design!</p>
+        <a href="/projects/new" class="btn btn-primary">
+          <i data-lucide="plus"></i>
+          Create Your First Project
+        </a>
+      </div>
+    <% } %>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="dashboard-section">
+    <h2>Quick Actions</h2>
+    <div class="quick-actions">
+      <a href="/projects/new" class="quick-action-card">
+        <i data-lucide="plus-circle"></i>
+        <span>New Project</span>
+      </a>
+      <a href="/contractors" class="quick-action-card">
+        <i data-lucide="users"></i>
+        <span>Find Contractors</span>
+      </a>
+      <a href="/dashboard/messages" class="quick-action-card">
+        <i data-lucide="message-circle"></i>
+        <span>Messages</span>
+      </a>
+      <a href="/dashboard/settings" class="quick-action-card">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+  }
+  
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: #000;
+  }
+  
+  .stat-icon i {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-info .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+  }
+  
+  .stat-info .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .dashboard-section {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .section-header-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .section-header-inline h2 {
+    font-size: 1.25rem;
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+  
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .project-card:hover {
+    border-color: var(--border-color-hover);
+    transform: translateY(-3px);
+  }
+  
+  .project-thumbnail {
+    position: relative;
+    height: 180px;
+    background: var(--bg-secondary);
+  }
+  
+  .project-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .placeholder-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+  }
+  
+  .placeholder-thumb i {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .project-status {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  
+  .status-completed { color: var(--success); }
+  .status-generating { color: var(--warning); }
+  .status-draft { color: var(--text-muted); }
+  
+  .project-info {
+    padding: var(--spacing-lg);
+  }
+  
+  .project-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .project-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  
+  .project-meta span {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-transform: capitalize;
+  }
+  
+  .project-meta i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .project-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 50%;
+    margin: 0 auto var(--spacing-lg);
+    color: var(--text-muted);
+  }
+  
+  .empty-icon i {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .empty-state h3 {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .empty-state p {
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    transition: all var(--transition-base);
+  }
+  
+  .quick-action-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+  
+  .quick-action-card i {
+    width: 32px;
+    height: 32px;
+  }
+</style>
+
+<script>
+  async function generateDesign(projectId) {
+    if (!confirm('Generate a new AI design for this project?')) return;
+    
+    try {
+      const response = await fetch(`/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Design generated successfully!');
+        window.location.reload();
+      } else {
+        alert('Error: ' + (data.error || 'Failed to generate design'));
+      }
+    } catch (err) {
+      alert('An error occurred. Please try again.');
+    }
+  }
+</script>
+

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CraftyCrib - Transform your living space with AI-powered interior design. Get realistic 3D mockups and connect with professional contractors.">
+  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib - AI Interior Design' %></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logoicon.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <img src="/assets/logoicon.png" alt="CraftyCrib" class="logo-icon">
+        <span class="logo-text">CraftyCrib</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="/dashboard" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          Dashboard
+        </a>
+        <a href="/projects" class="nav-link">
+          <i data-lucide="folder"></i>
+          Projects
+        </a>
+        <a href="/contractors" class="nav-link">
+          <i data-lucide="users"></i>
+          Contractors
+        </a>
+        <a href="/dashboard/messages" class="nav-link">
+          <i data-lucide="message-circle"></i>
+          Messages
+        </a>
+      </div>
+      
+      <div class="nav-actions">
+        <% if (user) { %>
+          <div class="user-menu">
+            <button class="user-btn">
+              <div class="user-avatar">
+                <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+              </div>
+              <span><%= user.firstName %></span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="user-dropdown">
+              <a href="/dashboard/settings"><i data-lucide="settings"></i> Settings</a>
+              <a href="/auth/logout"><i data-lucide="log-out"></i> Logout</a>
+            </div>
+          </div>
+        <% } else { %>
+          <a href="/auth/login" class="btn btn-ghost">Login</a>
+          <a href="/auth/register" class="btn btn-primary">Get Started</a>
+        <% } %>
+      </div>
+      
+      <button class="mobile-menu-btn">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="alert alert-success">
+      <i data-lucide="check-circle"></i>
+      <%= success_msg %>
+      <button class="alert-close"><i data-lucide="x"></i></button>
+    </div>
+  <% } %>
+  
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="alert alert-error">
+      <i data-lucide="alert-circle"></i>
+      <%= error_msg %>
+      <button class="alert-close"><i data-lucide="x"></i></button>
+    </div>
+  <% } %>
+  
+  <% if (error && error.length > 0) { %>
+    <div class="alert alert-error">
+      <i data-lucide="alert-circle"></i>
+      <%= error %>
+      <button class="alert-close"><i data-lucide="x"></i></button>
+    </div>
+  <% } %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <%- body %>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="/assets/logoicon.png" alt="CraftyCrib" class="footer-logo">
+        <p>Transform your living space with AI-powered interior design.</p>
+        <div class="social-links">
+          <a href="#"><i data-lucide="twitter"></i></a>
+          <a href="#"><i data-lucide="instagram"></i></a>
+          <a href="#"><i data-lucide="linkedin"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/how-it-works">How It Works</a>
+          <a href="/pricing">Pricing</a>
+          <a href="/contractors">Find Contractors</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; <%= currentYear %> CraftyCrib. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,458 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Account Settings</h1>
+    <p class="text-muted">Manage your profile and preferences</p>
+  </div>
+  
+  <div class="settings-layout">
+    <!-- Sidebar Navigation -->
+    <div class="settings-nav">
+      <a href="#profile" class="settings-nav-item active">
+        <i data-lucide="user"></i>
+        Profile
+      </a>
+      <a href="#security" class="settings-nav-item">
+        <i data-lucide="shield"></i>
+        Security
+      </a>
+      <a href="#notifications" class="settings-nav-item">
+        <i data-lucide="bell"></i>
+        Notifications
+      </a>
+      <a href="#billing" class="settings-nav-item">
+        <i data-lucide="credit-card"></i>
+        Billing
+      </a>
+    </div>
+    
+    <!-- Settings Content -->
+    <div class="settings-content">
+      <!-- Profile Section -->
+      <div class="settings-section" id="profile">
+        <h2>Profile Information</h2>
+        <form action="/dashboard/settings" method="POST">
+          <div class="avatar-upload">
+            <div class="current-avatar">
+              <div class="avatar-placeholder">
+                <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+              </div>
+            </div>
+            <div class="avatar-actions">
+              <button type="button" class="btn btn-secondary btn-sm" disabled>
+                <i data-lucide="upload"></i>
+                Upload Photo
+              </button>
+              <p class="text-muted">JPG, PNG. Max 2MB</p>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" name="firstName" class="form-input" value="<%= user.firstName %>" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" name="lastName" class="form-input" value="<%= user.lastName %>" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" value="<%= user.email %>" disabled>
+            <p class="form-hint">Contact support to change your email</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" name="phone" class="form-input" value="<%= user.phone || '' %>" placeholder="+33 6 12 34 56 78">
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="save"></i>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Security Section -->
+      <div class="settings-section" id="security">
+        <h2>Security</h2>
+        <div class="security-item">
+          <div class="security-info">
+            <h4>Change Password</h4>
+            <p>Update your password to keep your account secure</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPasswordModal()">
+            <i data-lucide="key"></i>
+            Change
+          </button>
+        </div>
+        
+        <div class="security-item">
+          <div class="security-info">
+            <h4>Two-Factor Authentication</h4>
+            <p>Add an extra layer of security to your account</p>
+          </div>
+          <button class="btn btn-secondary" disabled>
+            <i data-lucide="smartphone"></i>
+            Coming Soon
+          </button>
+        </div>
+        
+        <div class="security-item danger">
+          <div class="security-info">
+            <h4>Delete Account</h4>
+            <p>Permanently delete your account and all data</p>
+          </div>
+          <button class="btn btn-outline btn-danger">
+            <i data-lucide="trash-2"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+      
+      <!-- Notifications Section -->
+      <div class="settings-section" id="notifications">
+        <h2>Notification Preferences</h2>
+        <div class="notification-options">
+          <div class="notification-item">
+            <div class="notification-info">
+              <h4>Email Notifications</h4>
+              <p>Receive updates about your projects via email</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="notification-item">
+            <div class="notification-info">
+              <h4>Project Updates</h4>
+              <p>Get notified when your designs are ready</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="notification-item">
+            <div class="notification-info">
+              <h4>Contractor Messages</h4>
+              <p>Receive notifications for new messages</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="notification-item">
+            <div class="notification-info">
+              <h4>Marketing Emails</h4>
+              <p>Tips, features, and promotional content</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Billing Section -->
+      <div class="settings-section" id="billing">
+        <h2>Billing & Subscription</h2>
+        
+        <div class="current-plan">
+          <div class="plan-info">
+            <span class="plan-badge <%= user.isPremium ? 'premium' : 'free' %>">
+              <%= user.isPremium ? 'Premium' : 'Free Plan' %>
+            </span>
+            <h4><%= user.isPremium ? 'Premium Plan' : 'Free Plan' %></h4>
+            <p><%= user.isPremium ? 'Unlimited AI generations and premium features' : '3 AI generations per month' %></p>
+          </div>
+          <% if (!user.isPremium) { %>
+            <a href="/pricing" class="btn btn-primary">
+              <i data-lucide="zap"></i>
+              Upgrade
+            </a>
+          <% } %>
+        </div>
+        
+        <% if (user.isPremium) { %>
+          <div class="billing-details">
+            <h4>Billing Information</h4>
+            <p class="text-muted">Manage your subscription and payment methods</p>
+            <button class="btn btn-secondary" disabled>
+              <i data-lucide="credit-card"></i>
+              Manage Billing
+            </button>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+  }
+  
+  .page-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .page-header h1 {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: var(--spacing-2xl);
+  }
+  
+  .settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+  }
+  
+  .settings-nav-item:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+  
+  .settings-nav-item.active {
+    background: var(--accent-gradient);
+    color: #000;
+  }
+  
+  .settings-nav-item i {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .settings-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .settings-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .avatar-upload {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .avatar-actions p {
+    margin-top: var(--spacing-sm);
+    font-size: 0.8rem;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .form-actions {
+    margin-top: var(--spacing-xl);
+  }
+  
+  .security-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .security-item.danger {
+    border: 1px solid rgba(255, 71, 87, 0.3);
+  }
+  
+  .security-info h4 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .security-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .btn-danger {
+    color: var(--error);
+    border-color: var(--error);
+  }
+  
+  .notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg) 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .notification-item:last-child {
+    border-bottom: none;
+  }
+  
+  .notification-info h4 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .notification-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .toggle {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    cursor: pointer;
+  }
+  
+  .toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    transition: var(--transition-base);
+  }
+  
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: var(--transition-base);
+  }
+  
+  .toggle input:checked + .toggle-slider {
+    background: var(--accent-primary);
+  }
+  
+  .toggle input:checked + .toggle-slider::before {
+    transform: translateX(24px);
+    background: #000;
+  }
+  
+  .current-plan {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xl);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .plan-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .plan-badge.free {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+  }
+  
+  .plan-badge.premium {
+    background: var(--accent-gradient);
+    color: #000;
+  }
+  
+  .plan-info h4 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .plan-info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  
+  @media (max-width: 768px) {
+    .settings-layout {
+      grid-template-columns: 1fr;
+    }
+    
+    .settings-nav {
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: var(--spacing-md);
+    }
+    
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

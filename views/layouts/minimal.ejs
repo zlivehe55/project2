@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib' %></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/logoicon.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Simple Header -->
+  <header class="minimal-header">
+    <a href="/" class="nav-logo">
+      <img src="/assets/logoicon.png" alt="CraftyCrib" class="logo-icon">
+      <span class="logo-text">CraftyCrib</span>
+    </a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="minimal-content">
+    <%- body %>
+  </main>
+
+  <!-- Simple Footer -->
+  <footer class="minimal-footer">
+    <p>&copy; <%= typeof currentYear !== 'undefined' ? currentYear : new Date().getFullYear() %> CraftyCrib. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+
