@@ -1,272 +1,248 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   
-  <!-- SEO Meta Tags -->
   <title><%= typeof title !== 'undefined' ? title : 'Dashboard - CraftyCrib' %></title>
-  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Manage your AI-powered interior design projects. Create stunning room visualizations and connect with professional contractors.' %>">
-  <meta name="keywords" content="interior design, AI design, home renovation, room visualization, contractor marketplace">
-  <meta name="author" content="CraftyCrib">
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Manage your AI-powered interior design projects.' %>">
   <meta name="robots" content="noindex, nofollow">
   
-  <!-- Open Graph -->
-  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'CraftyCrib Dashboard' %>">
-  <meta property="og:description" content="AI-Powered Interior Design Platform">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="/assets/fullogo.png">
-  
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="/assets/logoicon.png">
   <link rel="apple-touch-icon" href="/assets/logoicon.png">
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   
-  <!-- Styles -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/dashboard.css">
 </head>
-<body class="dashboard-body">
-  <div class="dashboard-wrapper">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <a href="/" class="sidebar-logo">
-          <img src="/assets/logoicon.png" alt="CraftyCrib">
-          <span>CraftyCrib</span>
-        </a>
-        <button class="sidebar-toggle" id="sidebar-toggle">
-          <i data-lucide="panel-left-close"></i>
-        </button>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <div class="nav-section">
-          <span class="nav-section-title">Main</span>
-          <a href="/dashboard" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
-            <i data-lucide="layout-dashboard"></i>
-            <span>Dashboard</span>
-          </a>
-          
-          <% if (user.role === 'client' || user.role === 'homeowner') { %>
-            <a href="/projects" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'projects' ? 'active' : '' %>">
-              <i data-lucide="folder"></i>
-              <span>My Projects</span>
-            </a>
-            <a href="/projects/new" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'new-project' ? 'active' : '' %>">
-              <i data-lucide="plus-circle"></i>
-              <span>New Project</span>
-            </a>
-            <a href="/contractors" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'contractors' ? 'active' : '' %>">
-              <i data-lucide="hard-hat"></i>
-              <span>Find Contractors</span>
-            </a>
-          <% } else if (user.role === 'contractor') { %>
-            <a href="/contractors/projects/available" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'available-projects' ? 'active' : '' %>">
-              <i data-lucide="briefcase"></i>
-              <span>Available Projects</span>
-            </a>
-            <a href="/contractors/my-projects" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'my-projects' ? 'active' : '' %>">
-              <i data-lucide="folder-check"></i>
-              <span>My Projects</span>
-            </a>
-            <a href="/contractors/profile" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'profile' ? 'active' : '' %>">
-              <i data-lucide="building-2"></i>
-              <span>Company Profile</span>
-            </a>
-          <% } %>
-        </div>
-        
-        <div class="nav-section">
-          <span class="nav-section-title">Communication</span>
-          <a href="/dashboard/messages" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'messages' ? 'active' : '' %>">
-            <i data-lucide="message-square"></i>
-            <span>Messages</span>
-            <% if (typeof unreadMessages !== 'undefined' && unreadMessages > 0) { %>
-              <span class="nav-badge"><%= unreadMessages %></span>
-            <% } %>
-          </a>
-          <a href="/dashboard/notifications" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'notifications' ? 'active' : '' %>">
-            <i data-lucide="bell"></i>
-            <span>Notifications</span>
-          </a>
-        </div>
-        
-        <div class="nav-section">
-          <span class="nav-section-title">Account</span>
-          <a href="/dashboard/settings" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'settings' ? 'active' : '' %>">
-            <i data-lucide="settings"></i>
-            <span>Settings</span>
-          </a>
-          <a href="/pricing" class="nav-item">
-            <i data-lucide="crown"></i>
-            <span>Upgrade Plan</span>
-            <% if (!user.isPremium) { %>
-              <span class="nav-badge pro">PRO</span>
-            <% } %>
-          </a>
-        </div>
-      </nav>
-      
-      <!-- Language Selector in Sidebar -->
-      <%- include('../partials/language-selector') %>
-      
-      <!-- User Card in Sidebar -->
-      <div class="sidebar-footer">
-        <div class="user-card">
-          <div class="user-avatar">
-            <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
-          </div>
-          <div class="user-info">
-            <strong><%= user.firstName %> <%= user.lastName %></strong>
-            <span><%= user.role === 'contractor' ? 'Contractor' : 'Homeowner' %></span>
-          </div>
-          <a href="/auth/logout" class="logout-btn" title="Logout">
-            <i data-lucide="log-out"></i>
-          </a>
-        </div>
-      </div>
-    </aside>
+<body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+      <i data-lucide="menu"></i>
+    </button>
     
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Top Bar -->
-      <header class="topbar">
-        <button class="mobile-menu-btn" id="mobile-menu-btn">
-          <i data-lucide="menu"></i>
-        </button>
-        
-        <div class="topbar-left">
-          <div class="breadcrumb">
-            <a href="/dashboard">Dashboard</a>
-            <% if (typeof activePage !== 'undefined' && activePage !== 'dashboard') { %>
-              <i data-lucide="chevron-right"></i>
-              <span class="current"><%= typeof pageTitle !== 'undefined' ? pageTitle : activePage.charAt(0).toUpperCase() + activePage.slice(1) %></span>
-            <% } %>
-          </div>
-        </div>
-        
-        <div class="topbar-center">
-          <div class="topbar-search">
-            <i data-lucide="search"></i>
-            <input type="text" placeholder="Search projects, contractors, designs..." class="search-input" id="global-search">
-            <div class="search-shortcut">
-              <kbd>⌘</kbd><kbd>K</kbd>
-            </div>
-          </div>
-        </div>
-        
-        <div class="topbar-right">
-          <div class="topbar-actions">
-            <button class="topbar-btn theme-toggle" title="Toggle Theme" id="theme-toggle">
-              <i data-lucide="moon"></i>
-            </button>
-            <a href="/dashboard/notifications" class="topbar-btn" title="Notifications">
-              <i data-lucide="bell"></i>
-              <span class="notification-dot"></span>
-            </a>
-            <a href="/dashboard/messages" class="topbar-btn" title="Messages">
-              <i data-lucide="message-square"></i>
-            </a>
-          </div>
-          
-          <div class="topbar-divider"></div>
-          
-          <div class="topbar-user" id="topbar-user">
-            <div class="topbar-avatar">
-              <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
-            </div>
-            <div class="topbar-user-info">
-              <span class="topbar-user-name"><%= user.firstName %></span>
-              <span class="topbar-user-plan"><%= user.subscription?.plan || 'Free' %></span>
-            </div>
-            <i data-lucide="chevron-down" class="topbar-user-arrow"></i>
-            
-            <div class="topbar-dropdown" id="user-dropdown">
-              <a href="/dashboard/settings" class="dropdown-item">
-                <i data-lucide="user"></i>
-                Profile Settings
-              </a>
-              <a href="/pricing" class="dropdown-item">
-                <i data-lucide="crown"></i>
-                Upgrade Plan
-              </a>
-              <a href="/" class="dropdown-item">
-                <i data-lucide="home"></i>
-                Back to Website
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="/auth/logout" class="dropdown-item text-danger">
-                <i data-lucide="log-out"></i>
-                Log Out
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-      
-      <!-- Flash Messages -->
-      <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
-        <div class="alert alert-success">
-          <i data-lucide="check-circle"></i>
-          <%= success_msg %>
-          <button class="alert-close"><i data-lucide="x"></i></button>
-        </div>
-      <% } %>
-      
-      <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
-        <div class="alert alert-error">
-          <i data-lucide="alert-circle"></i>
-          <%= error_msg %>
-          <button class="alert-close"><i data-lucide="x"></i></button>
-        </div>
-      <% } %>
-      
-      <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
-        <div class="alert alert-error">
-          <i data-lucide="alert-circle"></i>
-          <%= error %>
-          <button class="alert-close"><i data-lucide="x"></i></button>
-        </div>
-      <% } %>
-      
-      <!-- Page Content -->
-      <div class="page-content">
-        <%- body %>
+    <a href="/dashboard" class="mobile-logo">
+      <img src="/assets/logoicon.png" alt="CraftyCrib" width="28" height="28">
+      <span>CraftyCrib</span>
+    </a>
+    
+    <div class="mobile-header-actions">
+      <a href="/dashboard/notifications" class="mobile-icon-btn">
+        <i data-lucide="bell"></i>
+      </a>
+      <div class="mobile-avatar">
+        <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
       </div>
-    </main>
-  </div>
+    </div>
+  </header>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/dashboard" class="sidebar-logo">
+        <img src="/assets/logoicon.png" alt="CraftyCrib" width="32" height="32">
+        <span>CraftyCrib</span>
+      </a>
+      <button class="sidebar-close" id="sidebar-close">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <span class="nav-label">Menu</span>
+        <a href="/dashboard" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Tableau de bord</span>
+        </a>
+        
+        <% if (user.role === 'client' || user.role === 'homeowner') { %>
+          <a href="/projects" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'projects' ? 'active' : '' %>">
+            <i data-lucide="folder"></i>
+            <span>Mes projets</span>
+          </a>
+          <a href="/projects/new" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'new-project' ? 'active' : '' %>">
+            <i data-lucide="plus-circle"></i>
+            <span>Nouveau projet</span>
+          </a>
+          <a href="/contractors" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'contractors' ? 'active' : '' %>">
+            <i data-lucide="hard-hat"></i>
+            <span>Entrepreneurs</span>
+          </a>
+        <% } else if (user.role === 'contractor') { %>
+          <a href="/contractors/projects/available" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'available-projects' ? 'active' : '' %>">
+            <i data-lucide="briefcase"></i>
+            <span>Projets disponibles</span>
+          </a>
+          <a href="/contractors/my-projects" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'my-projects' ? 'active' : '' %>">
+            <i data-lucide="folder-check"></i>
+            <span>Mes projets</span>
+          </a>
+          <a href="/contractors/profile" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'profile' ? 'active' : '' %>">
+            <i data-lucide="building-2"></i>
+            <span>Profil entreprise</span>
+          </a>
+        <% } %>
+      </div>
+      
+      <div class="nav-group">
+        <span class="nav-label">Communication</span>
+        <a href="/dashboard/messages" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'messages' ? 'active' : '' %>">
+          <i data-lucide="message-square"></i>
+          <span>Messages</span>
+          <% if (typeof unreadMessages !== 'undefined' && unreadMessages > 0) { %>
+            <span class="badge"><%= unreadMessages %></span>
+          <% } %>
+        </a>
+        <a href="/dashboard/notifications" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'notifications' ? 'active' : '' %>">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+      
+      <div class="nav-group">
+        <span class="nav-label">Compte</span>
+        <a href="/dashboard/settings" class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'settings' ? 'active' : '' %>">
+          <i data-lucide="settings"></i>
+          <span>Paramètres</span>
+        </a>
+        <a href="/pricing" class="nav-link">
+          <i data-lucide="crown"></i>
+          <span>Passer Pro</span>
+          <span class="badge pro">PRO</span>
+        </a>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+        </div>
+        <div class="user-details">
+          <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+          <span class="user-role"><%= user.role === 'contractor' ? 'Entrepreneur' : 'Propriétaire' %></span>
+        </div>
+      </div>
+      <a href="/auth/logout" class="logout-link">
+        <i data-lucide="log-out"></i>
+        <span>Déconnexion</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <!-- Flash Messages -->
+    <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+      <div class="toast toast-success">
+        <i data-lucide="check-circle"></i>
+        <span><%= success_msg %></span>
+        <button class="toast-close"><i data-lucide="x"></i></button>
+      </div>
+    <% } %>
+    
+    <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+      <div class="toast toast-error">
+        <i data-lucide="alert-circle"></i>
+        <span><%= error_msg %></span>
+        <button class="toast-close"><i data-lucide="x"></i></button>
+      </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+      <div class="toast toast-error">
+        <i data-lucide="alert-circle"></i>
+        <span><%= error %></span>
+        <button class="toast-close"><i data-lucide="x"></i></button>
+      </div>
+    <% } %>
+    
+    <!-- Page Content -->
+    <div class="page-wrapper">
+      <%- body %>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-nav">
+    <a href="/dashboard" class="mobile-nav-item <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+      <i data-lucide="home"></i>
+      <span>Accueil</span>
+    </a>
+    <a href="/projects" class="mobile-nav-item <%= typeof activePage !== 'undefined' && activePage === 'projects' ? 'active' : '' %>">
+      <i data-lucide="folder"></i>
+      <span>Projets</span>
+    </a>
+    <a href="/projects/new" class="mobile-nav-item mobile-nav-primary">
+      <i data-lucide="plus"></i>
+    </a>
+    <a href="/dashboard/messages" class="mobile-nav-item <%= typeof activePage !== 'undefined' && activePage === 'messages' ? 'active' : '' %>">
+      <i data-lucide="message-square"></i>
+      <span>Messages</span>
+    </a>
+    <a href="/dashboard/settings" class="mobile-nav-item <%= typeof activePage !== 'undefined' && activePage === 'settings' ? 'active' : '' %>">
+      <i data-lucide="user"></i>
+      <span>Profil</span>
+    </a>
+  </nav>
 
   <script src="/js/main.js"></script>
   <script>
     lucide.createIcons();
     
-    // Sidebar toggle
     const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const overlay = document.getElementById('sidebar-overlay');
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebarClose = document.getElementById('sidebar-close');
     
-    sidebarToggle?.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-    });
-    
-    mobileMenuBtn?.addEventListener('click', () => {
-      sidebar.classList.toggle('mobile-open');
-    });
-    
-    // Restore sidebar state
-    if (localStorage.getItem('sidebarCollapsed') === 'true') {
-      sidebar.classList.add('collapsed');
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
+    
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    menuToggle?.addEventListener('click', openSidebar);
+    sidebarClose?.addEventListener('click', closeSidebar);
+    overlay?.addEventListener('click', closeSidebar);
+    
+    // Close sidebar on nav link click (mobile)
+    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) {
+          closeSidebar();
+        }
+      });
+    });
+    
+    // Close sidebar on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024) {
+        closeSidebar();
+      }
+    });
+    
+    // Toast close
+    document.querySelectorAll('.toast-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.toast').remove();
+      });
+    });
   </script>
 </body>
 </html>
-

@@ -1,26 +1,24 @@
-<!-- Dashboard Header -->
-<div class="dashboard-page-header">
+<!-- Page Header -->
+<div class="page-header">
   <div>
-    <h1>Dashboard</h1>
-    <p class="subtitle">Welcome back, <%= user.firstName %>. Here's your project overview.</p>
+    <h1>Tableau de bord</h1>
+    <p class="subtitle">Bienvenue, <%= user.firstName %>. Voici un aperçu de vos projets.</p>
   </div>
-  <div style="display: flex; gap: var(--spacing-sm);">
-    <a href="/projects/new" class="btn btn-primary">
-      <i data-lucide="plus"></i>
-      New Project
-    </a>
-  </div>
+  <a href="/projects/new" class="btn btn-primary">
+    <i data-lucide="plus"></i>
+    Nouveau projet
+  </a>
 </div>
 
-<!-- Stats Row -->
-<div class="stats-row">
+<!-- Stats Grid -->
+<div class="stats-grid">
   <div class="stat-card">
     <div class="stat-icon green">
       <i data-lucide="folder"></i>
     </div>
-    <div class="stat-content">
+    <div class="stat-info">
       <div class="stat-value"><%= stats.totalProjects %></div>
-      <div class="stat-label">Total Projects</div>
+      <div class="stat-label">Projets totaux</div>
     </div>
   </div>
   
@@ -28,9 +26,9 @@
     <div class="stat-icon purple">
       <i data-lucide="sparkles"></i>
     </div>
-    <div class="stat-content">
+    <div class="stat-info">
       <div class="stat-value"><%= stats.totalVariants %></div>
-      <div class="stat-label">AI Designs</div>
+      <div class="stat-label">Designs IA</div>
     </div>
   </div>
   
@@ -38,9 +36,9 @@
     <div class="stat-icon orange">
       <i data-lucide="clock"></i>
     </div>
-    <div class="stat-content">
+    <div class="stat-info">
       <div class="stat-value"><%= stats.inProgress %></div>
-      <div class="stat-label">In Progress</div>
+      <div class="stat-label">En cours</div>
     </div>
   </div>
   
@@ -48,41 +46,26 @@
     <div class="stat-icon blue">
       <i data-lucide="check-circle"></i>
     </div>
-    <div class="stat-content">
+    <div class="stat-info">
       <div class="stat-value"><%= stats.completedDesigns %></div>
-      <div class="stat-label">Completed</div>
+      <div class="stat-label">Terminés</div>
     </div>
   </div>
 </div>
 
-<!-- Main Dashboard Grid -->
-<div class="dashboard-grid">
+<!-- Content Grid -->
+<div class="content-grid">
   <!-- Left Column - Projects -->
   <div>
-    <!-- AI Credits Card -->
-    <div class="credits-card">
-      <div class="credits-header">
-        <h4><i data-lucide="zap"></i> AI Credits</h4>
-        <a href="/pricing" class="btn btn-sm btn-ghost">Get More</a>
-      </div>
-      <div class="credits-value"><%= user.subscription?.credits || 3 %></div>
-      <div class="credits-label"><%= user.isPremium ? 'Unlimited plan' : 'of 10 free credits' %></div>
-      <% if (!user.isPremium) { %>
-        <div class="credits-bar">
-          <div class="credits-bar-fill" style="width: <%= ((user.subscription?.credits || 3) / 10) * 100 %>%"></div>
-        </div>
-      <% } %>
-    </div>
-    
     <!-- Recent Projects -->
-    <div class="dashboard-section">
-      <div class="section-header">
-        <h2>Recent Projects</h2>
-        <a href="/projects" class="btn btn-sm btn-ghost">View All</a>
+    <div class="content-card">
+      <div class="card-header">
+        <h2>Projets récents</h2>
+        <a href="/projects">Voir tout</a>
       </div>
       
       <% if (projects && projects.length > 0) { %>
-        <div class="projects-list">
+        <div class="project-list">
           <% projects.slice(0, 5).forEach(project => { %>
             <a href="/projects/<%= project._id %>" class="project-item">
               <div class="project-thumb">
@@ -91,37 +74,28 @@
                 <% } else if (project.originalImages && project.originalImages.length > 0) { %>
                   <img src="<%= project.originalImages[0].url %>" alt="<%= project.title %>">
                 <% } else { %>
-                  <div class="project-thumb-placeholder">
-                    <i data-lucide="image"></i>
-                  </div>
+                  <i data-lucide="image"></i>
                 <% } %>
               </div>
-              <div class="project-details">
+              <div class="project-info">
                 <h3><%= project.title %></h3>
-                <div class="project-meta">
-                  <span><i data-lucide="home"></i> <%= project.roomType %></span>
-                  <% if (project.style) { %>
-                    <span><i data-lucide="palette"></i> <%= project.style %></span>
-                  <% } %>
-                </div>
+                <p><%= project.roomType %><% if (project.style) { %> • <%= project.style %><% } %></p>
                 <span class="project-status <%= project.status %>"><%= project.status %></span>
               </div>
             </a>
           <% }) %>
         </div>
       <% } else { %>
-        <div class="section-content">
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <i data-lucide="folder-plus"></i>
-            </div>
-            <h3>No projects yet</h3>
-            <p>Create your first project and let AI transform your space</p>
-            <a href="/projects/new" class="btn btn-primary">
-              <i data-lucide="plus"></i>
-              Create Project
-            </a>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i data-lucide="folder-plus"></i>
           </div>
+          <h3>Aucun projet</h3>
+          <p>Créez votre premier projet et laissez l'IA transformer votre espace</p>
+          <a href="/projects/new" class="btn btn-primary">
+            <i data-lucide="plus"></i>
+            Créer un projet
+          </a>
         </div>
       <% } %>
     </div>
@@ -129,20 +103,40 @@
   
   <!-- Right Column -->
   <div>
-    <!-- Quick Actions -->
-    <div class="dashboard-section" style="margin-bottom: var(--spacing-md);">
-      <div class="section-header">
-        <h2>Quick Actions</h2>
+    <!-- AI Credits -->
+    <div class="content-card" style="margin-bottom: 16px;">
+      <div class="card-body" style="background: linear-gradient(135deg, #ecfdf5, #f0fdf4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #10b981;">
+            <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+            Crédits IA
+          </span>
+          <a href="/pricing" style="font-size: 12px; color: #10b981; font-weight: 500;">Obtenir plus</a>
+        </div>
+        <div style="font-size: 32px; font-weight: 700; color: #059669;"><%= user.subscription?.credits || 3 %></div>
+        <div style="font-size: 12px; color: #64748b;"><%= user.isPremium ? 'Plan illimité' : 'sur 10 crédits gratuits' %></div>
+        <% if (!user.isPremium) { %>
+          <div style="height: 4px; background: #a7f3d0; border-radius: 2px; margin-top: 12px; overflow: hidden;">
+            <div style="height: 100%; background: #10b981; border-radius: 2px; width: <%= ((user.subscription?.credits || 3) / 10) * 100 %>%;"></div>
+          </div>
+        <% } %>
       </div>
-      <div class="section-content">
-        <div class="quick-actions-grid">
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="content-card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <h2>Actions rapides</h2>
+      </div>
+      <div class="card-body">
+        <div class="quick-actions">
           <a href="/projects/new" class="quick-action">
             <i data-lucide="plus-circle"></i>
-            <span>New Project</span>
+            <span>Nouveau projet</span>
           </a>
           <a href="/contractors" class="quick-action">
             <i data-lucide="hard-hat"></i>
-            <span>Contractors</span>
+            <span>Entrepreneurs</span>
           </a>
           <a href="/dashboard/messages" class="quick-action">
             <i data-lucide="message-square"></i>
@@ -150,55 +144,23 @@
           </a>
           <a href="/gallery" class="quick-action">
             <i data-lucide="images"></i>
-            <span>Gallery</span>
+            <span>Galerie</span>
           </a>
         </div>
       </div>
     </div>
     
-    <!-- Recent Activity -->
-    <div class="dashboard-section">
-      <div class="section-header">
-        <h2>Recent Activity</h2>
-      </div>
-      <div class="activity-feed">
-        <% if (recentActivity && recentActivity.length > 0) { %>
-          <% recentActivity.forEach(activity => { %>
-            <div class="activity-item">
-              <div class="activity-icon">
-                <% if (activity.type === 'design') { %>
-                  <i data-lucide="sparkles" style="color: var(--accent-primary);"></i>
-                <% } else if (activity.type === 'message') { %>
-                  <i data-lucide="message-square" style="color: #3b82f6;"></i>
-                <% } else { %>
-                  <i data-lucide="folder" style="color: #8b5cf6;"></i>
-                <% } %>
-              </div>
-              <div class="activity-content">
-                <p><%= activity.message %></p>
-                <span class="activity-time"><%= activity.time %></span>
-              </div>
-            </div>
-          <% }) %>
-        <% } else { %>
-          <div class="section-content">
-            <p style="color: var(--text-muted); text-align: center; font-size: 0.875rem;">No recent activity</p>
-          </div>
-        <% } %>
-      </div>
-    </div>
-    
     <!-- Upgrade CTA -->
     <% if (!user.isPremium) { %>
-      <div class="dashboard-section" style="margin-top: var(--spacing-md); background: linear-gradient(135deg, #f0fdf4, #ecfeff); border-color: rgba(16, 185, 129, 0.2);">
-        <div class="section-content" style="text-align: center; padding: var(--spacing-lg);">
-          <div style="font-size: 1.5rem; margin-bottom: var(--spacing-sm);">⚡</div>
-          <h3 style="font-size: 1rem; margin-bottom: var(--spacing-xs);">Upgrade to Pro</h3>
-          <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md); font-size: 0.8125rem;">
-            Get unlimited AI generations and HD exports
+      <div class="content-card" style="background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-color: #bfdbfe;">
+        <div class="card-body" style="text-align: center; padding: 24px;">
+          <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
+          <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0;">Passez à Pro</h3>
+          <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">
+            Générations IA illimitées et exports HD
           </p>
-          <a href="/pricing" class="btn btn-primary btn-sm">
-            Upgrade Now
+          <a href="/pricing" class="btn btn-primary btn-block">
+            Passer à Pro
           </a>
         </div>
       </div>
