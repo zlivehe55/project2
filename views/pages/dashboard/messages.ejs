@@ -1,369 +1,356 @@
-<div class="messages-container">
-  <div class="messages-sidebar">
-    <div class="messages-header">
-      <h2>Messages</h2>
-      <button class="btn btn-primary btn-sm" id="new-message-btn">
-        <i data-lucide="plus"></i>
-        New
-      </button>
-    </div>
-    
-    <div class="messages-search">
-      <i data-lucide="search"></i>
-      <input type="text" placeholder="Search conversations..." class="search-input">
-    </div>
-    
-    <div class="messages-tabs">
-      <button class="tab-btn active">All</button>
-      <button class="tab-btn">Unread</button>
-    </div>
-    
-    <div class="conversations-list">
-      <% if (conversations && conversations.length > 0) { %>
+<div class="messages-page">
+  <!-- Messages Header -->
+  <div class="messages-page-header">
+    <h1>Messages</h1>
+    <button class="new-chat-btn" id="new-message-btn">
+      <i data-lucide="edit-3"></i>
+      <span>New Chat</span>
+    </button>
+  </div>
+
+  <!-- Messages Content -->
+  <div class="messages-content">
+    <% if (conversations && conversations.length > 0) { %>
+      <!-- Conversations List -->
+      <div class="conversations">
         <% conversations.forEach(convo => { %>
-          <a href="/dashboard/messages/<%= convo._id %>" class="conversation-item">
-            <div class="conversation-avatar">
+          <a href="/dashboard/messages/<%= convo._id %>" class="convo-card">
+            <div class="convo-avatar">
               <% const otherUser = convo.participants.find(p => p._id.toString() !== user._id.toString()); %>
               <%= otherUser ? otherUser.firstName.charAt(0) + otherUser.lastName.charAt(0) : 'U' %>
             </div>
-            <div class="conversation-content">
-              <div class="conversation-header">
-                <span class="conversation-name"><%= otherUser ? otherUser.firstName + ' ' + otherUser.lastName : 'Unknown' %></span>
-                <span class="conversation-time">
-                  <%= convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt).toLocaleDateString() : '' %>
+            <div class="convo-info">
+              <div class="convo-top">
+                <span class="convo-name"><%= otherUser ? otherUser.firstName + ' ' + otherUser.lastName : 'Unknown' %></span>
+                <span class="convo-time">
+                  <%= convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'}) : '' %>
                 </span>
               </div>
               <% if (convo.project) { %>
-                <span class="conversation-project">
-                  <i data-lucide="folder"></i> <%= convo.project.title %>
-                </span>
+                <span class="convo-project"><%= convo.project.title %></span>
               <% } %>
-              <p class="conversation-preview">
-                <%= convo.lastMessage?.content ? convo.lastMessage.content.substring(0, 40) + '...' : 'Start a conversation' %>
+              <p class="convo-preview">
+                <%= convo.lastMessage?.content ? convo.lastMessage.content.substring(0, 50) + '...' : 'Tap to start chatting' %>
               </p>
             </div>
             <% if (convo.unreadCount > 0) { %>
-              <span class="unread-badge"><%= convo.unreadCount %></span>
+              <span class="convo-unread"><%= convo.unreadCount %></span>
             <% } %>
           </a>
         <% }) %>
-      <% } else { %>
-        <div class="empty-conversations">
-          <div class="empty-icon">
+      </div>
+    <% } else { %>
+      <!-- Empty State -->
+      <div class="messages-empty">
+        <div class="empty-illustration">
+          <div class="empty-circle">
             <i data-lucide="message-circle"></i>
           </div>
-          <h3>No conversations</h3>
-          <p>Start a conversation with a contractor</p>
-          <a href="/contractors" class="btn btn-primary btn-sm">
-            Find Contractors
-          </a>
         </div>
-      <% } %>
-    </div>
-  </div>
-  
-  <div class="messages-main">
-    <div class="empty-chat">
-      <div class="empty-icon">
-        <i data-lucide="message-square"></i>
+        <h2>No messages yet</h2>
+        <p>Start a conversation with a contractor to discuss your project</p>
+        <a href="/contractors" class="start-chat-btn">
+          <i data-lucide="users"></i>
+          Browse Contractors
+        </a>
       </div>
-      <h3>Select a conversation</h3>
-      <p>Choose a conversation from the list to view messages</p>
-    </div>
+    <% } %>
   </div>
 </div>
 
 <style>
-.messages-container {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  height: calc(100vh - 120px);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+.messages-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
 }
 
-.messages-sidebar {
+.messages-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.messages-page-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.new-chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.new-chat-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.new-chat-btn i {
+  width: 18px;
+  height: 18px;
+}
+
+.messages-content {
+  background: #ffffff;
+  min-height: calc(100vh - 200px);
+}
+
+/* Conversations */
+.conversations {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-color);
-  background: var(--bg-card);
 }
 
-.messages-header {
+.convo-card {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color);
+  gap: 14px;
+  padding: 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s;
+  text-decoration: none;
 }
 
-.messages-header h2 {
-  font-size: 1.125rem;
-  font-weight: 600;
+.convo-card:hover {
+  background: #f9fafb;
 }
 
-.messages-search {
-  position: relative;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
+.convo-card:active {
+  background: #f3f4f6;
 }
 
-.messages-search i {
-  position: absolute;
-  left: calc(var(--spacing-md) + 10px);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  width: 14px;
-  height: 14px;
-}
-
-.messages-search .search-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2rem;
-  font-size: 0.8125rem;
-}
-
-.messages-tabs {
-  display: flex;
-  padding: var(--spacing-sm) var(--spacing-md);
-  gap: var(--spacing-xs);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 0.375rem 0.75rem;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-}
-
-.tab-btn.active {
-  background: var(--accent-primary);
-  color: #ffffff;
-}
-
-.conversations-list {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.conversation-item {
-  display: flex;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-  transition: background var(--transition-fast);
-}
-
-.conversation-item:hover {
-  background: var(--bg-tertiary);
-}
-
-.conversation-item.active {
-  background: rgba(16, 185, 129, 0.05);
-  border-left: 2px solid var(--accent-primary);
-}
-
-.conversation-avatar {
-  width: 40px;
-  height: 40px;
+.convo-avatar {
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-primary);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 0.8125rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
   color: #ffffff;
   flex-shrink: 0;
 }
 
-.conversation-content {
+.convo-info {
   flex: 1;
   min-width: 0;
 }
 
-.conversation-header {
+.convo-top {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 2px;
 }
 
-.conversation-name {
+.convo-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.convo-time {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.convo-project {
+  display: inline-block;
+  font-size: 12px;
+  color: #10b981;
   font-weight: 500;
-  font-size: 0.875rem;
-  color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
-.conversation-time {
-  font-size: 0.6875rem;
-  color: var(--text-muted);
-}
-
-.conversation-project {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.6875rem;
-  color: var(--accent-primary);
-  margin-bottom: 2px;
-}
-
-.conversation-project i {
-  width: 10px;
-  height: 10px;
-}
-
-.conversation-preview {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.convo-preview {
+  font-size: 14px;
+  color: #6b7280;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0;
 }
 
-.unread-badge {
-  min-width: 18px;
-  height: 18px;
+.convo-unread {
+  min-width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-primary);
+  background: #10b981;
   color: #ffffff;
-  font-size: 0.625rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  padding: 0 5px;
-}
-
-.empty-conversations {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: var(--spacing-xl);
-  text-align: center;
-}
-
-.empty-icon {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-tertiary);
+  font-size: 12px;
+  font-weight: 700;
   border-radius: 50%;
-  margin-bottom: var(--spacing-md);
+  padding: 0 6px;
 }
 
-.empty-icon i {
-  width: 24px;
-  height: 24px;
-  color: var(--text-muted);
-}
-
-.empty-conversations h3 {
-  font-size: 0.9375rem;
-  margin-bottom: var(--spacing-xs);
-}
-
-.empty-conversations p {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  margin-bottom: var(--spacing-md);
-}
-
-.messages-main {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-primary);
-}
-
-.empty-chat {
-  flex: 1;
+/* Empty State */
+.messages-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  padding: 60px 24px;
   text-align: center;
 }
 
-.empty-chat .empty-icon {
-  width: 72px;
-  height: 72px;
+.empty-illustration {
+  margin-bottom: 24px;
 }
 
-.empty-chat .empty-icon i {
-  width: 32px;
-  height: 32px;
+.empty-circle {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: 50%;
+  position: relative;
 }
 
-.empty-chat h3 {
-  font-size: 1.125rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xs);
+.empty-circle::before {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #d1fae5;
+  border-radius: 50%;
+  animation: pulse-ring 2s ease-out infinite;
 }
 
-.empty-chat p {
-  color: var(--text-muted);
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
 }
 
+.empty-circle i {
+  width: 40px;
+  height: 40px;
+  color: #10b981;
+}
+
+.messages-empty h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.messages-empty p {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+  max-width: 280px;
+}
+
+.start-chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.start-chat-btn:hover {
+  background: #1f2937;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.start-chat-btn i {
+  width: 20px;
+  height: 20px;
+}
+
+/* Mobile Adjustments */
 @media (max-width: 768px) {
-  .messages-container {
-    grid-template-columns: 1fr;
-    height: calc(100vh - 60px);
-    border-radius: 0;
-    border: none;
+  .messages-page {
+    padding-bottom: 80px;
   }
   
-  .messages-main {
+  .messages-page-header {
+    padding: 16px;
+  }
+  
+  .messages-page-header h1 {
+    font-size: 22px;
+  }
+  
+  .new-chat-btn span {
     display: none;
   }
   
-  .messages-header h2 {
-    font-size: 1rem;
+  .new-chat-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
   }
   
-  .messages-search {
-    padding: var(--spacing-sm);
+  .convo-card {
+    padding: 14px 16px;
   }
   
-  .conversation-item {
-    padding: var(--spacing-sm) var(--spacing-md);
+  .convo-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 15px;
   }
   
-  .conversation-avatar {
-    width: 36px;
-    height: 36px;
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .messages-header {
-    padding: var(--spacing-sm) var(--spacing-md);
+  .messages-empty {
+    padding: 40px 20px;
   }
   
-  .messages-header .btn {
-    padding: 0.375rem 0.625rem;
-    font-size: 0.75rem;
+  .empty-circle {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .empty-circle::before {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .empty-circle i {
+    width: 32px;
+    height: 32px;
   }
 }
 </style>

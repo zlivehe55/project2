@@ -33,14 +33,40 @@
     </a>
     
     <div class="mobile-header-actions">
-      <a href="/dashboard/notifications" class="mobile-icon-btn">
-        <i data-lucide="bell"></i>
+      <button class="mobile-icon-btn" id="mobile-search-btn" aria-label="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </button>
+      <a href="/dashboard/notifications" class="mobile-icon-btn" aria-label="Notifications">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
       </a>
-      <div class="mobile-avatar">
+      <a href="/dashboard/settings" class="mobile-avatar">
         <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
-      </div>
+      </a>
     </div>
   </header>
+
+  <!-- Mobile Search Overlay -->
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-modal">
+      <div class="search-modal-header">
+        <div class="search-input-wrapper">
+          <i data-lucide="search"></i>
+          <input type="text" id="global-search" placeholder="Search projects, contractors..." autofocus>
+        </div>
+        <button class="search-close-btn" id="search-close">Cancel</button>
+      </div>
+      <div class="search-results" id="search-results">
+        <div class="search-hint">
+          <p>Try searching for:</p>
+          <div class="search-suggestions">
+            <button class="search-tag">Kitchen renovation</button>
+            <button class="search-tag">Bathroom</button>
+            <button class="search-tag">Modern design</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Sidebar Overlay -->
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -241,6 +267,37 @@
     document.querySelectorAll('.toast-close').forEach(btn => {
       btn.addEventListener('click', () => {
         btn.closest('.toast').remove();
+      });
+    });
+    
+    // Search modal
+    const searchBtn = document.getElementById('mobile-search-btn');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchClose = document.getElementById('search-close');
+    const globalSearch = document.getElementById('global-search');
+    
+    function openSearch() {
+      searchOverlay?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => globalSearch?.focus(), 100);
+    }
+    
+    function closeSearch() {
+      searchOverlay?.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    searchBtn?.addEventListener('click', openSearch);
+    searchClose?.addEventListener('click', closeSearch);
+    searchOverlay?.addEventListener('click', (e) => {
+      if (e.target === searchOverlay) closeSearch();
+    });
+    
+    // Search tags
+    document.querySelectorAll('.search-tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        if (globalSearch) globalSearch.value = tag.textContent;
+        globalSearch?.focus();
       });
     });
   </script>
