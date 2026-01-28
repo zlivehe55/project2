@@ -179,10 +179,10 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  padding: 1rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 440px;
+  max-width: 580px;
 }
 
 .mockup-header {
@@ -212,12 +212,24 @@
 .mockup-before,
 .mockup-after {
   flex: 1;
-  aspect-ratio: 4/3;
+  aspect-ratio: 1/1;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: flex-end;
   padding: 0.75rem;
   position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.mockup-before img,
+.mockup-after img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .mockup-before {
@@ -237,6 +249,8 @@
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.9);
   color: var(--text-primary);
+  position: relative;
+  z-index: 1;
 }
 
 .mockup-arrow {
@@ -838,7 +852,7 @@
   }
   
   .hero-mockup-card {
-    max-width: 320px;
+    max-width: 400px;
   }
   
   .section-title {
@@ -921,11 +935,16 @@
   }
   
   .hero-mockup-card {
-    max-width: 280px;
+    max-width: 340px;
   }
   
   .mockup-content {
     gap: 0.5rem;
+  }
+  
+  .mockup-before,
+  .mockup-after {
+    min-height: 140px;
   }
   
   .mockup-arrow {
@@ -999,4 +1018,178 @@
   height: 1px;
   background: var(--border-color);
   margin: 0.5rem 0;
+}
+
+/* ==================== */
+/* SHOWCASE SECTION */
+/* ==================== */
+.showcase-section {
+  padding: 5rem 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.showcase-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.showcase-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.showcase-comparison {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  background: #f1f5f9;
+}
+
+.showcase-before,
+.showcase-after {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.showcase-before img,
+.showcase-after img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.showcase-card:hover .showcase-before img,
+.showcase-card:hover .showcase-after img {
+  transform: scale(1.05);
+}
+
+.showcase-label {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.showcase-before .showcase-label {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+.showcase-after .showcase-label {
+  background: rgba(16, 185, 129, 0.9);
+}
+
+.showcase-arrow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  color: #10b981;
+}
+
+.showcase-arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+.showcase-info {
+  padding: 1.5rem;
+}
+
+.showcase-info h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.showcase-info p {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.showcase-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.showcase-tags span {
+  padding: 6px 12px;
+  background: #f0fdf4;
+  color: #10b981;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* Showcase Mobile */
+@media (max-width: 768px) {
+  .showcase-section {
+    padding: 3rem 0;
+  }
+  
+  .showcase-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .showcase-comparison {
+    flex-direction: column;
+  }
+  
+  .showcase-before img,
+  .showcase-after img {
+    height: 180px;
+  }
+  
+  .showcase-arrow {
+    top: auto;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%) rotate(90deg);
+  }
+  
+  .showcase-after {
+    margin-top: 0;
+  }
+  
+  .showcase-info {
+    padding: 1.25rem;
+  }
+  
+  .showcase-info h3 {
+    font-size: 1.125rem;
+  }
 }
