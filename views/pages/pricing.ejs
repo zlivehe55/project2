@@ -3,17 +3,10 @@
   <div class="container">
     <span class="hero-badge">
       <i data-lucide="sparkles"></i>
-      Transparent Pricing
+      Tarifs transparents
     </span>
-    <h1>Choose Your <span class="gradient-text">Perfect Plan</span></h1>
-    <p class="hero-subtitle">Start free with 3 AI generations, or unlock the full power of AI interior design.</p>
-    
-    <!-- Billing Toggle for Advanced Plan -->
-    <div class="billing-toggle">
-      <button class="toggle-btn active" data-period="monthly">Monthly</button>
-      <button class="toggle-btn" data-period="quarterly">Quarterly <span class="save-badge">Save 14%</span></button>
-      <button class="toggle-btn" data-period="yearly">Yearly <span class="save-badge">Save 31%</span></button>
-    </div>
+    <h1>Choisissez votre <span class="gradient-text">forfait idéal</span></h1>
+    <p class="hero-subtitle">Commencez gratuitement ou débloquez tout le potentiel du design d'intérieur par IA.</p>
   </div>
   
   <div class="hero-bg">
@@ -26,81 +19,58 @@
 <section class="pricing-section">
   <div class="container">
     <!-- Pricing Cards Grid -->
-    <div class="pricing-grid">
+    <div class="pricing-grid three-cards">
       
-      <!-- Free Plan -->
+      <!-- Régulier (Free) Plan -->
       <div class="pricing-card">
         <div class="card-header">
-          <span class="plan-name"><%= plans.free.name %></span>
-          <span class="plan-subtitle"><%= plans.free.subtitle %></span>
+          <span class="plan-name"><%= plans.regular.name %></span>
+          <span class="plan-subtitle"><%= plans.regular.subtitle %></span>
         </div>
         <div class="card-price">
-          <span class="price-amount">€0</span>
-          <span class="price-period">forever</span>
+          <span class="price-amount">0$</span>
+          <span class="price-period">gratuit</span>
         </div>
-        <p class="plan-description"><%= plans.free.description %></p>
+        <p class="plan-description"><%= plans.regular.description %></p>
         <ul class="features-list">
-          <% plans.free.features.forEach(feature => { %>
-            <li class="<%= feature.included ? '' : 'disabled' %>">
-              <i data-lucide="<%= feature.included ? 'check' : 'x' %>"></i>
+          <% plans.regular.features.forEach(feature => { %>
+            <li class="<%= feature.addon ? 'addon' : '' %>">
+              <i data-lucide="<%= feature.addon ? 'plus-circle' : 'check' %>"></i>
               <%= feature.text %>
             </li>
           <% }) %>
         </ul>
-        <a href="<%= plans.free.ctaLink %>" class="btn btn-secondary btn-full"><%= plans.free.cta %></a>
-      </div>
-      
-      <!-- Partner Plan (Full Service) -->
-      <div class="pricing-card partner-card">
-        <% if (plans.partner.badge) { %>
-          <span class="card-badge"><%= plans.partner.badge %></span>
+        <% if (plans.regular.bonus) { %>
+          <div class="bonus-box">
+            <%= plans.regular.bonus %>
+          </div>
         <% } %>
-        <div class="card-header">
-          <span class="plan-name"><%= plans.partner.name %></span>
-          <span class="plan-subtitle"><%= plans.partner.subtitle %></span>
-        </div>
-        <div class="card-price">
-          <span class="price-amount">€0</span>
-          <span class="price-period">with contract</span>
-        </div>
-        <p class="plan-description"><%= plans.partner.description %></p>
-        <ul class="features-list">
-          <% plans.partner.features.forEach(feature => { %>
-            <li class="<%= feature.included ? '' : 'disabled' %>">
-              <i data-lucide="<%= feature.included ? 'check' : 'x' %>"></i>
-              <%= feature.text %>
-            </li>
-          <% }) %>
-        </ul>
-        <a href="<%= plans.partner.ctaLink %>" class="btn btn-outline btn-full">
-          <i data-lucide="hard-hat"></i>
-          <%= plans.partner.cta %>
-        </a>
-        <p class="plan-note">Sign a contract with a partner contractor to unlock full access</p>
+        <a href="<%= plans.regular.ctaLink %>" class="btn btn-secondary btn-full"><%= plans.regular.cta %></a>
       </div>
       
-      <!-- Advanced Plan (Popular) -->
+      <!-- Avancé Plan (Popular) -->
       <div class="pricing-card popular-card">
         <% if (plans.advanced.badge) { %>
           <span class="card-badge popular"><%= plans.advanced.badge %></span>
         <% } %>
-        <div class="popular-ribbon">Most Popular</div>
+        <div class="popular-ribbon">Plus populaire</div>
         <div class="card-header">
           <span class="plan-name"><%= plans.advanced.name %></span>
           <span class="plan-subtitle"><%= plans.advanced.subtitle %></span>
         </div>
         <div class="card-price">
-          <span class="price-amount" data-monthly="<%= plans.advanced.prices.monthly %>" data-quarterly="<%= Math.round(plans.advanced.prices.quarterly / 3) %>" data-yearly="<%= Math.round(plans.advanced.prices.yearly / 12) %>">€<%= plans.advanced.prices.monthly %></span>
-          <span class="price-period">/month</span>
+          <span class="price-amount"><%= plans.advanced.price %>$</span>
+          <span class="price-period">CAD <%= plans.advanced.period %></span>
         </div>
-        <div class="price-note">
-          <span class="billed-text" data-monthly="Billed monthly" data-quarterly="€<%= plans.advanced.prices.quarterly %> billed quarterly" data-yearly="€<%= plans.advanced.prices.yearly %> billed yearly">Billed monthly</span>
+        <div class="generations-badge">
+          <i data-lucide="zap"></i>
+          <span><%= plans.advanced.generations %> générations / mois</span>
         </div>
         <p class="plan-description"><%= plans.advanced.description %></p>
         <ul class="features-list">
           <% plans.advanced.features.forEach(feature => { %>
-            <li class="<%= feature.included ? '' : 'disabled' %>">
-              <i data-lucide="<%= feature.included ? 'check' : 'x' %>"></i>
+            <li class="<%= feature.addon ? 'addon' : '' %>">
+              <i data-lucide="<%= feature.addon ? 'plus-circle' : 'check' %>"></i>
               <%= feature.text %>
             </li>
           <% }) %>
@@ -109,84 +79,63 @@
           <i data-lucide="sparkles"></i>
           <%= plans.advanced.cta %>
         </a>
-        <p class="plan-note">7-day free trial • Cancel anytime</p>
       </div>
       
-      <!-- Credits Plan -->
-      <div class="pricing-card credits-card">
-        <% if (plans.credits.badge) { %>
-          <span class="card-badge"><%= plans.credits.badge %></span>
+      <!-- Premium Plan -->
+      <div class="pricing-card premium-card">
+        <% if (plans.premium.badge) { %>
+          <span class="card-badge premium"><%= plans.premium.badge %></span>
         <% } %>
         <div class="card-header">
-          <span class="plan-name"><%= plans.credits.name %></span>
-          <span class="plan-subtitle"><%= plans.credits.subtitle %></span>
+          <span class="plan-name"><%= plans.premium.name %></span>
+          <span class="plan-subtitle"><%= plans.premium.subtitle %></span>
         </div>
-        <div class="card-price credits-price">
-          <span class="price-label">Starting from</span>
-          <span class="price-amount">€<%= plans.credits.creditPacks[0].price %></span>
-          <span class="price-period">for <%= plans.credits.creditPacks[0].credits %> credits</span>
+        <div class="card-price">
+          <span class="price-amount"><%= plans.premium.price %>$</span>
+          <span class="price-period">CAD <%= plans.premium.period %></span>
         </div>
-        
-        <!-- Credit Packs -->
-        <div class="credit-packs">
-          <% plans.credits.creditPacks.forEach((pack, index) => { %>
-            <label class="credit-pack <%= index === 1 ? 'selected' : '' %>">
-              <input type="radio" name="creditPack" value="<%= pack.credits %>" <%= index === 1 ? 'checked' : '' %>>
-              <div class="pack-content">
-                <span class="pack-credits"><%= pack.credits %> credits</span>
-                <span class="pack-price">€<%= pack.price %></span>
-                <span class="pack-per-credit">€<%= pack.perCredit.toFixed(2) %>/credit</span>
-              </div>
-            </label>
-          <% }) %>
+        <div class="generations-badge unlimited">
+          <i data-lucide="infinity"></i>
+          <span>Générations illimitées</span>
         </div>
-        
-        <p class="plan-description"><%= plans.credits.description %></p>
-        <ul class="features-list compact">
-          <% plans.credits.features.forEach(feature => { %>
-            <li class="<%= feature.included ? '' : 'disabled' %>">
-              <i data-lucide="<%= feature.included ? 'check' : 'x' %>"></i>
+        <p class="plan-description"><%= plans.premium.description %></p>
+        <ul class="features-list">
+          <% plans.premium.features.forEach(feature => { %>
+            <li>
+              <i data-lucide="check"></i>
               <%= feature.text %>
             </li>
           <% }) %>
         </ul>
-        <a href="<%= plans.credits.ctaLink %>" class="btn btn-secondary btn-full"><%= plans.credits.cta %></a>
+        <a href="<%= plans.premium.ctaLink %>" class="btn btn-outline btn-full">
+          <i data-lucide="crown"></i>
+          <%= plans.premium.cta %>
+        </a>
       </div>
       
     </div>
   </div>
 </section>
 
-<!-- How Partner Plan Works -->
-<section class="partner-explanation">
+<!-- Bonus Section - Contractor Partnership -->
+<section class="partner-bonus">
   <div class="container">
-    <h2>How the <span class="gradient-text">Partner Plan</span> Works</h2>
-    <p class="section-subtitle">Get full platform access for free when you complete your renovation with our partner contractors.</p>
-    
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <h3>Design Your Space</h3>
-        <p>Upload photos and let AI generate stunning design ideas for your room.</p>
-        <i data-lucide="wand-2"></i>
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <i data-lucide="gift"></i>
       </div>
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <h3>Choose a Contractor</h3>
-        <p>Browse verified contractors and select one that matches your project needs.</p>
-        <i data-lucide="hard-hat"></i>
-      </div>
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <h3>Sign & Unlock</h3>
-        <p>Sign a contract with your chosen contractor and unlock full platform access.</p>
-        <i data-lucide="file-check"></i>
-      </div>
-      <div class="step-card">
-        <div class="step-number">4</div>
-        <h3>Complete Your Project</h3>
-        <p>Work with your contractor to bring your AI-designed vision to life.</p>
-        <i data-lucide="home"></i>
+      <div class="bonus-content">
+        <h2>🎁 Bonus Partenaire Entrepreneur</h2>
+        <p>Concluez un projet avec un entrepreneur partenaire et obtenez automatiquement:</p>
+        <ul>
+          <li><i data-lucide="check"></i> <strong>30 générations IA gratuites</strong></li>
+          <li><i data-lucide="check"></i> <strong>Projets illimités</strong></li>
+          <li><i data-lucide="check"></i> Preuve de paiement requise</li>
+        </ul>
+        <a href="/contractors" class="btn btn-primary">
+          <i data-lucide="hard-hat"></i>
+          Trouver un entrepreneur
+        </a>
       </div>
     </div>
   </div>
@@ -195,88 +144,71 @@
 <!-- Comparison Table -->
 <section class="comparison-section">
   <div class="container">
-    <h2>Compare All Plans</h2>
+    <h2>Comparer les forfaits</h2>
     <div class="comparison-table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>Feature</th>
-            <th>Free</th>
-            <th>Partner</th>
-            <th class="highlight">Advanced</th>
-            <th>Credits</th>
+            <th>Fonctionnalité</th>
+            <th>Régulier</th>
+            <th class="highlight">Avancé</th>
+            <th>Premium</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>AI Generations</td>
+            <td>Générations IA</td>
             <td>3 total</td>
-            <td>Unlimited</td>
-            <td class="highlight">Unlimited</td>
-            <td>Per credit</td>
+            <td class="highlight">50 / mois</td>
+            <td>Illimitées</td>
           </tr>
           <tr>
-            <td>Design Styles</td>
-            <td>Basic (5)</td>
-            <td>All (14+)</td>
-            <td class="highlight">All (14+)</td>
-            <td>All (14+)</td>
+            <td>Styles de design</td>
+            <td>2 styles</td>
+            <td class="highlight">Tous (80+)</td>
+            <td>Tous (80+)</td>
           </tr>
           <tr>
-            <td>Render Quality</td>
-            <td>Standard</td>
-            <td>HD</td>
-            <td class="highlight">HD</td>
-            <td>Standard</td>
+            <td>Qualité des rendus</td>
+            <td>Ultra HD</td>
+            <td class="highlight">Ultra HD</td>
+            <td>Ultra HD</td>
           </tr>
           <tr>
-            <td>Projects</td>
-            <td>1</td>
-            <td>Unlimited</td>
-            <td class="highlight">Unlimited</td>
-            <td>5</td>
+            <td>Nombre de projets</td>
+            <td>2 projets</td>
+            <td class="highlight">Illimité</td>
+            <td>Illimité</td>
           </tr>
           <tr>
-            <td>Materials List</td>
-            <td><i data-lucide="x"></i></td>
-            <td><i data-lucide="check"></i></td>
-            <td class="highlight"><i data-lucide="check"></i></td>
-            <td>Basic</td>
-          </tr>
-          <tr>
-            <td>Cost Estimation</td>
-            <td><i data-lucide="x"></i></td>
-            <td><i data-lucide="check"></i></td>
-            <td class="highlight"><i data-lucide="check"></i></td>
-            <td><i data-lucide="x"></i></td>
-          </tr>
-          <tr>
-            <td>Contractor Matching</td>
-            <td><i data-lucide="x"></i></td>
-            <td>Priority</td>
-            <td class="highlight"><i data-lucide="check"></i></td>
-            <td><i data-lucide="x"></i></td>
-          </tr>
-          <tr>
-            <td>PDF Export</td>
-            <td><i data-lucide="x"></i></td>
-            <td><i data-lucide="check"></i></td>
-            <td class="highlight"><i data-lucide="check"></i></td>
-            <td><i data-lucide="x"></i></td>
-          </tr>
-          <tr>
-            <td>Public Gallery</td>
-            <td><i data-lucide="x"></i></td>
+            <td>Connexion entrepreneur</td>
             <td><i data-lucide="check"></i></td>
             <td class="highlight"><i data-lucide="check"></i></td>
             <td><i data-lucide="check"></i></td>
+          </tr>
+          <tr>
+            <td>Téléchargement PDF</td>
+            <td>1,99$ / PDF</td>
+            <td class="highlight"><i data-lucide="check"></i> Inclus</td>
+            <td><i data-lucide="check"></i> Inclus</td>
+          </tr>
+          <tr>
+            <td>Générations supplémentaires</td>
+            <td>3,99$ / gen</td>
+            <td class="highlight">3,99$ / 3 gen</td>
+            <td>N/A</td>
           </tr>
           <tr>
             <td>Support</td>
-            <td>Community</td>
-            <td>Dedicated</td>
-            <td class="highlight">Priority</td>
             <td>Email</td>
+            <td class="highlight">Prioritaire</td>
+            <td>Prioritaire</td>
+          </tr>
+          <tr>
+            <td><strong>Prix</strong></td>
+            <td><strong>Gratuit</strong></td>
+            <td class="highlight"><strong>29,99$ / mois</strong></td>
+            <td><strong>79,99$ / mois</strong></td>
           </tr>
         </tbody>
       </table>
@@ -287,31 +219,31 @@
 <!-- FAQ Section -->
 <section class="faq-section">
   <div class="container">
-    <h2>Frequently Asked Questions</h2>
+    <h2>Questions fréquentes</h2>
     <div class="faq-grid">
       <div class="faq-item">
-        <h4>How does the Partner plan work?</h4>
-        <p>When you sign a contract with one of our verified partner contractors, you automatically get full access to all platform features for the duration of your project. This ensures you can fully visualize and plan your renovation before work begins.</p>
+        <h4>Comment fonctionne le bonus entrepreneur?</h4>
+        <p>Lorsque vous concluez un projet avec l'un de nos entrepreneurs partenaires et fournissez une preuve de paiement, vous recevez automatiquement 30 générations gratuites et des projets illimités.</p>
       </div>
       <div class="faq-item">
-        <h4>What happens to my credits if I don't use them?</h4>
-        <p>Credits never expire! Buy them when you need them and use them at your own pace. They're perfect for one-time projects or occasional design needs.</p>
+        <h4>Puis-je acheter des générations supplémentaires?</h4>
+        <p>Oui! Avec le forfait Régulier, chaque génération supplémentaire coûte 3,99$. Avec le forfait Avancé, vous obtenez 3 générations pour 3,99$.</p>
       </div>
       <div class="faq-item">
-        <h4>Can I switch between plans?</h4>
-        <p>Yes! You can upgrade or downgrade your plan at any time. If you upgrade, you'll be credited for the unused portion of your current plan.</p>
+        <h4>Puis-je changer de forfait?</h4>
+        <p>Oui! Vous pouvez passer à un forfait supérieur ou inférieur à tout moment. Les changements prennent effet immédiatement.</p>
       </div>
       <div class="faq-item">
-        <h4>Is there a free trial for the Advanced plan?</h4>
-        <p>Yes, we offer a 7-day free trial for the Advanced plan. You can cancel anytime during the trial and won't be charged.</p>
+        <h4>Comment fonctionne le téléchargement PDF?</h4>
+        <p>Les forfaits Avancé et Premium incluent le téléchargement PDF gratuit. Avec le forfait Régulier, chaque téléchargement coûte 1,99$.</p>
       </div>
       <div class="faq-item">
-        <h4>What payment methods do you accept?</h4>
-        <p>We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and SEPA bank transfers for EU customers.</p>
+        <h4>Quels modes de paiement acceptez-vous?</h4>
+        <p>Nous acceptons toutes les cartes de crédit principales (Visa, Mastercard, American Express), ainsi que les virements Interac.</p>
       </div>
       <div class="faq-item">
-        <h4>Can I publish my designs to the public gallery?</h4>
-        <p>Yes! All paid plans allow you to publish your finished designs to our public gallery, helping inspire others and showcasing your renovation journey.</p>
+        <h4>Y a-t-il un engagement minimum?</h4>
+        <p>Non! Tous nos forfaits sont sans engagement. Vous pouvez annuler à tout moment et vous ne serez pas facturé pour le mois suivant.</p>
       </div>
     </div>
   </div>
@@ -324,11 +256,11 @@
     <div class="gradient-orb cta-orb-2"></div>
   </div>
   <div class="cta-content">
-    <h2>Ready to Transform Your Space?</h2>
-    <p>Start with 3 free AI generations. No credit card required.</p>
+    <h2>Prêt à transformer votre espace?</h2>
+    <p>Commencez avec 3 générations IA gratuites. Aucune carte de crédit requise.</p>
     <a href="/auth/register" class="btn btn-primary btn-lg">
       <i data-lucide="sparkles"></i>
-      Get Started Free
+      Commencer gratuitement
     </a>
   </div>
 </section>
@@ -356,53 +288,6 @@
     margin-right: auto;
   }
   
-  /* Billing Toggle */
-  .billing-toggle {
-    display: inline-flex;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-full);
-    padding: 4px;
-    gap: 4px;
-  }
-  
-  .toggle-btn {
-    padding: 0.75rem 1.5rem;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-  
-  .toggle-btn:hover {
-    color: var(--text-primary);
-  }
-  
-  .toggle-btn.active {
-    background: var(--accent-primary);
-    color: #000;
-  }
-  
-  .save-badge {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.4rem;
-    background: rgba(0, 255, 136, 0.2);
-    border-radius: var(--radius-sm);
-    color: var(--accent-primary);
-  }
-  
-  .toggle-btn.active .save-badge {
-    background: rgba(0, 0, 0, 0.2);
-    color: #000;
-  }
-  
   /* Pricing Section */
   .pricing-section {
     padding: var(--spacing-2xl) 2rem var(--spacing-3xl);
@@ -414,6 +299,11 @@
     gap: var(--spacing-lg);
     max-width: 1400px;
     margin: 0 auto;
+  }
+  
+  .pricing-grid.three-cards {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1100px;
   }
   
   /* Pricing Card */
@@ -436,9 +326,14 @@
   .pricing-card.popular-card {
     border-color: var(--accent-primary);
     background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.02));
+    transform: scale(1.02);
   }
   
-  .pricing-card.partner-card {
+  .pricing-card.popular-card:hover {
+    transform: scale(1.04);
+  }
+  
+  .pricing-card.premium-card {
     background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(168, 85, 247, 0.02));
     border-color: rgba(124, 58, 237, 0.3);
   }
@@ -457,6 +352,11 @@
   .card-badge.popular {
     background: var(--accent-gradient);
     color: #000;
+  }
+  
+  .card-badge.premium {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    color: #fff;
   }
   
   .popular-ribbon {
@@ -508,10 +408,29 @@
     color: var(--text-muted);
   }
   
-  .price-note {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+  .generations-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-primary);
     margin-bottom: var(--spacing-lg);
+  }
+  
+  .generations-badge.unlimited {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+  }
+  
+  .generations-badge i {
+    width: 16px;
+    height: 16px;
   }
   
   .plan-description {
@@ -543,17 +462,24 @@
     flex-shrink: 0;
   }
   
-  .features-list li.disabled {
+  .features-list li.addon {
     color: var(--text-muted);
-  }
-  
-  .features-list li.disabled i {
-    color: var(--text-muted);
-  }
-  
-  .features-list.compact li {
-    padding: var(--spacing-xs) 0;
     font-size: 0.85rem;
+  }
+  
+  .features-list li.addon i {
+    color: var(--text-muted);
+  }
+  
+  .bonus-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0, 212, 255, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
   }
   
   .btn-full {
@@ -561,148 +487,73 @@
     justify-content: center;
   }
   
-  .plan-note {
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: var(--spacing-md);
+  /* Partner Bonus Section */
+  .partner-bonus {
+    padding: var(--spacing-2xl) 2rem;
   }
   
-  /* Credit Packs */
-  .credit-packs {
+  .bonus-card {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .credit-pack {
-    display: block;
-    padding: var(--spacing-md);
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-  
-  .credit-pack:hover,
-  .credit-pack.selected {
-    border-color: var(--accent-primary);
-  }
-  
-  .credit-pack input {
-    display: none;
-  }
-  
-  .pack-content {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-  }
-  
-  .pack-credits {
-    font-weight: 600;
-  }
-  
-  .pack-price {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--accent-primary);
-  }
-  
-  .pack-per-credit {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-  
-  .credits-price .price-label {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-  
-  .credits-price .price-amount {
-    font-size: 2.5rem;
-  }
-  
-  /* Partner Explanation */
-  .partner-explanation {
-    padding: var(--spacing-3xl) 2rem;
-    background: var(--bg-secondary);
-  }
-  
-  .partner-explanation h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .section-subtitle {
-    text-align: center;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto var(--spacing-3xl);
-  }
-  
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-xl);
-    max-width: 1200px;
+    gap: var(--spacing-2xl);
+    max-width: 900px;
     margin: 0 auto;
+    padding: var(--spacing-2xl);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0, 212, 255, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-xl);
   }
   
-  .step-card {
-    text-align: center;
-    padding: var(--spacing-xl);
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    position: relative;
-  }
-  
-  .step-number {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 30px;
+  .bonus-icon {
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--accent-gradient);
-    border-radius: 50%;
-    font-weight: 700;
-    font-size: 0.9rem;
+    border-radius: var(--radius-lg);
+    flex-shrink: 0;
+  }
+  
+  .bonus-icon i {
+    width: 40px;
+    height: 40px;
     color: #000;
   }
   
-  .step-card h3 {
-    margin: var(--spacing-md) 0 var(--spacing-sm);
-    font-size: 1.1rem;
+  .bonus-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
   }
   
-  .step-card p {
-    font-size: 0.9rem;
+  .bonus-content p {
     color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .bonus-content ul {
+    list-style: none;
     margin-bottom: var(--spacing-lg);
   }
   
-  .step-card i {
-    width: 48px;
-    height: 48px;
-    color: var(--accent-primary);
-    opacity: 0.5;
+  .bonus-content ul li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+    color: var(--text-secondary);
+  }
+  
+  .bonus-content ul li i {
+    width: 18px;
+    height: 18px;
+    color: var(--success);
   }
   
   /* Comparison Table */
   .comparison-section {
     padding: var(--spacing-3xl) 2rem;
+    background: var(--bg-secondary);
   }
   
   .comparison-section h2 {
@@ -712,7 +563,7 @@
   
   .comparison-table-wrapper {
     overflow-x: auto;
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
   }
   
@@ -729,7 +580,7 @@
   }
   
   .comparison-table th {
-    background: var(--bg-secondary);
+    background: var(--bg-card);
     font-weight: 600;
   }
   
@@ -759,7 +610,6 @@
   /* FAQ Section */
   .faq-section {
     padding: var(--spacing-3xl) 2rem;
-    background: var(--bg-secondary);
   }
   
   .faq-section h2 {
@@ -794,67 +644,34 @@
   }
   
   /* Responsive */
-  @media (max-width: 1200px) {
-    .pricing-grid {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 1024px) {
+    .pricing-grid.three-cards {
+      grid-template-columns: 1fr;
+      max-width: 450px;
     }
     
-    .steps-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .pricing-card.popular-card {
+      transform: none;
+      order: -1;
+    }
+    
+    .pricing-card.popular-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .bonus-card {
+      flex-direction: column;
+      text-align: center;
     }
   }
   
   @media (max-width: 768px) {
-    .pricing-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .billing-toggle {
-      flex-direction: column;
-      width: 100%;
-      max-width: 300px;
-    }
-    
-    .toggle-btn {
-      justify-content: center;
-    }
-    
-    .steps-grid {
-      grid-template-columns: 1fr;
-    }
-    
     .faq-grid {
       grid-template-columns: 1fr;
     }
+    
+    .bonus-content ul {
+      text-align: left;
+    }
   }
 </style>
-
-<script>
-  // Billing period toggle
-  const toggleBtns = document.querySelectorAll('.toggle-btn');
-  const priceAmount = document.querySelector('.popular-card .price-amount');
-  const billedText = document.querySelector('.billed-text');
-  
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggleBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      const period = btn.dataset.period;
-      if (priceAmount && billedText) {
-        priceAmount.textContent = '€' + priceAmount.dataset[period];
-        billedText.textContent = billedText.dataset[period];
-      }
-    });
-  });
-  
-  // Credit pack selection
-  const creditPacks = document.querySelectorAll('.credit-pack');
-  creditPacks.forEach(pack => {
-    pack.addEventListener('click', () => {
-      creditPacks.forEach(p => p.classList.remove('selected'));
-      pack.classList.add('selected');
-    });
-  });
-</script>
-

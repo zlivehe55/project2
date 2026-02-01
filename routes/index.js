@@ -37,101 +37,73 @@ router.get('/how-it-works', (req, res) => {
 // Pricing Page
 router.get('/pricing', (req, res) => {
   const plans = {
-    partner: {
-      id: 'partner',
-      name: 'Partner',
-      subtitle: 'Free with Contractor',
+    // Plan 1: Régulier (Gratuit)
+    regular: {
+      id: 'regular',
+      name: 'Régulier',
+      subtitle: 'Pour commencer',
       price: 0,
-      period: 'forever',
-      description: 'Complete your project with our partner contractors and get full access for free.',
+      period: 'gratuit',
+      description: 'Démarrez gratuitement avec 3 générations IA. Parfait pour tester la plateforme.',
       features: [
-        { text: 'Unlimited AI generations', included: true },
-        { text: 'All design styles', included: true },
-        { text: 'HD quality renders', included: true },
-        { text: 'Unlimited projects', included: true },
-        { text: 'Materials list & quotes', included: true },
-        { text: 'Priority contractor matching', included: true },
-        { text: 'Full cost estimation', included: true },
-        { text: 'PDF & shareable exports', included: true },
-        { text: 'Dedicated project manager', included: true }
+        { text: '3 générations IA', included: true },
+        { text: '2 styles de design', included: true },
+        { text: 'Qualité Ultra HD', included: true },
+        { text: 'Jusqu\'à 2 projets', included: true },
+        { text: 'Connexion entrepreneur', included: true },
+        { text: 'Génération supplémentaire: 3,99$', included: true, addon: true },
+        { text: 'Téléchargement PDF: 1,99$', included: true, addon: true }
       ],
-      cta: 'Find a Contractor',
-      ctaLink: '/contractors',
-      highlight: 'Best Value',
-      popular: false,
-      badge: '🤝 Full Service'
-    },
-    advanced: {
-      id: 'advanced',
-      name: 'Advanced',
-      subtitle: 'For DIY & Investors',
-      prices: {
-        monthly: 29,
-        quarterly: 75,  // 25/month
-        yearly: 240     // 20/month
-      },
-      description: 'Full platform access for DIY renovators, property owners, and real estate investors.',
-      features: [
-        { text: 'Unlimited AI generations', included: true },
-        { text: 'All design styles', included: true },
-        { text: 'HD quality renders', included: true },
-        { text: 'Unlimited projects', included: true },
-        { text: 'Materials list & suppliers', included: true },
-        { text: 'Connect with contractors', included: true },
-        { text: 'Full cost estimation', included: true },
-        { text: 'PDF & shareable exports', included: true },
-        { text: 'Priority support', included: true }
-      ],
-      cta: 'Start 7-Day Trial',
-      ctaLink: '/auth/register?plan=advanced',
-      highlight: 'Most Popular',
-      popular: true,
-      badge: '⭐ Best for DIY'
-    },
-    credits: {
-      id: 'credits',
-      name: 'Pay-Per-Use',
-      subtitle: 'Credits System',
-      creditPacks: [
-        { credits: 5, price: 15, perCredit: 3 },
-        { credits: 15, price: 35, perCredit: 2.33 },
-        { credits: 50, price: 99, perCredit: 1.98 }
-      ],
-      description: 'Perfect for single projects. Pay only for what you use.',
-      features: [
-        { text: '1 credit = 1 AI generation', included: true },
-        { text: 'All design styles', included: true },
-        { text: 'Standard quality renders', included: true },
-        { text: 'Save up to 5 projects', included: true },
-        { text: 'Basic materials list', included: true },
-        { text: 'Email support', included: true },
-        { text: 'Credits never expire', included: true }
-      ],
-      cta: 'Buy Credits',
-      ctaLink: '/auth/register?plan=credits',
-      popular: false,
-      badge: '💳 Flexible'
-    },
-    free: {
-      id: 'free',
-      name: 'Free',
-      subtitle: 'Try It Out',
-      price: 0,
-      period: 'forever',
-      description: 'Get started with 3 free AI generations. No credit card required.',
-      features: [
-        { text: '3 AI generations total', included: true },
-        { text: 'Basic design styles', included: true },
-        { text: 'Standard quality renders', included: true },
-        { text: 'Save 1 project', included: true },
-        { text: 'Community support', included: true },
-        { text: 'HD renders', included: false },
-        { text: 'Materials list', included: false },
-        { text: 'Contractor matching', included: false }
-      ],
-      cta: 'Get Started Free',
+      bonus: '🎁 Obtenez 30 générations gratuites + projets illimités en concluant un projet avec un entrepreneur!',
+      cta: 'Commencer gratuitement',
       ctaLink: '/auth/register',
       popular: false
+    },
+    // Plan 2: Avancé - 29,99$ CAD/mois
+    advanced: {
+      id: 'advanced',
+      name: 'Avancé',
+      subtitle: 'Le plus populaire',
+      price: 29.99,
+      period: '/mois',
+      generations: 50,
+      description: '50 générations IA par mois. Idéal pour les rénovations actives et les projets multiples.',
+      features: [
+        { text: '50 générations IA / mois', included: true },
+        { text: 'Tous les styles de design', included: true },
+        { text: 'Qualité Ultra HD', included: true },
+        { text: 'Projets illimités', included: true },
+        { text: 'Connexion entrepreneur', included: true },
+        { text: 'Téléchargement PDF inclus', included: true },
+        { text: '3 générations supplémentaires: 3,99$', included: true, addon: true }
+      ],
+      cta: 'Choisir Avancé',
+      ctaLink: '/auth/register?plan=advanced',
+      highlight: 'Plus populaire',
+      popular: true,
+      badge: '⭐ Recommandé'
+    },
+    // Plan 3: Premium - 79,99$ CAD/mois
+    premium: {
+      id: 'premium',
+      name: 'Premium',
+      subtitle: 'Sans limites',
+      price: 79.99,
+      period: '/mois',
+      description: 'Générations illimitées pour les professionnels et les grands projets.',
+      features: [
+        { text: 'Générations IA illimitées', included: true },
+        { text: 'Tous les styles de design', included: true },
+        { text: 'Qualité Ultra HD', included: true },
+        { text: 'Projets illimités', included: true },
+        { text: 'Connexion entrepreneur', included: true },
+        { text: 'Téléchargement PDF inclus', included: true },
+        { text: 'Support prioritaire', included: true }
+      ],
+      cta: 'Choisir Premium',
+      ctaLink: '/auth/register?plan=premium',
+      popular: false,
+      badge: '👑 Pro'
     }
   };
 
