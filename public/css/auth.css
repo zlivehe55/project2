@@ -405,6 +405,10 @@
   color: #94a3b8;
 }
 
+[data-theme="dark"] .form-input::placeholder {
+  color: var(--text-muted);
+}
+
 /* Input with Icon */
 .input-icon-wrapper {
   position: relative;
@@ -418,6 +422,10 @@
   color: #94a3b8;
   pointer-events: none;
   transition: color 0.2s;
+}
+
+[data-theme="dark"] .input-icon {
+  color: var(--text-muted);
 }
 
 .input-icon i {
@@ -769,6 +777,39 @@
 .auth-footer p {
   font-size: 0.8rem;
   color: var(--auth-text-muted);
+}
+
+/* ==================== */
+/* DARK THEME OVERRIDES */
+/* ==================== */
+[data-theme="dark"] .auth-form-header p,
+[data-theme="dark"] .checkbox-group label,
+[data-theme="dark"] .auth-footer p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .auth-divider {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .auth-divider::before,
+[data-theme="dark"] .auth-divider::after {
+  background: var(--border-color);
+}
+
+[data-theme="dark"] .btn-social {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-social:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color-hover);
+}
+
+[data-theme="dark"] .auth-footer {
+  border-top-color: var(--border-color);
 }
 
 /* ==================== */
