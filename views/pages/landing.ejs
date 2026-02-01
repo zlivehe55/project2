@@ -762,7 +762,11 @@
       <p class="rooms-hint">Glissez pour explorer →</p>
     </div>
     
-    <div class="rooms-carousel">
+    <div class="rooms-carousel-wrap">
+      <button class="rooms-nav rooms-nav-prev" type="button" aria-label="Voir les pièces précédentes">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <div class="rooms-carousel">
       <div class="room-card">
         <div class="room-icon"><i data-lucide="sofa"></i></div>
         <span>Salon</span>
@@ -803,6 +807,10 @@
         <span>Terrasse</span>
         <div class="room-count">4K+ designs</div>
       </div>
+      </div>
+      <button class="rooms-nav rooms-nav-next" type="button" aria-label="Voir les pièces suivantes">
+        <i data-lucide="chevron-right"></i>
+      </button>
     </div>
   </div>
 </section>

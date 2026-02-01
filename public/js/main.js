@@ -848,6 +848,8 @@ window.CraftyCrib = {
 function initRoomsCarousel() {
   const carousel = document.querySelector('.rooms-carousel');
   if (!carousel) return;
+  const prevBtn = document.querySelector('.rooms-nav-prev');
+  const nextBtn = document.querySelector('.rooms-nav-next');
   
   let isPaused = false;
   let rafId;
@@ -867,6 +869,19 @@ function initRoomsCarousel() {
   carousel.addEventListener('mouseleave', () => { isPaused = false; });
   carousel.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
   carousel.addEventListener('touchend', () => { isPaused = false; });
+
+  if (prevBtn && nextBtn) {
+    const scrollByCard = (direction) => {
+      const card = carousel.querySelector('.room-card');
+      const cardWidth = card ? card.getBoundingClientRect().width : 160;
+      isPaused = true;
+      carousel.scrollBy({ left: direction * (cardWidth + 16), behavior: 'smooth' });
+      setTimeout(() => { isPaused = false; }, 800);
+    };
+    
+    prevBtn.addEventListener('click', () => scrollByCard(-1));
+    nextBtn.addEventListener('click', () => scrollByCard(1));
+  }
   
   loop();
 }
