@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initComparisonSliders();
   initCounterAnimations();
   initParallaxEffects();
+  initDraggableCarousel();
   
   // Fallback: ensure all content is visible after 2 seconds
   setTimeout(() => {
@@ -586,6 +587,111 @@ toastStyles.textContent = `
   }
 `;
 document.head.appendChild(toastStyles);
+
+/**
+ * Draggable Carousel for Styles Section
+ */
+function initDraggableCarousel() {
+  const wrapper = document.querySelector('.styles-carousel-wrapper');
+  const track = document.querySelector('.styles-track');
+  
+  if (!wrapper || !track) return;
+  
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+  let momentumID;
+  let velX = 0;
+  
+  // Mouse events
+  wrapper.addEventListener('mousedown', (e) => {
+    isDown = true;
+    wrapper.classList.add('is-dragging');
+    startX = e.pageX - wrapper.offsetLeft;
+    scrollLeft = wrapper.scrollLeft;
+    cancelMomentum();
+  });
+  
+  wrapper.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      wrapper.classList.remove('is-dragging');
+    }
+  });
+  
+  wrapper.addEventListener('mouseup', () => {
+    isDown = false;
+    wrapper.classList.remove('is-dragging');
+    startMomentum();
+  });
+  
+  wrapper.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - wrapper.offsetLeft;
+    const walk = (x - startX) * 2;
+    velX = walk - (wrapper.scrollLeft - scrollLeft);
+    wrapper.scrollLeft = scrollLeft - walk;
+  });
+  
+  // Touch events for mobile
+  wrapper.addEventListener('touchstart', (e) => {
+    isDown = true;
+    wrapper.classList.add('is-dragging');
+    startX = e.touches[0].pageX - wrapper.offsetLeft;
+    scrollLeft = wrapper.scrollLeft;
+    cancelMomentum();
+  }, { passive: true });
+  
+  wrapper.addEventListener('touchend', () => {
+    isDown = false;
+    wrapper.classList.remove('is-dragging');
+    startMomentum();
+  });
+  
+  wrapper.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    const x = e.touches[0].pageX - wrapper.offsetLeft;
+    const walk = (x - startX) * 2;
+    velX = walk - (wrapper.scrollLeft - scrollLeft);
+    wrapper.scrollLeft = scrollLeft - walk;
+  }, { passive: true });
+  
+  // Momentum scrolling
+  function startMomentum() {
+    cancelMomentum();
+    momentumID = requestAnimationFrame(momentumLoop);
+  }
+  
+  function cancelMomentum() {
+    if (momentumID) {
+      cancelAnimationFrame(momentumID);
+      momentumID = null;
+    }
+  }
+  
+  function momentumLoop() {
+    wrapper.scrollLeft -= velX;
+    velX *= 0.95;
+    if (Math.abs(velX) > 0.5) {
+      momentumID = requestAnimationFrame(momentumLoop);
+    }
+  }
+  
+  // Make wrapper scrollable
+  wrapper.style.overflowX = 'auto';
+  wrapper.style.scrollbarWidth = 'none'; // Firefox
+  wrapper.style.msOverflowStyle = 'none'; // IE
+  
+  // Hide scrollbar for Chrome/Safari
+  const style = document.createElement('style');
+  style.textContent = `
+    .styles-carousel-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 // Export for use in other scripts
 window.CraftyCrib = {
