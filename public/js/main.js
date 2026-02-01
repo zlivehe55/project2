@@ -80,15 +80,17 @@ function initThemeToggle() {
  * Navbar scroll effect
  */
 function initNavbarScroll() {
-  const navbar = document.querySelector('.navbar');
-  if (!navbar) return;
+  const navbars = document.querySelectorAll('.navbar, .navbar-landing');
+  if (!navbars.length) return;
   
   const handleScroll = () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+    navbars.forEach(navbar => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
   };
   
   window.addEventListener('scroll', handleScroll);
@@ -127,6 +129,7 @@ function initMobileMenu() {
   const mobileNav = document.querySelector('.mobile-nav');
   
   if (!menuBtn || !mobileNav) return;
+  let lastToggle = 0;
   
   const updateIcon = (isOpen) => {
     // Clear existing icons
@@ -141,14 +144,32 @@ function initMobileMenu() {
     }
   };
   
-  menuBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const toggleMenu = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const now = Date.now();
+    if (now - lastToggle < 300) return;
+    lastToggle = now;
     
     const isOpen = mobileNav.classList.toggle('active');
     menuBtn.classList.toggle('active', isOpen);
+    menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    mobileNav.style.display = isOpen ? 'flex' : '';
     updateIcon(isOpen);
+  };
+  
+  menuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMenu();
   });
+  
+  menuBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    toggleMenu(e);
+  }, { passive: false });
   
   // Close menu when clicking on a link
   mobileNav.querySelectorAll('a').forEach(link => {
@@ -679,7 +700,7 @@ function initDraggableCarousel() {
   let momentumID;
   let velX = 0;
   let autoScrollId;
-  const autoScrollSpeed = 0.6;
+  const autoScrollSpeed = 0.25;
   
   const pauseAuto = () => { isPaused = true; };
   const resumeAuto = () => { isPaused = false; };

@@ -951,7 +951,7 @@
 .styles-track {
   display: flex;
   gap: 1.25rem;
-  animation: slide-infinite 30s linear infinite;
+  animation: slide-infinite 60s linear infinite;
   width: max-content;
 }
 
@@ -2341,6 +2341,28 @@
   gap: 0.5rem;
   box-shadow: var(--shadow-lg);
   z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .mobile-nav {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 9999;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar-landing .nav-links,
+  .navbar-landing .nav-actions {
+    display: none !important;
+  }
+  
+  .navbar-landing .mobile-menu-btn {
+    display: flex !important;
+  }
 }
 
 .mobile-nav.active {
