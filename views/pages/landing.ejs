@@ -1,83 +1,403 @@
 <!-- Hero Section -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <i data-lucide="sparkles"></i>
-      <span>Criby, l'IA de design de CraftyCrib</span>
+  <!-- Animated Background -->
+  <div class="hero-bg">
+    <div class="hero-gradient"></div>
+    <div class="hero-grid"></div>
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+      <div class="shape shape-5"></div>
+    </div>
+  </div>
+
+  <div class="hero-container">
+    <div class="hero-content" data-animate="fade-up">
+      <div class="hero-badge animate-pulse-glow">
+        <i data-lucide="sparkles"></i>
+        <span>Criby, l'IA de design de CraftyCrib</span>
+        <span class="badge-new">NOUVEAU</span>
+      </div>
+      
+      <h1 class="hero-title">
+        <span class="title-line" data-animate="fade-up" data-delay="100">Réinventez votre</span>
+        <span class="title-line title-gradient" data-animate="fade-up" data-delay="200">intérieur en un instant</span>
+      </h1>
+      
+      <p class="hero-subtitle" data-animate="fade-up" data-delay="300">
+        Téléchargez une photo, décrivez votre vision et laissez Criby, notre IA révolutionnaire, 
+        générer instantanément des designs photoréalistes. De la vision à la réalisation 
+        avec nos experts qualifiés.
+      </p>
+      
+      <div class="hero-actions" data-animate="fade-up" data-delay="400">
+        <a href="/auth/register" class="btn btn-primary btn-lg btn-glow">
+          <i data-lucide="wand-2"></i>
+          Commencer gratuitement
+          <span class="btn-shine"></span>
+        </a>
+        <a href="#how-it-works" class="btn btn-glass btn-lg">
+          <i data-lucide="play-circle"></i>
+          Voir la démo
+        </a>
+      </div>
+      
+      <div class="hero-stats" data-animate="fade-up" data-delay="500">
+        <div class="stat">
+          <span class="stat-value" data-counter="2410">0</span>
+          <span class="stat-suffix">K+</span>
+          <span class="stat-label">Utilisateurs actifs</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" data-counter="30">&lt;30</span>
+          <span class="stat-suffix">sec</span>
+          <span class="stat-label">Génération IA</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" data-counter="80">0</span>
+          <span class="stat-suffix">+</span>
+          <span class="stat-label">Styles de design</span>
+        </div>
+      </div>
     </div>
     
-    <h1 class="hero-title">
-      Réinventez votre intérieur<br>
-      <span class="gradient-text">en un instant</span>
-    </h1>
-    
-    <p class="hero-subtitle">
-      Téléchargez une photo, décrivez votre vision et laissez Criby, l'IA de CraftyCrib, 
-      générer instantanément des maquettes 3D de votre projet. Passez ensuite de la vision 
-      à la réalisation avec nos experts qualifiés.
-    </p>
-    
-    <div class="hero-actions">
-      <a href="/auth/register" class="btn btn-primary btn-lg">
-        <i data-lucide="wand-2"></i>
-        Commencer maintenant
-      </a>
-      <a href="#how-it-works" class="btn btn-secondary btn-lg">
-        <i data-lucide="play-circle"></i>
-        Comment ça marche
-      </a>
-    </div>
-    
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-value">15+</span>
-        <span class="stat-label">Styles de design</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-value">&lt;10s</span>
-        <span class="stat-label">Génération avec Criby</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-value">50+</span>
-        <span class="stat-label">Fonctionnalités</span>
+    <div class="hero-visual" data-animate="fade-left" data-delay="200">
+      <div class="hero-showcase">
+        <!-- Interactive Before/After Slider -->
+        <div class="comparison-slider" id="heroComparison">
+          <div class="comparison-before">
+            <img src="/assets/beforelivingroom.jpeg" alt="Salon avant transformation">
+            <span class="comparison-label comparison-label-before">AVANT</span>
+          </div>
+          <div class="comparison-after">
+            <img src="/assets/afterlivingingroom.jpeg" alt="Salon après transformation">
+            <span class="comparison-label comparison-label-after">APRÈS</span>
+          </div>
+          <div class="comparison-handle">
+            <div class="handle-line"></div>
+            <div class="handle-circle">
+              <i data-lucide="move-horizontal"></i>
+            </div>
+            <div class="handle-line"></div>
+          </div>
+        </div>
+        
+        <!-- Floating UI Cards -->
+        <div class="floating-card floating-card-style">
+          <i data-lucide="palette"></i>
+          <span>Style Moderne</span>
+        </div>
+        <div class="floating-card floating-card-ai">
+          <div class="ai-indicator">
+            <span class="ai-dot"></span>
+            <span>Criby AI</span>
+          </div>
+          <span class="ai-status">Génération en cours...</span>
+        </div>
+        <div class="floating-card floating-card-rating">
+          <div class="rating-stars">
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+            <i data-lucide="star"></i>
+          </div>
+          <span>4.9 / 5</span>
+        </div>
       </div>
     </div>
   </div>
   
-  <div class="hero-image">
-    <div class="hero-mockup-card">
-      <div class="mockup-header">
-        <span class="mockup-dot"></span>
-        <span class="mockup-dot"></span>
-        <span class="mockup-dot"></span>
-      </div>
-      <div class="mockup-content">
-        <div class="mockup-before">
-          <img src="/assets/beforelivingroom.jpeg" alt="Salon avant transformation">
-          <span class="label">AVANT</span>
-        </div>
-        <div class="mockup-arrow">
-          <i data-lucide="sparkles"></i>
-        </div>
-        <div class="mockup-after">
-          <img src="/assets/afterlivingingroom.jpeg" alt="Salon après transformation">
-          <span class="label">APRÈS</span>
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator">
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+    <span>Défiler pour découvrir</span>
+  </div>
+</section>
+
+<!-- Trusted By / Marquee -->
+<section class="trusted-section">
+  <div class="trusted-container">
+    <p class="trusted-label">Utilisé par <span class="highlight">2.4M+</span> propriétaires et professionnels dans le monde</p>
+    <div class="marquee-wrapper">
+      <div class="marquee">
+        <div class="marquee-content">
+          <span class="marquee-item"><i data-lucide="home"></i> Propriétaires</span>
+          <span class="marquee-item"><i data-lucide="paintbrush"></i> Designers d'intérieur</span>
+          <span class="marquee-item"><i data-lucide="building-2"></i> Architectes</span>
+          <span class="marquee-item"><i data-lucide="hammer"></i> Entrepreneurs</span>
+          <span class="marquee-item"><i data-lucide="building"></i> Agences immobilières</span>
+          <span class="marquee-item"><i data-lucide="trees"></i> Paysagistes</span>
+          <span class="marquee-item"><i data-lucide="home"></i> Propriétaires</span>
+          <span class="marquee-item"><i data-lucide="paintbrush"></i> Designers d'intérieur</span>
+          <span class="marquee-item"><i data-lucide="building-2"></i> Architectes</span>
+          <span class="marquee-item"><i data-lucide="hammer"></i> Entrepreneurs</span>
+          <span class="marquee-item"><i data-lucide="building"></i> Agences immobilières</span>
+          <span class="marquee-item"><i data-lucide="trees"></i> Paysagistes</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Trusted By -->
-<section class="trusted-section">
-  <p class="trusted-label">Utilisé par des propriétaires et professionnels partout dans le monde</p>
-  <div class="trusted-logos">
-    <span class="trusted-logo">HomeDesigns.AI</span>
-    <span class="trusted-logo">Renovation Pro</span>
-    <span class="trusted-logo">DesignStudio</span>
-    <span class="trusted-logo">BuildSmart</span>
+<!-- Styles Showcase Slider -->
+<section class="styles-slider-section">
+  <div class="container">
+    <div class="section-header styles-header">
+      <span class="section-badge">
+        <i data-lucide="palette"></i>
+        Styles
+      </span>
+      <h2 class="section-title">Explorez nos <span class="gradient-text">styles de design</span></h2>
+      <p class="section-subtitle">Plus de 80 styles uniques pour transformer n'importe quel espace</p>
+    </div>
+    
+    <div class="styles-carousel-wrapper">
+      <div class="styles-carousel">
+        <div class="styles-track">
+          <!-- First set -->
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <div class="style-label">Modern Arabic</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Nordic Black.jpeg" alt="Nordic Black">
+              <div class="style-label">Nordic Black</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Bali.jpeg" alt="Bali">
+              <div class="style-label">Bali</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Industrial.jpeg" alt="Industrial">
+              <div class="style-label">Industrial</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Luxury.jpeg" alt="Luxury">
+              <div class="style-label">Luxury</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Marbre.jpeg" alt="Marbre">
+              <div class="style-label">Marbre</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Rustic.jpeg" alt="Rustic">
+              <div class="style-label">Rustic</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Bois.jpeg" alt="Bois">
+              <div class="style-label">Bois</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Granite.jpeg" alt="Granite">
+              <div class="style-label">Granite</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Quartz.jpeg" alt="Quartz">
+              <div class="style-label">Quartz</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Industrial2.jpeg" alt="Industrial Loft">
+              <div class="style-label">Industrial Loft</div>
+            </div>
+          </div>
+          <!-- Duplicate set for infinite scroll -->
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <div class="style-label">Modern Arabic</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Nordic Black.jpeg" alt="Nordic Black">
+              <div class="style-label">Nordic Black</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Bali.jpeg" alt="Bali">
+              <div class="style-label">Bali</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Industrial.jpeg" alt="Industrial">
+              <div class="style-label">Industrial</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Luxury.jpeg" alt="Luxury">
+              <div class="style-label">Luxury</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Marbre.jpeg" alt="Marbre">
+              <div class="style-label">Marbre</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Rustic.jpeg" alt="Rustic">
+              <div class="style-label">Rustic</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Bois.jpeg" alt="Bois">
+              <div class="style-label">Bois</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Granite.jpeg" alt="Granite">
+              <div class="style-label">Granite</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Quartz.jpeg" alt="Quartz">
+              <div class="style-label">Quartz</div>
+            </div>
+          </div>
+          <div class="style-slide">
+            <div class="style-card">
+              <img src="/assets/11houses/Industrial2.jpeg" alt="Industrial Loft">
+              <div class="style-label">Industrial Loft</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gradient overlays for fade effect -->
+      <div class="carousel-fade carousel-fade-left"></div>
+      <div class="carousel-fade carousel-fade-right"></div>
+    </div>
+    
+    <div class="styles-cta">
+      <a href="/auth/register" class="btn btn-primary btn-lg">
+        <i data-lucide="sparkles"></i>
+        Essayer tous les styles
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Showcase -->
+<section class="gallery-section" id="gallery">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">
+        <i data-lucide="images"></i>
+        Galerie
+      </span>
+      <h2 class="section-title">Découvrez des <span class="gradient-text">transformations époustouflantes</span></h2>
+      <p class="section-subtitle">Des designs générés par notre IA en quelques secondes seulement</p>
+    </div>
+    
+    <div class="gallery-grid">
+      <div class="gallery-item gallery-item-large">
+        <div class="gallery-image">
+          <img src="/assets/houeses/house1.jpeg" alt="Design maison moderne">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Extérieur Moderne</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-image">
+          <img src="/assets/houeses/house2.jpeg" alt="Design maison contemporaine">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Contemporain</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-image">
+          <img src="/assets/houeses/house3.jpeg" alt="Design maison luxe">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Luxe</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item gallery-item-wide">
+        <div class="gallery-image">
+          <img src="/assets/houeses/house4.jpeg" alt="Design maison villa">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Villa Méditerranéenne</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-image">
+          <img src="/assets/afterhouse.jpeg" alt="Design extérieur rénové">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Rénovation</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-image">
+          <img src="/assets/afterlivingingroom.jpeg" alt="Salon design">
+          <div class="gallery-overlay">
+            <span class="gallery-tag">Intérieur Moderne</span>
+            <div class="gallery-actions">
+              <button class="gallery-btn"><i data-lucide="heart"></i></button>
+              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -85,39 +405,55 @@
 <section id="features" class="features-section">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">Caractéristiques</span>
-      <h2 class="section-title">La solution complète pour concevoir et<br><span class="gradient-text">concrétiser votre projet intérieur</span></h2>
-      <p class="section-subtitle">De la visualisation par IA à la mise en relation avec les sous-traitants, nous avons tout prévu.</p>
+      <span class="section-badge">
+        <i data-lucide="zap"></i>
+        Fonctionnalités
+      </span>
+      <h2 class="section-title">La solution complète pour<br><span class="gradient-text">transformer vos espaces</span></h2>
+      <p class="section-subtitle">De la visualisation par IA à la réalisation avec des professionnels qualifiés</p>
     </div>
     
-    <div class="features-grid">
-      <div class="feature-card feature-main">
-        <div class="feature-icon-lg">
-          <i data-lucide="wand-2"></i>
+    <div class="features-bento">
+      <!-- Main Feature -->
+      <div class="feature-card feature-card-main">
+        <div class="feature-visual">
+          <div class="feature-mockup">
+            <img src="/assets/beforelivingroom.jpeg" alt="Génération IA" class="mockup-img mockup-before">
+            <img src="/assets/afterlivingingroom.jpeg" alt="Résultat IA" class="mockup-img mockup-after">
+            <div class="mockup-transition">
+              <i data-lucide="sparkles"></i>
+            </div>
+          </div>
         </div>
-        <h3>Génération de conception par IA</h3>
-        <p>Téléchargez la photo de votre pièce et obtenez des rendus photographiques en quelques secondes. Notre IA comprend vos préférences et crée des visualisations époustouflantes.</p>
-        <div class="feature-tags">
-          <span class="tag">15+ Styles</span>
-          <span class="tag">Qualité HD</span>
-          <span class="tag">Résultats instantanés</span>
+        <div class="feature-content">
+          <div class="feature-icon feature-icon-lg">
+            <i data-lucide="wand-2"></i>
+          </div>
+          <h3>Génération IA en temps réel</h3>
+          <p>Notre IA Criby analyse votre photo et génère des designs photoréalistes en moins de 30 secondes. Explorez des dizaines de styles différents instantanément.</p>
+          <div class="feature-tags">
+            <span class="tag tag-glow"><i data-lucide="zap"></i> Ultra rapide</span>
+            <span class="tag"><i data-lucide="image"></i> HD</span>
+            <span class="tag"><i data-lucide="palette"></i> 80+ styles</span>
+          </div>
         </div>
       </div>
       
+      <!-- Secondary Features -->
       <div class="feature-card">
         <div class="feature-icon">
           <i data-lucide="layers"></i>
         </div>
-        <h3>Plusieurs variantes</h3>
-        <p>Générez plusieurs versions de design en fonction de différents budgets et styles. Comparez-les et choisissez votre préférée.</p>
+        <h3>Variantes multiples</h3>
+        <p>Générez plusieurs versions selon différents budgets et styles. Comparez et choisissez la meilleure.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon">
           <i data-lucide="palette"></i>
         </div>
-        <h3>Personnalisation du style</h3>
-        <p>Modifiez les couleurs, les matériaux et les agencements. Régénérez jusqu'à obtenir le design parfait.</p>
+        <h3>Personnalisation totale</h3>
+        <p>Modifiez couleurs, matériaux et agencements. Affinez jusqu'au design parfait.</p>
       </div>
       
       <div class="feature-card">
@@ -125,23 +461,23 @@
           <i data-lucide="list-checks"></i>
         </div>
         <h3>Liste de matériaux</h3>
-        <p>Obtenez une liste complète des matériaux nécessaires avec des recommandations de fournisseurs et des prix.</p>
+        <p>Obtenez une liste complète avec recommandations de fournisseurs et estimations de prix.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon">
           <i data-lucide="users"></i>
         </div>
-        <h3>Mise en relation avec des entrepreneurs</h3>
-        <p>Connectez-vous avec des professionnels vérifiés qui peuvent transformer votre design IA en réalité.</p>
+        <h3>Réseau d'entrepreneurs</h3>
+        <p>Connectez-vous avec des professionnels vérifiés pour concrétiser votre vision.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon">
           <i data-lucide="calculator"></i>
         </div>
-        <h3>Estimation des coûts</h3>
-        <p>Obtenez des estimations de coûts précises avant de vous engager. Budgétisez en toute confiance.</p>
+        <h3>Estimation précise</h3>
+        <p>Budgétisez en toute confiance avec nos estimations de coûts détaillées.</p>
       </div>
       
       <div class="feature-card">
@@ -149,7 +485,7 @@
           <i data-lucide="share-2"></i>
         </div>
         <h3>Partage facile</h3>
-        <p>Partagez vos designs avec votre famille, vos amis ou des entrepreneurs via un simple lien.</p>
+        <p>Partagez vos designs via un simple lien avec famille, amis ou entrepreneurs.</p>
       </div>
     </div>
   </div>
@@ -159,46 +495,256 @@
 <section id="how-it-works" class="how-section">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">Comment ça marche</span>
+      <span class="section-badge">
+        <i data-lucide="route"></i>
+        Processus
+      </span>
       <h2 class="section-title">De la photo à la<br><span class="gradient-text">pièce de vos rêves</span></h2>
-      <p class="section-subtitle">Transformez n'importe quel espace en seulement 4 étapes simples.</p>
+      <p class="section-subtitle">4 étapes simples pour transformer n'importe quel espace</p>
     </div>
     
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <div class="step-icon">
-          <i data-lucide="upload-cloud"></i>
+    <div class="steps-timeline">
+      <div class="timeline-line"></div>
+      
+      <div class="step-item">
+        <div class="step-number">
+          <span>01</span>
         </div>
-        <h3>Téléchargez votre photo</h3>
-        <p>Prenez une photo de n'importe quelle pièce que vous souhaitez redessiner et téléchargez-la.</p>
+        <div class="step-content">
+          <div class="step-icon">
+            <i data-lucide="upload-cloud"></i>
+          </div>
+          <h3>Téléchargez votre photo</h3>
+          <p>Prenez une photo de n'importe quelle pièce et téléchargez-la en un clic.</p>
+        </div>
+        <div class="step-visual">
+          <div class="step-phone">
+            <i data-lucide="smartphone"></i>
+            <i data-lucide="camera" class="phone-icon"></i>
+          </div>
+        </div>
       </div>
       
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <div class="step-icon">
-          <i data-lucide="pencil-ruler"></i>
+      <div class="step-item">
+        <div class="step-number">
+          <span>02</span>
         </div>
-        <h3>Décrivez votre vision</h3>
-        <p>Décrivez vos préférences de style, votre budget et vos indispensables.</p>
+        <div class="step-content">
+          <div class="step-icon">
+            <i data-lucide="pencil-ruler"></i>
+          </div>
+          <h3>Décrivez votre vision</h3>
+          <p>Indiquez vos préférences de style, budget et éléments indispensables.</p>
+        </div>
+        <div class="step-visual">
+          <div class="step-bubbles">
+            <span class="bubble">Moderne</span>
+            <span class="bubble">Lumineux</span>
+            <span class="bubble">€5K</span>
+          </div>
+        </div>
       </div>
       
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <div class="step-icon">
-          <i data-lucide="sparkles"></i>
+      <div class="step-item">
+        <div class="step-number">
+          <span>03</span>
         </div>
-        <h3>Criby crée vos designs</h3>
-        <p>Notre IA génère des maquettes photoréalistes de votre espace redessiné en quelques secondes.</p>
+        <div class="step-content">
+          <div class="step-icon">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <h3>Criby crée vos designs</h3>
+          <p>Notre IA génère des maquettes photoréalistes en moins de 30 secondes.</p>
+        </div>
+        <div class="step-visual">
+          <div class="step-magic">
+            <div class="magic-circle"></div>
+            <i data-lucide="wand-2"></i>
+          </div>
+        </div>
       </div>
       
-      <div class="step-card">
-        <div class="step-number">4</div>
-        <div class="step-icon">
-          <i data-lucide="hammer"></i>
+      <div class="step-item">
+        <div class="step-number">
+          <span>04</span>
         </div>
-        <h3>Réalisez votre projet</h3>
-        <p>DIY avec notre guide des matériaux ou connectez-vous avec des entrepreneurs vérifiés.</p>
+        <div class="step-content">
+          <div class="step-icon">
+            <i data-lucide="hammer"></i>
+          </div>
+          <h3>Réalisez votre projet</h3>
+          <p>DIY avec notre guide ou connectez-vous avec des entrepreneurs vérifiés.</p>
+        </div>
+        <div class="step-visual">
+          <div class="step-success">
+            <i data-lucide="check-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Before/After Showcase -->
+<section class="showcase-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">
+        <i data-lucide="sparkles"></i>
+        Transformations
+      </span>
+      <h2 class="section-title">Voyez la magie<br><span class="gradient-text">de l'IA en action</span></h2>
+      <p class="section-subtitle">Glissez pour comparer les transformations réalisées en quelques secondes</p>
+    </div>
+    
+    <div class="showcase-grid">
+      <!-- Living Room Comparison -->
+      <div class="showcase-card">
+        <div class="comparison-slider showcase-comparison" data-comparison>
+          <div class="comparison-before">
+            <img src="/assets/beforelivingroom.jpeg" alt="Salon avant">
+            <span class="comparison-label comparison-label-before">AVANT</span>
+          </div>
+          <div class="comparison-after">
+            <img src="/assets/afterlivingingroom.jpeg" alt="Salon après">
+            <span class="comparison-label comparison-label-after">APRÈS</span>
+          </div>
+          <div class="comparison-handle">
+            <div class="handle-line"></div>
+            <div class="handle-circle">
+              <i data-lucide="grip-vertical"></i>
+            </div>
+            <div class="handle-line"></div>
+          </div>
+        </div>
+        <div class="showcase-info">
+          <h3>Salon Moderne</h3>
+          <p>Transformation complète avec style minimaliste et tons neutres</p>
+          <div class="showcase-tags">
+            <span>Moderne</span>
+            <span>Minimaliste</span>
+            <span class="tag-time"><i data-lucide="clock"></i> 28 sec</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Exterior Comparison -->
+      <div class="showcase-card">
+        <div class="comparison-slider showcase-comparison" data-comparison>
+          <div class="comparison-before">
+            <img src="/assets/beforehouse.jpeg" alt="Maison avant">
+            <span class="comparison-label comparison-label-before">AVANT</span>
+          </div>
+          <div class="comparison-after">
+            <img src="/assets/afterhouse.jpeg" alt="Maison après">
+            <span class="comparison-label comparison-label-after">APRÈS</span>
+          </div>
+          <div class="comparison-handle">
+            <div class="handle-line"></div>
+            <div class="handle-circle">
+              <i data-lucide="grip-vertical"></i>
+            </div>
+            <div class="handle-line"></div>
+          </div>
+        </div>
+        <div class="showcase-info">
+          <h3>Façade Extérieure</h3>
+          <p>Rénovation extérieure avec aménagement paysager moderne</p>
+          <div class="showcase-tags">
+            <span>Extérieur</span>
+            <span>Contemporain</span>
+            <span class="tag-time"><i data-lucide="clock"></i> 32 sec</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">
+        <i data-lucide="message-circle"></i>
+        Témoignages
+      </span>
+      <h2 class="section-title">Ce que disent<br><span class="gradient-text">nos utilisateurs</span></h2>
+    </div>
+    
+    <div class="testimonials-slider" data-animate="fade-up">
+      <div class="testimonials-track">
+        <div class="testimonial-card">
+          <div class="testimonial-rating">
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+          </div>
+          <p>"CraftyCrib a transformé ma façon de visualiser mes projets de rénovation. En 30 secondes, j'ai eu une vision claire de mon futur salon !"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MR</div>
+            <div class="author-info">
+              <strong>Marie R.</strong>
+              <span>Propriétaire, Paris</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-rating">
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+          </div>
+          <p>"En tant qu'architecte d'intérieur, Criby m'aide à présenter des concepts à mes clients en un temps record. Un outil indispensable !"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PD</div>
+            <div class="author-info">
+              <strong>Pierre D.</strong>
+              <span>Architecte d'intérieur, Lyon</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-rating">
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+          </div>
+          <p>"La qualité des rendus est impressionnante. Mes clients sont bluffés quand je leur montre les possibilités pour leur maison."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SL</div>
+            <div class="author-info">
+              <strong>Sophie L.</strong>
+              <span>Agent immobilier, Bordeaux</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="testimonial-rating">
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+            <i data-lucide="star" class="star-filled"></i>
+          </div>
+          <p>"J'ai économisé des semaines de travail grâce à CraftyCrib. La connexion avec des entrepreneurs qualifiés est un vrai plus !"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JB</div>
+            <div class="author-info">
+              <strong>Jean B.</strong>
+              <span>Propriétaire, Marseille</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -208,17 +754,54 @@
 <section class="rooms-section">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">Types de pièces</span>
+      <span class="section-badge">
+        <i data-lucide="layout-grid"></i>
+        Espaces
+      </span>
       <h2 class="section-title">Concevez n'importe quelle pièce<br><span class="gradient-text">de votre maison</span></h2>
     </div>
     
-    <div class="rooms-grid">
-      <div class="room-card"><div class="room-icon"><i data-lucide="sofa"></i></div><span>Salon</span></div>
-      <div class="room-card"><div class="room-icon"><i data-lucide="bed"></i></div><span>Chambre</span></div>
-      <div class="room-card"><div class="room-icon"><i data-lucide="utensils"></i></div><span>Cuisine</span></div>
-      <div class="room-card"><div class="room-icon"><i data-lucide="bath"></i></div><span>Salle de bain</span></div>
-      <div class="room-card"><div class="room-icon"><i data-lucide="briefcase"></i></div><span>Bureau</span></div>
-      <div class="room-card"><div class="room-icon"><i data-lucide="tree"></i></div><span>Extérieur</span></div>
+    <div class="rooms-carousel">
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="sofa"></i></div>
+        <span>Salon</span>
+        <div class="room-count">12K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="bed"></i></div>
+        <span>Chambre</span>
+        <div class="room-count">8K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="utensils"></i></div>
+        <span>Cuisine</span>
+        <div class="room-count">10K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="bath"></i></div>
+        <span>Salle de bain</span>
+        <div class="room-count">6K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="briefcase"></i></div>
+        <span>Bureau</span>
+        <div class="room-count">5K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="tree"></i></div>
+        <span>Extérieur</span>
+        <div class="room-count">15K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="flower-2"></i></div>
+        <span>Jardin</span>
+        <div class="room-count">9K+ designs</div>
+      </div>
+      <div class="room-card">
+        <div class="room-icon"><i data-lucide="sun"></i></div>
+        <span>Terrasse</span>
+        <div class="room-count">4K+ designs</div>
+      </div>
     </div>
   </div>
 </section>
@@ -227,9 +810,12 @@
 <section id="pricing" class="pricing-section">
   <div class="container">
     <div class="section-header">
-      <span class="section-badge">Tarifs</span>
+      <span class="section-badge">
+        <i data-lucide="tag"></i>
+        Tarifs
+      </span>
       <h2 class="section-title">Des tarifs simples et<br><span class="gradient-text">transparents</span></h2>
-      <p class="section-subtitle">Commencez gratuitement. Évoluez quand vous en avez besoin.</p>
+      <p class="section-subtitle">Commencez gratuitement. Évoluez selon vos besoins.</p>
     </div>
     
     <div class="pricing-grid">
@@ -241,7 +827,7 @@
             <span class="amount">€0</span>
             <span class="period">pour toujours</span>
           </div>
-          <p>Parfait pour essayer</p>
+          <p>Parfait pour découvrir</p>
         </div>
         <ul class="pricing-features">
           <li><i data-lucide="check"></i> 3 générations IA par mois</li>
@@ -250,12 +836,15 @@
           <li><i data-lucide="check"></i> Jusqu'à 2 projets</li>
           <li><i data-lucide="check"></i> Support communautaire</li>
         </ul>
-        <a href="/auth/register" class="btn btn-outline btn-block">Commencer</a>
+        <a href="/auth/register" class="btn btn-outline btn-block">Commencer gratuitement</a>
       </div>
       
       <!-- Pro Plan -->
       <div class="pricing-card pricing-featured">
-        <div class="pricing-badge">Le plus populaire</div>
+        <div class="pricing-badge">
+          <i data-lucide="crown"></i>
+          Le plus populaire
+        </div>
         <div class="pricing-header">
           <h3>Pro</h3>
           <div class="price">
@@ -273,7 +862,10 @@
           <li><i data-lucide="check"></i> Connexion entrepreneurs</li>
           <li><i data-lucide="check"></i> Support prioritaire</li>
         </ul>
-        <a href="/auth/register" class="btn btn-primary btn-block">Essai gratuit</a>
+        <a href="/auth/register" class="btn btn-primary btn-block btn-glow">
+          Essai gratuit 7 jours
+          <span class="btn-shine"></span>
+        </a>
       </div>
       
       <!-- Premium Plan -->
@@ -302,80 +894,31 @@
   </div>
 </section>
 
-<!-- Before/After Showcase -->
-<section class="showcase-section">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-badge">Transformations</span>
-      <h2 class="section-title">Voyez la magie<br><span class="gradient-text">de l'IA en action</span></h2>
-      <p class="section-subtitle">Des transformations réelles créées par notre IA en quelques secondes</p>
-    </div>
-    
-    <div class="showcase-grid">
-      <!-- Living Room Transformation -->
-      <div class="showcase-card">
-        <div class="showcase-comparison">
-          <div class="showcase-before">
-            <img src="/assets/beforelivingroom.jpeg" alt="Salon avant transformation">
-            <span class="showcase-label">Avant</span>
-          </div>
-          <div class="showcase-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </div>
-          <div class="showcase-after">
-            <img src="/assets/afterlivingingroom.jpeg" alt="Salon après transformation">
-            <span class="showcase-label">Après</span>
-          </div>
-        </div>
-        <div class="showcase-info">
-          <h3>Salon Moderne</h3>
-          <p>Transformation complète avec style minimaliste et tons neutres</p>
-          <div class="showcase-tags">
-            <span>Moderne</span>
-            <span>Minimaliste</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- House Exterior Transformation -->
-      <div class="showcase-card">
-        <div class="showcase-comparison">
-          <div class="showcase-before">
-            <img src="/assets/beforehouse.jpeg" alt="Maison avant transformation">
-            <span class="showcase-label">Avant</span>
-          </div>
-          <div class="showcase-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </div>
-          <div class="showcase-after">
-            <img src="/assets/afterhouse.jpeg" alt="Maison après transformation">
-            <span class="showcase-label">Après</span>
-          </div>
-        </div>
-        <div class="showcase-info">
-          <h3>Façade Extérieure</h3>
-          <p>Rénovation extérieure avec aménagement paysager moderne</p>
-          <div class="showcase-tags">
-            <span>Extérieur</span>
-            <span>Contemporain</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- CTA Section -->
 <section class="cta-section">
+  <div class="cta-bg">
+    <div class="cta-gradient"></div>
+    <div class="cta-pattern"></div>
+  </div>
   <div class="container">
-    <div class="cta-content">
-      <h2>Prêt à transformer votre espace ?</h2>
-      <p>Rejoignez des milliers de propriétaires utilisant l'IA pour visualiser leur maison de rêve.</p>
-      <a href="/auth/register" class="btn btn-primary btn-lg">
-        <i data-lucide="sparkles"></i>
-        Commencer maintenant
-      </a>
-      <p class="cta-note">Aucune carte de crédit requise • 3 designs gratuits</p>
+    <div class="cta-content" data-animate="fade-up">
+      <div class="cta-badge">
+        <i data-lucide="rocket"></i>
+        <span>Rejoignez 2.4M+ utilisateurs</span>
+      </div>
+      <h2>Prêt à transformer<br><span class="gradient-text">votre espace ?</span></h2>
+      <p>Commencez gratuitement et visualisez votre maison de rêve en quelques secondes.</p>
+      <div class="cta-actions">
+        <a href="/auth/register" class="btn btn-primary btn-xl btn-glow">
+          <i data-lucide="sparkles"></i>
+          Commencer maintenant
+          <span class="btn-shine"></span>
+        </a>
+      </div>
+      <div class="cta-trust">
+        <i data-lucide="shield-check"></i>
+        <span>Aucune carte de crédit requise • 3 designs gratuits • Annulation facile</span>
+      </div>
     </div>
   </div>
 </section>

@@ -1,6 +1,7 @@
 /**
  * CraftyCrib - Main JavaScript
  * AI-Powered Interior Design Platform
+ * With Scroll Animations & Interactive Elements
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -9,20 +10,25 @@ document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
   }
 
-  // Navbar scroll effect
+  // Core functionality
   initNavbarScroll();
-  
-  // Alert auto-dismiss
   initAlertDismiss();
-  
-  // Mobile menu
   initMobileMenu();
-  
-  // Smooth scroll
   initSmoothScroll();
-  
-  // Form enhancements
   initFormEnhancements();
+  
+  // Landing page animations
+  initScrollAnimations();
+  initComparisonSliders();
+  initCounterAnimations();
+  initParallaxEffects();
+  
+  // Fallback: ensure all content is visible after 2 seconds
+  setTimeout(() => {
+    document.querySelectorAll('[data-animate]').forEach(el => {
+      el.classList.add('animated');
+    });
+  }, 2000);
 });
 
 /**
@@ -51,14 +57,12 @@ function initAlertDismiss() {
   const alerts = document.querySelectorAll('.alert');
   
   alerts.forEach(alert => {
-    // Auto dismiss after 5 seconds
     setTimeout(() => {
       alert.style.opacity = '0';
       alert.style.transform = 'translateY(-10px)';
       setTimeout(() => alert.remove(), 300);
     }, 5000);
     
-    // Manual dismiss
     const closeBtn = alert.querySelector('.alert-close');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
@@ -105,9 +109,12 @@ function initSmoothScroll() {
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
+        const offset = 80; // Navbar height
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
         });
       }
     });
@@ -158,6 +165,213 @@ function initFormEnhancements() {
 }
 
 /**
+ * Scroll-triggered animations
+ */
+function initScrollAnimations() {
+  const animatedElements = document.querySelectorAll('[data-animate]');
+  
+  if (animatedElements.length === 0) return;
+  
+  // Function to animate an element
+  const animateElement = (el) => {
+    const delay = el.dataset.delay || 0;
+    setTimeout(() => {
+      el.classList.add('animated');
+    }, parseInt(delay));
+  };
+  
+  // Immediately animate elements in viewport
+  const animateVisibleElements = () => {
+    animatedElements.forEach(el => {
+      if (el.classList.contains('animated')) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
+        animateElement(el);
+      }
+    });
+  };
+  
+  // Run immediately
+  animateVisibleElements();
+  
+  // Also run after a short delay to catch late-loading elements
+  setTimeout(animateVisibleElements, 100);
+  setTimeout(animateVisibleElements, 500);
+  
+  // Use IntersectionObserver for remaining elements
+  if ('IntersectionObserver' in window) {
+    const observerOptions = {
+      root: null,
+      rootMargin: '50px 0px',
+      threshold: 0.05
+    };
+    
+    const animationObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+          animateElement(entry.target);
+          animationObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    animatedElements.forEach(el => {
+      if (!el.classList.contains('animated')) {
+        animationObserver.observe(el);
+      }
+    });
+  } else {
+    // Fallback: animate all on scroll
+    const scrollHandler = throttle(() => {
+      animateVisibleElements();
+    }, 100);
+    
+    window.addEventListener('scroll', scrollHandler);
+  }
+  
+  // Also animate on scroll as backup
+  window.addEventListener('scroll', throttle(animateVisibleElements, 150));
+}
+
+/**
+ * Before/After Comparison Sliders
+ */
+function initComparisonSliders() {
+  const sliders = document.querySelectorAll('.comparison-slider');
+  
+  sliders.forEach(slider => {
+    const afterElement = slider.querySelector('.comparison-after');
+    const handle = slider.querySelector('.comparison-handle');
+    
+    if (!afterElement || !handle) return;
+    
+    let isDragging = false;
+    
+    const updateSliderPosition = (x) => {
+      const rect = slider.getBoundingClientRect();
+      let percentage = ((x - rect.left) / rect.width) * 100;
+      percentage = Math.max(0, Math.min(100, percentage));
+      
+      afterElement.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
+      handle.style.left = `${percentage}%`;
+    };
+    
+    // Mouse events
+    slider.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      updateSliderPosition(e.clientX);
+      slider.style.cursor = 'grabbing';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      updateSliderPosition(e.clientX);
+    });
+    
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      slider.style.cursor = 'ew-resize';
+    });
+    
+    // Touch events
+    slider.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      updateSliderPosition(e.touches[0].clientX);
+    });
+    
+    slider.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      updateSliderPosition(e.touches[0].clientX);
+    });
+    
+    slider.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+    
+    // Initialize at 50%
+    updateSliderPosition(slider.getBoundingClientRect().left + slider.offsetWidth / 2);
+  });
+}
+
+/**
+ * Counter animations for stats
+ */
+function initCounterAnimations() {
+  const counters = document.querySelectorAll('[data-counter]');
+  
+  if (counters.length === 0) return;
+  
+  const animateCounter = (element) => {
+    const target = parseInt(element.dataset.counter);
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+    
+    const updateCounter = () => {
+      current += step;
+      if (current < target) {
+        element.textContent = Math.floor(current).toLocaleString();
+        requestAnimationFrame(updateCounter);
+      } else {
+        element.textContent = target.toLocaleString();
+      }
+    };
+    
+    updateCounter();
+  };
+  
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.5
+  };
+  
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+  
+  counters.forEach(counter => {
+    counterObserver.observe(counter);
+  });
+}
+
+/**
+ * Parallax effects for background elements
+ */
+function initParallaxEffects() {
+  const shapes = document.querySelectorAll('.shape');
+  
+  if (shapes.length === 0) return;
+  
+  let ticking = false;
+  
+  const updateParallax = () => {
+    const scrollY = window.pageYOffset;
+    
+    shapes.forEach((shape, index) => {
+      const speed = 0.05 + (index * 0.02);
+      const yPos = scrollY * speed;
+      shape.style.transform = `translateY(${yPos}px)`;
+    });
+    
+    ticking = false;
+  };
+  
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  });
+}
+
+/**
  * API Helper
  */
 const api = {
@@ -204,10 +418,8 @@ function showToast(message, type = 'success') {
   document.body.appendChild(toast);
   lucide.createIcons();
   
-  // Animate in
   setTimeout(() => toast.classList.add('show'), 10);
   
-  // Remove after 3 seconds
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 300);
@@ -264,6 +476,22 @@ function debounce(func, wait) {
   };
 }
 
+/**
+ * Throttle helper for scroll events
+ */
+function throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
 // Add toast styles dynamically
 const toastStyles = document.createElement('style');
 toastStyles.textContent = `
@@ -291,7 +519,7 @@ toastStyles.textContent = `
   }
   
   .toast-success {
-    border-color: rgba(0, 255, 136, 0.3);
+    border-color: rgba(16, 185, 129, 0.3);
   }
   
   .toast-success i {
@@ -299,7 +527,7 @@ toastStyles.textContent = `
   }
   
   .toast-error {
-    border-color: rgba(255, 71, 87, 0.3);
+    border-color: rgba(239, 68, 68, 0.3);
   }
   
   .toast-error i {
@@ -366,6 +594,6 @@ window.CraftyCrib = {
   setLoading,
   formatCurrency,
   formatDate,
-  debounce
+  debounce,
+  throttle
 };
-

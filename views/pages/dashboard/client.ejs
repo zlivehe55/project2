@@ -150,6 +150,51 @@
       </div>
     </div>
     
+    <!-- Inspiration Cuisine -->
+    <div class="content-card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <h2>🍳 Inspiration Cuisine</h2>
+        <div class="inspiration-dropdown">
+          <select id="inspiration-select" class="inspiration-select" onchange="changeInspiration(this.value)">
+            <option value="cuisine" selected>Cuisine</option>
+            <option value="salon">Salon</option>
+            <option value="chambre">Chambre</option>
+            <option value="salle-de-bain">Salle de bain</option>
+            <option value="exterieur">Extérieur</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="padding: 12px;">
+        <div class="inspiration-grid">
+          <a href="/inspiration/cuisine?style=moderne" class="inspiration-item">
+            <img src="/assets/11houses/Modern Arabic.jpeg" alt="Cuisine Moderne">
+            <span class="inspiration-label">Moderne</span>
+          </a>
+          <a href="/inspiration/cuisine?style=rustique" class="inspiration-item">
+            <img src="/assets/11houses/Rustic.jpeg" alt="Cuisine Rustique">
+            <span class="inspiration-label">Rustique</span>
+          </a>
+          <a href="/inspiration/cuisine?style=industriel" class="inspiration-item">
+            <img src="/assets/11houses/Industrial.jpeg" alt="Cuisine Industrielle">
+            <span class="inspiration-label">Industriel</span>
+          </a>
+          <a href="/inspiration/cuisine?style=luxe" class="inspiration-item">
+            <img src="/assets/11houses/Luxury.jpeg" alt="Cuisine Luxe">
+            <span class="inspiration-label">Luxe</span>
+          </a>
+        </div>
+        <a href="/inspiration/cuisine" class="btn btn-outline btn-block" style="margin-top: 12px;">
+          Voir toutes les inspirations
+        </a>
+      </div>
+    </div>
+    
+    <script>
+      function changeInspiration(type) {
+        window.location.href = '/inspiration/' + type;
+      }
+    </script>
+    
     <!-- Upgrade CTA -->
     <% if (!user.isPremium) { %>
       <div class="content-card" style="background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-color: #bfdbfe;">

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO Meta Tags -->
-  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib - Account' %></title>
-  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Access your CraftyCrib account to create AI-powered interior designs and connect with professional contractors.' %>">
+  <title><%= typeof title !== 'undefined' ? title : 'CraftyCrib - Connexion' %></title>
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Accédez à votre compte CraftyCrib pour créer des designs d\'intérieur avec l\'IA.' %>">
   <meta name="robots" content="noindex, nofollow">
   
   <!-- Open Graph -->
   <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'CraftyCrib' %>">
-  <meta property="og:description" content="AI-Powered Interior Design Platform">
+  <meta property="og:description" content="Plateforme de design d'intérieur propulsée par l'IA">
   <meta property="og:type" content="website">
   <meta property="og:image" content="/assets/fullogo.png">
   <meta property="og:site_name" content="CraftyCrib">
@@ -20,12 +20,12 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/logoicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/logoicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/logoicon.png">
-  <meta name="theme-color" content="#00ff88">
+  <meta name="theme-color" content="#10b981">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -35,103 +35,202 @@
   <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body class="auth-page">
-  <!-- Language Selector for Auth Pages -->
+  <!-- Language Selector -->
   <div class="auth-language-selector">
     <%- include('../partials/language-selector') %>
   </div>
   
   <div class="auth-container">
-    <!-- Left Side - Branding -->
-    <div class="auth-brand">
-      <div class="auth-brand-content">
-        <a href="/" class="auth-logo" aria-label="CraftyCrib Home">
-          <img src="/assets/fullogo.png" alt="CraftyCrib - AI Interior Design">
-        </a>
-        
-        <div class="auth-tagline">
-          <h1>Transform Your Space<br>With <span class="gradient-text">AI Magic</span></h1>
-          <p>Upload a photo, describe your vision, and watch AI create stunning interior designs in seconds.</p>
-        </div>
-        
-        <div class="auth-features">
-          <div class="auth-feature">
-            <div class="feature-icon">
-              <i data-lucide="wand-2"></i>
+    <!-- Left Side - Design Showcase -->
+    <div class="auth-showcase">
+      <!-- Animated Background -->
+      <div class="showcase-bg">
+        <div class="gradient-blob blob-1"></div>
+        <div class="gradient-blob blob-2"></div>
+        <div class="gradient-blob blob-3"></div>
+      </div>
+      
+      <!-- Logo -->
+      <a href="/" class="showcase-logo">
+        <img src="/assets/fullogo.png" alt="CraftyCrib">
+      </a>
+      
+      <!-- Design Gallery Slider -->
+      <div class="showcase-gallery">
+        <div class="gallery-track">
+          <!-- Column 1 - Scrolling Up -->
+          <div class="gallery-column scroll-up">
+            <div class="gallery-item">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <span class="item-label">Modern Arabic</span>
             </div>
-            <div>
-              <h4>AI-Powered Design</h4>
-              <p>Generate realistic 3D mockups instantly</p>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Nordic Black.jpeg" alt="Nordic Black">
+              <span class="item-label">Nordic Black</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Bali.jpeg" alt="Bali">
+              <span class="item-label">Bali</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Industrial.jpeg" alt="Industrial">
+              <span class="item-label">Industrial</span>
+            </div>
+            <!-- Duplicates for infinite scroll -->
+            <div class="gallery-item">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <span class="item-label">Modern Arabic</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Nordic Black.jpeg" alt="Nordic Black">
+              <span class="item-label">Nordic Black</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Bali.jpeg" alt="Bali">
+              <span class="item-label">Bali</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Industrial.jpeg" alt="Industrial">
+              <span class="item-label">Industrial</span>
             </div>
           </div>
-          <div class="auth-feature">
-            <div class="feature-icon">
-              <i data-lucide="palette"></i>
+          
+          <!-- Column 2 - Scrolling Down -->
+          <div class="gallery-column scroll-down">
+            <div class="gallery-item">
+              <img src="/assets/11houses/Luxury.jpeg" alt="Luxury">
+              <span class="item-label">Luxury</span>
             </div>
-            <div>
-              <h4>Multiple Styles</h4>
-              <p>Explore different design aesthetics</p>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Marbre.jpeg" alt="Marbre">
+              <span class="item-label">Marbre</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Rustic.jpeg" alt="Rustic">
+              <span class="item-label">Rustic</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Bois.jpeg" alt="Bois">
+              <span class="item-label">Bois</span>
+            </div>
+            <!-- Duplicates for infinite scroll -->
+            <div class="gallery-item">
+              <img src="/assets/11houses/Luxury.jpeg" alt="Luxury">
+              <span class="item-label">Luxury</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Marbre.jpeg" alt="Marbre">
+              <span class="item-label">Marbre</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Rustic.jpeg" alt="Rustic">
+              <span class="item-label">Rustic</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Bois.jpeg" alt="Bois">
+              <span class="item-label">Bois</span>
             </div>
           </div>
-          <div class="auth-feature">
-            <div class="feature-icon">
-              <i data-lucide="users"></i>
+          
+          <!-- Column 3 - Scrolling Up (slower) -->
+          <div class="gallery-column scroll-up-slow">
+            <div class="gallery-item">
+              <img src="/assets/11houses/Granite.jpeg" alt="Granite">
+              <span class="item-label">Granite</span>
             </div>
-            <div>
-              <h4>Pro Contractors</h4>
-              <p>Connect with qualified professionals</p>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Quartz.jpeg" alt="Quartz">
+              <span class="item-label">Quartz</span>
             </div>
-          </div>
-        </div>
-        
-        <!-- Trust Badges -->
-        <div class="auth-trust">
-          <div class="trust-item">
-            <i data-lucide="shield-check"></i>
-            <span>Secure & Private</span>
-          </div>
-          <div class="trust-item">
-            <i data-lucide="lock"></i>
-            <span>SSL Encrypted</span>
-          </div>
-          <div class="trust-item">
-            <i data-lucide="star"></i>
-            <span>4.8/5 Rating</span>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Industrial2.jpeg" alt="Industrial Loft">
+              <span class="item-label">Industrial Loft</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <span class="item-label">Modern Arabic</span>
+            </div>
+            <!-- Duplicates for infinite scroll -->
+            <div class="gallery-item">
+              <img src="/assets/11houses/Granite.jpeg" alt="Granite">
+              <span class="item-label">Granite</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Quartz.jpeg" alt="Quartz">
+              <span class="item-label">Quartz</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Industrial2.jpeg" alt="Industrial Loft">
+              <span class="item-label">Industrial Loft</span>
+            </div>
+            <div class="gallery-item">
+              <img src="/assets/11houses/Modern Arabic.jpeg" alt="Modern Arabic">
+              <span class="item-label">Modern Arabic</span>
+            </div>
           </div>
         </div>
       </div>
       
-      <div class="auth-brand-bg">
-        <div class="gradient-orb orb-1"></div>
-        <div class="gradient-orb orb-2"></div>
-        <div class="gradient-orb orb-3"></div>
+      <!-- Bottom Content -->
+      <div class="showcase-content">
+        <h1>Transformez votre espace avec <span class="gradient-text">l'IA</span></h1>
+        <p>Plus de 80 styles de design, des résultats en secondes</p>
+        
+        <!-- Stats -->
+        <div class="showcase-stats">
+          <div class="stat">
+            <span class="stat-value">50K+</span>
+            <span class="stat-label">Designs créés</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">80+</span>
+            <span class="stat-label">Styles uniques</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">4.9</span>
+            <span class="stat-label">Note moyenne</span>
+          </div>
+        </div>
       </div>
     </div>
     
     <!-- Right Side - Form -->
     <div class="auth-form-container">
-      <!-- Flash Messages -->
-      <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
-        <div class="alert alert-success">
-          <i data-lucide="check-circle"></i>
-          <%= success_msg %>
+      <div class="auth-form-wrapper">
+        <!-- Mobile Logo -->
+        <a href="/" class="mobile-auth-logo">
+          <img src="/assets/fullogo.png" alt="CraftyCrib">
+        </a>
+        
+        <!-- Flash Messages -->
+        <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+          <div class="alert alert-success">
+            <i data-lucide="check-circle"></i>
+            <span><%= success_msg %></span>
+          </div>
+        <% } %>
+        
+        <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+          <div class="alert alert-error">
+            <i data-lucide="alert-circle"></i>
+            <span><%= error_msg %></span>
+          </div>
+        <% } %>
+        
+        <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+          <div class="alert alert-error">
+            <i data-lucide="alert-circle"></i>
+            <span><%= error %></span>
+          </div>
+        <% } %>
+        
+        <%- body %>
+        
+        <!-- Footer -->
+        <div class="auth-footer">
+          <p>© 2026 CraftyCrib. Tous droits réservés.</p>
         </div>
-      <% } %>
-      
-      <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
-        <div class="alert alert-error">
-          <i data-lucide="alert-circle"></i>
-          <%= error_msg %>
-        </div>
-      <% } %>
-      
-      <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
-        <div class="alert alert-error">
-          <i data-lucide="alert-circle"></i>
-          <%= error %>
-        </div>
-      <% } %>
-      
-      <%- body %>
+      </div>
     </div>
   </div>
 
@@ -143,52 +242,19 @@
     document.querySelectorAll('form').forEach(form => {
       form.addEventListener('submit', function(e) {
         const submitBtn = this.querySelector('button[type="submit"]');
-        if (submitBtn) {
+        if (submitBtn && !submitBtn.disabled) {
           submitBtn.disabled = true;
-          submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Please wait...';
-          lucide.createIcons();
+          submitBtn.classList.add('loading');
+          const originalHTML = submitBtn.innerHTML;
+          submitBtn.innerHTML = '<span class="spinner"></span> Chargement...';
         }
       });
     });
+    
+    // Add floating animation to gallery items
+    document.querySelectorAll('.gallery-item').forEach((item, index) => {
+      item.style.animationDelay = `${index * 0.1}s`;
+    });
   </script>
-  
-  <style>
-    .spin {
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    .auth-trust {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    
-    .trust-item i {
-      width: 16px;
-      height: 16px;
-      color: var(--accent-primary);
-    }
-    
-    @media (max-width: 768px) {
-      .auth-trust {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-    }
-  </style>
 </body>
 </html>
