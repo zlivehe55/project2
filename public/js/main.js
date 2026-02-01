@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initCounterAnimations();
   initParallaxEffects();
   initDraggableCarousel();
+  initRoomsCarousel();
   
   // Fallback: ensure all content is visible after 2 seconds
   setTimeout(() => {
@@ -840,3 +841,32 @@ window.CraftyCrib = {
   debounce,
   throttle
 };
+
+/**
+ * Rooms carousel auto-scroll
+ */
+function initRoomsCarousel() {
+  const carousel = document.querySelector('.rooms-carousel');
+  if (!carousel) return;
+  
+  let isPaused = false;
+  let rafId;
+  const speed = 0.3;
+  
+  const loop = () => {
+    if (!isPaused) {
+      carousel.scrollLeft += speed;
+      if (carousel.scrollLeft >= carousel.scrollWidth - carousel.clientWidth - 1) {
+        carousel.scrollLeft = 0;
+      }
+    }
+    rafId = requestAnimationFrame(loop);
+  };
+  
+  carousel.addEventListener('mouseenter', () => { isPaused = true; });
+  carousel.addEventListener('mouseleave', () => { isPaused = false; });
+  carousel.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
+  carousel.addEventListener('touchend', () => { isPaused = false; });
+  
+  loop();
+}

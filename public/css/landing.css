@@ -1771,7 +1771,31 @@
 /* ==================== */
 .rooms-section {
   padding: 6rem 0;
-  background: var(--bg-primary);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, var(--bg-primary) 60%);
+  position: relative;
+  overflow: hidden;
+}
+
+.rooms-section::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.rooms-section .section-title {
+  color: var(--text-primary);
+}
+
+.rooms-hint {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .rooms-carousel {
@@ -1781,6 +1805,7 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   padding: 1rem 0;
+  scroll-behavior: smooth;
 }
 
 .rooms-carousel::-webkit-scrollbar {
@@ -1794,8 +1819,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.5rem 2rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, var(--bg-card) 60%);
+  border: 1px solid rgba(16, 185, 129, 0.15);
   border-radius: var(--radius-xl);
   min-width: 140px;
   scroll-snap-align: start;
@@ -1806,7 +1831,7 @@
 .room-card:hover {
   border-color: var(--accent-primary);
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.18);
 }
 
 .room-icon {
@@ -1815,7 +1840,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   border-radius: var(--radius-lg);
   color: var(--accent-primary);
   transition: all 0.3s ease;
