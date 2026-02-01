@@ -91,6 +91,12 @@
       </div>
       
       <div class="nav-actions">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
+          <i data-lucide="sun" class="theme-icon-light"></i>
+          <i data-lucide="moon" class="theme-icon-dark"></i>
+        </button>
+        
         <% if (typeof user !== 'undefined' && user) { %>
           <a href="/dashboard" class="btn btn-ghost">Tableau de bord</a>
         <% } else { %>
@@ -104,21 +110,21 @@
       <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Ouvrir le menu">
         <i data-lucide="menu"></i>
       </button>
-    </div>
-    
-    <!-- Mobile Menu -->
-    <div class="mobile-nav" id="mobile-nav">
-      <a href="#features" class="mobile-nav-link">Fonctionnalités</a>
-      <a href="#how-it-works" class="mobile-nav-link">Comment ça marche</a>
-      <a href="#pricing" class="mobile-nav-link">Tarifs</a>
-      <a href="/contractors" class="mobile-nav-link">Entrepreneurs</a>
-      <div class="mobile-nav-divider"></div>
-      <% if (typeof user !== 'undefined' && user) { %>
-        <a href="/dashboard" class="mobile-nav-link">Tableau de bord</a>
-      <% } else { %>
-        <a href="/auth/login" class="mobile-nav-link">Connexion</a>
-        <a href="/auth/register" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Commencer gratuitement</a>
-      <% } %>
+      
+      <!-- Mobile Menu -->
+      <div class="mobile-nav" id="mobile-nav">
+        <a href="#features" class="mobile-nav-link">Fonctionnalités</a>
+        <a href="#how-it-works" class="mobile-nav-link">Comment ça marche</a>
+        <a href="#pricing" class="mobile-nav-link">Tarifs</a>
+        <a href="/contractors" class="mobile-nav-link">Entrepreneurs</a>
+        <div class="mobile-nav-divider"></div>
+        <% if (typeof user !== 'undefined' && user) { %>
+          <a href="/dashboard" class="mobile-nav-link">Tableau de bord</a>
+        <% } else { %>
+          <a href="/auth/login" class="mobile-nav-link">Connexion</a>
+          <a href="/auth/register" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Commencer gratuitement</a>
+        <% } %>
+      </div>
     </div>
   </nav>
 
@@ -180,26 +186,30 @@
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileNav = document.getElementById('mobile-nav');
     
-    mobileMenuBtn?.addEventListener('click', () => {
-      mobileNav.classList.toggle('active');
-      const icon = mobileMenuBtn.querySelector('i');
-      if (mobileNav.classList.contains('active')) {
-        icon.setAttribute('data-lucide', 'x');
-      } else {
-        icon.setAttribute('data-lucide', 'menu');
-      }
+    const updateMenuIcon = (isOpen) => {
+      if (!mobileMenuBtn) return;
+      mobileMenuBtn.innerHTML = '';
+      const newIcon = document.createElement('i');
+      newIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+      mobileMenuBtn.appendChild(newIcon);
       lucide.createIcons();
+    };
+    
+    mobileMenuBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = mobileNav.classList.toggle('active');
+      mobileMenuBtn.classList.toggle('active', isOpen);
+      updateMenuIcon(isOpen);
     });
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
-      if (!mobileMenuBtn?.contains(e.target) && !mobileNav?.contains(e.target)) {
-        mobileNav?.classList.remove('active');
-        const icon = mobileMenuBtn?.querySelector('i');
-        if (icon) {
-          icon.setAttribute('data-lucide', 'menu');
-          lucide.createIcons();
-        }
+      if (mobileNav?.classList.contains('active') && 
+          !mobileMenuBtn?.contains(e.target) && 
+          !mobileNav?.contains(e.target)) {
+        mobileNav.classList.remove('active');
+        mobileMenuBtn?.classList.remove('active');
+        updateMenuIcon(false);
       }
     });
     
@@ -211,11 +221,8 @@
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           mobileNav?.classList.remove('active');
-          const icon = mobileMenuBtn?.querySelector('i');
-          if (icon) {
-            icon.setAttribute('data-lucide', 'menu');
-            lucide.createIcons();
-          }
+          mobileMenuBtn?.classList.remove('active');
+          updateMenuIcon(false);
         }
       });
     });

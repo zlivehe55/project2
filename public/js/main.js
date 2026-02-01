@@ -5,6 +5,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize theme first (before rendering)
+  initTheme();
+  
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initMobileMenu();
   initSmoothScroll();
   initFormEnhancements();
+  initThemeToggle();
   
   // Landing page animations
   initScrollAnimations();
@@ -31,6 +35,46 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, 2000);
 });
+
+/**
+ * Theme initialization - respects system preference
+ */
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Use saved theme, or fall back to system preference
+  const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  
+  // Listen for system preference changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
+  });
+}
+
+/**
+ * Theme toggle button
+ */
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  if (!toggleBtn) return;
+  
+  toggleBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Re-initialize icons after theme change
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  });
+}
 
 /**
  * Navbar scroll effect
@@ -80,20 +124,49 @@ function initAlertDismiss() {
  */
 function initMobileMenu() {
   const menuBtn = document.querySelector('.mobile-menu-btn');
-  const navLinks = document.querySelector('.nav-links');
-  const navActions = document.querySelector('.nav-actions');
+  const mobileNav = document.querySelector('.mobile-nav');
   
-  if (!menuBtn) return;
+  if (!menuBtn || !mobileNav) return;
   
-  menuBtn.addEventListener('click', () => {
-    navLinks?.classList.toggle('mobile-active');
-    navActions?.classList.toggle('mobile-active');
-    
-    const icon = menuBtn.querySelector('i');
-    if (icon) {
-      const isOpen = navLinks?.classList.contains('mobile-active');
-      icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+  const updateIcon = (isOpen) => {
+    // Clear existing icons
+    menuBtn.innerHTML = '';
+    // Create new icon
+    const newIcon = document.createElement('i');
+    newIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+    menuBtn.appendChild(newIcon);
+    // Render the icon
+    if (typeof lucide !== 'undefined') {
       lucide.createIcons();
+    }
+  };
+  
+  menuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isOpen = mobileNav.classList.toggle('active');
+    menuBtn.classList.toggle('active', isOpen);
+    updateIcon(isOpen);
+  });
+  
+  // Close menu when clicking on a link
+  mobileNav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.remove('active');
+      menuBtn.classList.remove('active');
+      updateIcon(false);
+    });
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (mobileNav.classList.contains('active') && 
+        !mobileNav.contains(e.target) && 
+        !menuBtn.contains(e.target)) {
+      mobileNav.classList.remove('active');
+      menuBtn.classList.remove('active');
+      updateIcon(false);
     }
   });
 }
@@ -593,68 +666,97 @@ document.head.appendChild(toastStyles);
  */
 function initDraggableCarousel() {
   const wrapper = document.querySelector('.styles-carousel-wrapper');
+  const carousel = document.querySelector('.styles-carousel');
   const track = document.querySelector('.styles-track');
   
-  if (!wrapper || !track) return;
+  if (!wrapper || !carousel || !track) return;
   
+  const scrollEl = carousel;
   let isDown = false;
+  let isPaused = false;
   let startX;
   let scrollLeft;
   let momentumID;
   let velX = 0;
+  let autoScrollId;
+  const autoScrollSpeed = 0.6;
   
-  // Mouse events
-  wrapper.addEventListener('mousedown', (e) => {
-    isDown = true;
-    wrapper.classList.add('is-dragging');
-    startX = e.pageX - wrapper.offsetLeft;
-    scrollLeft = wrapper.scrollLeft;
-    cancelMomentum();
+  const pauseAuto = () => { isPaused = true; };
+  const resumeAuto = () => { isPaused = false; };
+  
+  // Pause animation on hover
+  wrapper.addEventListener('mouseenter', () => {
+    track.style.animationPlayState = 'paused';
+    pauseAuto();
   });
   
   wrapper.addEventListener('mouseleave', () => {
-    if (isDown) {
-      isDown = false;
-      wrapper.classList.remove('is-dragging');
+    if (!isDown) {
+      track.style.animationPlayState = 'running';
+      resumeAuto();
     }
   });
   
-  wrapper.addEventListener('mouseup', () => {
+  // Mouse events for dragging
+  scrollEl.addEventListener('mousedown', (e) => {
+    isDown = true;
+    wrapper.classList.add('is-dragging');
+    startX = e.pageX - scrollEl.offsetLeft;
+    scrollLeft = scrollEl.scrollLeft;
+    track.style.animationPlayState = 'paused';
+    pauseAuto();
+    cancelMomentum();
+  });
+  
+  scrollEl.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      wrapper.classList.remove('is-dragging');
+      resumeAuto();
+    }
+  });
+  
+  scrollEl.addEventListener('mouseup', () => {
     isDown = false;
     wrapper.classList.remove('is-dragging');
     startMomentum();
+    resumeAuto();
   });
   
-  wrapper.addEventListener('mousemove', (e) => {
+  scrollEl.addEventListener('mousemove', (e) => {
     if (!isDown) return;
     e.preventDefault();
-    const x = e.pageX - wrapper.offsetLeft;
+    const x = e.pageX - scrollEl.offsetLeft;
     const walk = (x - startX) * 2;
-    velX = walk - (wrapper.scrollLeft - scrollLeft);
-    wrapper.scrollLeft = scrollLeft - walk;
+    velX = walk - (scrollEl.scrollLeft - scrollLeft);
+    scrollEl.scrollLeft = scrollLeft - walk;
   });
   
   // Touch events for mobile
-  wrapper.addEventListener('touchstart', (e) => {
+  scrollEl.addEventListener('touchstart', (e) => {
     isDown = true;
     wrapper.classList.add('is-dragging');
-    startX = e.touches[0].pageX - wrapper.offsetLeft;
-    scrollLeft = wrapper.scrollLeft;
+    startX = e.touches[0].pageX - scrollEl.offsetLeft;
+    scrollLeft = scrollEl.scrollLeft;
+    track.style.animationPlayState = 'paused';
+    pauseAuto();
     cancelMomentum();
   }, { passive: true });
   
-  wrapper.addEventListener('touchend', () => {
+  scrollEl.addEventListener('touchend', () => {
     isDown = false;
     wrapper.classList.remove('is-dragging');
+    track.style.animationPlayState = 'running';
     startMomentum();
+    resumeAuto();
   });
   
-  wrapper.addEventListener('touchmove', (e) => {
+  scrollEl.addEventListener('touchmove', (e) => {
     if (!isDown) return;
-    const x = e.touches[0].pageX - wrapper.offsetLeft;
+    const x = e.touches[0].pageX - scrollEl.offsetLeft;
     const walk = (x - startX) * 2;
-    velX = walk - (wrapper.scrollLeft - scrollLeft);
-    wrapper.scrollLeft = scrollLeft - walk;
+    velX = walk - (scrollEl.scrollLeft - scrollLeft);
+    scrollEl.scrollLeft = scrollLeft - walk;
   }, { passive: true });
   
   // Momentum scrolling
@@ -671,26 +773,40 @@ function initDraggableCarousel() {
   }
   
   function momentumLoop() {
-    wrapper.scrollLeft -= velX;
+    scrollEl.scrollLeft -= velX;
     velX *= 0.95;
     if (Math.abs(velX) > 0.5) {
       momentumID = requestAnimationFrame(momentumLoop);
     }
   }
   
-  // Make wrapper scrollable
-  wrapper.style.overflowX = 'auto';
-  wrapper.style.scrollbarWidth = 'none'; // Firefox
-  wrapper.style.msOverflowStyle = 'none'; // IE
+  // Auto-scroll fallback (in case CSS animation is blocked)
+  function autoScrollLoop() {
+    if (!isPaused && !isDown) {
+      scrollEl.scrollLeft += autoScrollSpeed;
+      if (scrollEl.scrollLeft >= track.scrollWidth / 2) {
+        scrollEl.scrollLeft -= track.scrollWidth / 2;
+      }
+    }
+    autoScrollId = requestAnimationFrame(autoScrollLoop);
+  }
+  
+  // Make carousel scrollable
+  scrollEl.style.overflowX = 'auto';
+  scrollEl.style.scrollbarWidth = 'none';
+  scrollEl.style.msOverflowStyle = 'none';
   
   // Hide scrollbar for Chrome/Safari
   const style = document.createElement('style');
   style.textContent = `
-    .styles-carousel-wrapper::-webkit-scrollbar {
+    .styles-carousel::-webkit-scrollbar {
       display: none;
     }
   `;
   document.head.appendChild(style);
+  
+  // Start auto-scroll
+  autoScrollLoop();
 }
 
 // Export for use in other scripts
