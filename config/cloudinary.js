@@ -2,6 +2,7 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Check if Cloudinary is configured
 const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && 
@@ -20,6 +21,12 @@ if (isCloudinaryConfigured) {
   console.log('⚠️ Cloudinary not configured - using local storage');
 }
 
+const ensureDir = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+};
+
 // Local disk storage fallback
 const localProjectStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -34,6 +41,16 @@ const localProjectStorage = multer.diskStorage({
 const localContractorStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'public/uploads/contractors');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const localLandingStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/landing');
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -57,6 +74,15 @@ const cloudinaryContractorStorage = isCloudinaryConfigured ? new CloudinaryStora
     folder: 'craftycrib/contractors',
     allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
     transformation: [{ width: 1200, height: 800, crop: 'limit', quality: 'auto' }]
+  }
+}) : null;
+
+const cloudinaryLandingStorage = isCloudinaryConfigured ? new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'craftycrib/landing',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 2000, height: 1200, crop: 'limit', quality: 'auto' }]
   }
 }) : null;
 
@@ -93,6 +119,16 @@ const uploadContractorImages = multer({
   fileFilter: imageFilter
 });
 
+if (!isCloudinaryConfigured) {
+  ensureDir('public/uploads/landing');
+}
+
+const uploadLandingImages = multer({ 
+  storage: isCloudinaryConfigured ? cloudinaryLandingStorage : localLandingStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: imageFilter
+});
+
 const uploadAvatar = multer({ 
   storage: isCloudinaryConfigured ? cloudinaryAvatarStorage : localProjectStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -116,6 +152,13 @@ const getContractorImageUrl = (file) => {
   return `/uploads/contractors/${file.filename}`;
 };
 
+const getLandingImageUrl = (file) => {
+  if (isCloudinaryConfigured && file.path) {
+    return file.path;
+  }
+  return `/uploads/landing/${file.filename}`;
+};
+
 // Helper to delete image from Cloudinary
 const deleteImage = async (publicId) => {
   if (!isCloudinaryConfigured) {
@@ -136,8 +179,10 @@ module.exports = {
   isCloudinaryConfigured,
   uploadProjectImages,
   uploadContractorImages,
+  uploadLandingImages,
   uploadAvatar,
   deleteImage,
   getImageUrl,
-  getContractorImageUrl
+  getContractorImageUrl,
+  getLandingImageUrl
 };

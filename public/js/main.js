@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initParallaxEffects();
   initDraggableCarousel();
   initRoomsCarousel();
+  initSpecialistsSection();
   
   // Fallback: ensure all content is visible after 2 seconds
   setTimeout(() => {
@@ -884,4 +885,53 @@ function initRoomsCarousel() {
   }
   
   loop();
+}
+
+/**
+ * Specialists section dropdown + options
+ */
+function initSpecialistsSection() {
+  const select = document.getElementById('specialists-select');
+  const optionsWrap = document.getElementById('specialists-options');
+  if (!select || !optionsWrap) return;
+
+  const config = window.SpecialistsConfig || {};
+  const optionsByCategory = {};
+  const labelByCategory = {};
+
+  if (Array.isArray(config.categories)) {
+    config.categories.forEach((category) => {
+      optionsByCategory[category.key] = category.options || [];
+      labelByCategory[category.key] = category.label || category.key;
+    });
+  }
+
+  const renderOptions = () => {
+    const category = select.value;
+    const options = optionsByCategory[category] || [];
+
+    optionsWrap.innerHTML = options
+      .map((option) => `
+        <button type="button" class="specialists-option" data-category="${category}" data-option="${option}">
+          ${option}
+        </button>
+      `)
+      .join('');
+  };
+
+  optionsWrap.addEventListener('click', (event) => {
+    const button = event.target.closest('.specialists-option');
+    if (!button) return;
+    const category = button.getAttribute('data-category');
+    const option = button.getAttribute('data-option');
+    const categoryLabel = labelByCategory[category] || category;
+    const params = new URLSearchParams({
+      service: option,
+      category: categoryLabel
+    });
+    window.location.href = `/contact?${params.toString()}`;
+  });
+
+  select.addEventListener('change', renderOptions);
+  renderOptions();
 }

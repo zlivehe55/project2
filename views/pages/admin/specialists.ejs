@@ -1,0 +1,57 @@
+<div class="page-container admin-landing">
+  <div class="page-header">
+    <h1>Specialists Section</h1>
+    <p class="text-muted">Manage the specialists dropdown, options, and image on the landing page.</p>
+  </div>
+
+  <div class="admin-asset-grid">
+    <div class="admin-asset-card">
+      <div class="admin-asset-preview">
+        <img src="<%= specialists.imageUrl %>" alt="<%= specialists.imageAlt %>">
+      </div>
+      <div class="admin-asset-body">
+        <h3>Section Image</h3>
+        <form action="/admin/specialists/image" method="POST" enctype="multipart/form-data" class="admin-asset-form">
+          <label class="form-label">Replace image</label>
+          <input type="file" name="image" class="form-input" accept="image/*">
+
+          <label class="form-label">Alt text</label>
+          <input type="text" name="alt" class="form-input" value="<%= specialists.imageAlt %>">
+
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i data-lucide="save"></i>
+            Save Image
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-asset-card">
+      <div class="admin-asset-body">
+        <h3>Categories & Options</h3>
+        <form action="/admin/specialists/options" method="POST" class="admin-asset-form">
+          <% specialists.categories.forEach(category => { %>
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" name="categories[<%= category.key %>][label]" class="form-input" value="<%= category.label %>">
+              <input type="hidden" name="categories[<%= category.key %>][key]" value="<%= category.key %>">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Options (one per line)</label>
+              <textarea name="categories[<%= category.key %>][options]" class="form-input form-textarea" rows="5"><%= category.options.join('\n') %></textarea>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 12px 0;">
+          <% }) %>
+
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i data-lucide="save"></i>
+            Save Options
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -242,6 +242,58 @@
   animation: pulse-ring 2s ease-out infinite;
 }
 
+/* Dark theme overrides */
+[data-theme="dark"] .messages-page-header {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .messages-page-header h1 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .messages-content {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .convo-card {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .convo-card:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .convo-card:active {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .convo-name {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .convo-time,
+[data-theme="dark"] .convo-preview {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .messages-empty h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .messages-empty p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .empty-circle {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.08) 100%);
+}
+
+[data-theme="dark"] .empty-circle::before {
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.9);

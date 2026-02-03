@@ -18,6 +18,11 @@
   
   <!-- Styles -->
   <link rel="stylesheet" href="/css/style.css">
+  <% if (typeof extraStyles !== 'undefined' && extraStyles && extraStyles.length > 0) { %>
+    <% extraStyles.forEach(href => { %>
+      <link rel="stylesheet" href="<%= href %>">
+    <% }) %>
+  <% } %>
 </head>
 <body>
   <!-- Simple Header -->

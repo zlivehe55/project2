@@ -104,20 +104,20 @@
   <!-- Right Column -->
   <div>
     <!-- AI Credits -->
-    <div class="content-card" style="margin-bottom: 16px;">
-      <div class="card-body" style="background: linear-gradient(135deg, #ecfdf5, #f0fdf4);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #10b981;">
-            <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+    <div class="content-card ai-credits-card" style="margin-bottom: 16px;">
+      <div class="card-body ai-credits-body">
+        <div class="ai-credits-header">
+          <span class="ai-credits-label">
+            <i data-lucide="zap"></i>
             Crédits IA
           </span>
-          <a href="/pricing" style="font-size: 12px; color: #10b981; font-weight: 500;">Obtenir plus</a>
+          <a href="/pricing" class="ai-credits-link">Obtenir plus</a>
         </div>
-        <div style="font-size: 32px; font-weight: 700; color: #059669;"><%= user.subscription?.credits || 3 %></div>
-        <div style="font-size: 12px; color: #64748b;"><%= user.isPremium ? 'Plan illimité' : 'sur 10 crédits gratuits' %></div>
+        <div class="ai-credits-value"><%= user.subscription?.credits || 3 %></div>
+        <div class="ai-credits-subtext"><%= user.isPremium ? 'Plan illimité' : 'sur 10 crédits gratuits' %></div>
         <% if (!user.isPremium) { %>
-          <div style="height: 4px; background: #a7f3d0; border-radius: 2px; margin-top: 12px; overflow: hidden;">
-            <div style="height: 100%; background: #10b981; border-radius: 2px; width: <%= ((user.subscription?.credits || 3) / 10) * 100 %>%;"></div>
+          <div class="ai-credits-progress">
+            <div class="ai-credits-progress-bar" style="width: <%= ((user.subscription?.credits || 3) / 10) * 100 %>%;"></div>
           </div>
         <% } %>
       </div>
@@ -197,13 +197,11 @@
     
     <!-- Upgrade CTA -->
     <% if (!user.isPremium) { %>
-      <div class="content-card" style="background: linear-gradient(135deg, #eff6ff, #f0f9ff); border-color: #bfdbfe;">
-        <div class="card-body" style="text-align: center; padding: 24px;">
-          <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
-          <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0;">Passez à Pro</h3>
-          <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">
-            Générations IA illimitées et exports HD
-          </p>
+      <div class="content-card upgrade-card">
+        <div class="card-body upgrade-card-body">
+          <div class="upgrade-card-icon">⚡</div>
+          <h3>Passez à Pro</h3>
+          <p>Générations IA illimitées et exports HD</p>
           <a href="/pricing" class="btn btn-primary btn-block">
             Passer à Pro
           </a>

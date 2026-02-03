@@ -1,0 +1,45 @@
+<section class="contact-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">
+        <i data-lucide="mail"></i>
+        Contact
+      </span>
+      <h2 class="section-title">Parlez-nous de votre projet</h2>
+      <p class="section-subtitle">Nous vous mettons en relation avec le bon spécialiste pour démarrer.</p>
+    </div>
+
+    <div class="contact-card">
+      <form action="/contact" method="POST" class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nom</label>
+            <input type="text" name="name" class="form-input" placeholder="Votre nom" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mail</label>
+            <input type="email" name="email" class="form-input" placeholder="vous@email.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sujet</label>
+          <input type="text" name="subject" class="form-input" placeholder="Dites-nous ce dont vous avez besoin" value="<%= selectedService ? selectedService : '' %>">
+          <% if (selectedCategory) { %>
+            <p class="form-hint">Catégorie: <%= selectedCategory %></p>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea name="message" class="form-input form-textarea" rows="6" placeholder="Décrivez votre projet (budget, délais, style, etc.)"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+          Envoyer la demande
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+

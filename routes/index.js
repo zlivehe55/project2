@@ -2,9 +2,24 @@ const express = require('express');
 const router = express.Router();
 const { getStyles, getRoomTypes } = require('../utils/homedesigns');
 const Project = require('../models/Project');
+const LandingAsset = require('../models/LandingAsset');
+const SpecialistsConfig = require('../models/SpecialistsConfig');
+const { buildLandingImageMap } = require('../utils/landingAssets');
+const { mergeSpecialistsConfig } = require('../utils/specialistsConfig');
 
 // Landing Page
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  let landingImages = buildLandingImageMap();
+  let specialistsConfig = mergeSpecialistsConfig(null);
+  try {
+    const assets = await LandingAsset.find({});
+    landingImages = buildLandingImageMap(assets);
+    const storedSpecialists = await SpecialistsConfig.findOne({});
+    specialistsConfig = mergeSpecialistsConfig(storedSpecialists);
+  } catch (err) {
+    console.error('Landing assets load error:', err);
+  }
+
   res.render('pages/landing', {
     title: 'CraftyCrib - AI-Powered Interior Design & Renovation Platform',
     metaDescription: 'Transform your living space with AI-powered interior design. Upload a photo of your room, get instant photorealistic 3D mockups, and connect with professional contractors to bring your vision to life.',
@@ -12,7 +27,9 @@ router.get('/', (req, res) => {
     canonicalUrl: 'https://craftycrib.com',
     layout: 'layouts/landing',
     styles: getStyles(),
-    roomTypes: getRoomTypes()
+    roomTypes: getRoomTypes(),
+    landingImages,
+    specialistsConfig
   });
 });
 
@@ -121,7 +138,9 @@ router.get('/contact', (req, res) => {
   res.render('pages/contact', {
     title: 'Contact Us - CraftyCrib | Get in Touch',
     metaDescription: 'Have questions about CraftyCrib? Contact our team for support, partnerships, or feedback. We\'re here to help you transform your space.',
-    layout: 'layouts/landing'
+    layout: 'layouts/landing',
+    selectedService: req.query.service || '',
+    selectedCategory: req.query.category || ''
   });
 });
 
@@ -149,6 +168,33 @@ router.get('/terms', (req, res) => {
     metaDescription: 'CraftyCrib terms of service. Understand the rules and guidelines for using our AI-powered interior design platform.',
     layout: 'layouts/landing'
   });
+});
+
+// Inspiration redirects (legacy/dashboard links)
+router.get('/inspiration/:room', (req, res) => {
+  const roomMap = {
+    cuisine: 'kitchen',
+    salon: 'living-room',
+    chambre: 'bedroom',
+    'salle-de-bain': 'bathroom',
+    exterieur: 'outdoor'
+  };
+
+  const styleMap = {
+    moderne: 'modern',
+    rustique: 'rustic',
+    industriel: 'industrial',
+    luxe: 'luxury'
+  };
+
+  const room = roomMap[req.params.room] || req.params.room;
+  const style = req.query.style ? (styleMap[req.query.style] || req.query.style) : '';
+  const query = new URLSearchParams();
+
+  if (room) query.set('room', room);
+  if (style) query.set('style', style);
+
+  res.redirect(`/gallery?${query.toString()}`);
 });
 
 // ========================================

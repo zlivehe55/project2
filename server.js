@@ -74,6 +74,7 @@ app.use('/auth', require('./routes/auth'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/projects', require('./routes/projects'));
 app.use('/contractors', require('./routes/contractors'));
+app.use('/admin', require('./routes/admin'));
 app.use('/api', require('./routes/api'));
 
 // 404 Handler

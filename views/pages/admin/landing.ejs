@@ -1,0 +1,36 @@
+<div class="page-container admin-landing">
+  <div class="page-header">
+    <h1>Landing Page Assets</h1>
+    <p class="text-muted">Replace images used across the landing page without changing the layout.</p>
+  </div>
+
+  <div class="admin-asset-grid">
+    <% assets.forEach(asset => { %>
+      <div class="admin-asset-card">
+        <div class="admin-asset-preview">
+          <img src="<%= asset.url %>" alt="<%= asset.alt %>">
+        </div>
+        <div class="admin-asset-body">
+          <div class="admin-asset-meta">
+            <span class="admin-asset-section"><%= asset.section %></span>
+            <h3><%= asset.label %></h3>
+            <p class="text-muted">Key: <code><%= asset.key %></code></p>
+          </div>
+          <form action="/admin/landing/<%= asset.key %>" method="POST" enctype="multipart/form-data" class="admin-asset-form">
+            <label class="form-label">Replace image</label>
+            <input type="file" name="image" class="form-input" accept="image/*">
+
+            <label class="form-label">Alt text</label>
+            <input type="text" name="alt" class="form-input" value="<%= asset.alt %>">
+
+            <button type="submit" class="btn btn-primary btn-sm">
+              <i data-lucide="save"></i>
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
