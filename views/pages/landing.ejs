@@ -324,85 +324,52 @@
       <p class="section-subtitle">Des designs générés par notre IA en quelques secondes seulement</p>
     </div>
     
-    <div class="gallery-grid">
-      <div class="gallery-item gallery-item-large">
+    <!-- Video + sliding images layout -->
+    <div class="gallery-video-layout">
+      <!-- Left: sliding images column -->
+      <div class="gallery-slide-col gallery-slide-left">
+        <div class="gallery-slide-track slide-up">
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse2.url %>" alt="<%= landingImages.galleryHouse2.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse3.url %>" alt="<%= landingImages.galleryHouse3.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryAfterHouse.url %>" alt="<%= landingImages.galleryAfterHouse.alt %>"></div>
+          <!-- duplicates for loop -->
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse2.url %>" alt="<%= landingImages.galleryHouse2.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse3.url %>" alt="<%= landingImages.galleryHouse3.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryAfterHouse.url %>" alt="<%= landingImages.galleryAfterHouse.alt %>"></div>
+        </div>
+      </div>
+
+      <!-- Center: video -->
+      <div class="gallery-video-center">
         <div class="gallery-image gallery-video-wrap">
           <% if (typeof galleryVideoUrl !== 'undefined' && galleryVideoUrl) { %>
             <video src="<%= galleryVideoUrl %>" autoplay muted loop playsinline class="gallery-video" id="gallery-hero-video"></video>
-            <button class="video-sound-toggle" id="video-sound-toggle" aria-label="Toggle sound">
-              <i data-lucide="volume-x" class="sound-icon-off"></i>
-              <i data-lucide="volume-2" class="sound-icon-on" style="display:none;"></i>
-            </button>
           <% } else { %>
             <img src="<%= landingImages.galleryHouse1.url %>" alt="<%= landingImages.galleryHouse1.alt %>">
           <% } %>
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Extérieur Moderne</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
+          <!-- Controls -->
+          <div class="video-controls">
+            <button class="video-control-btn" id="video-sound-toggle" aria-label="Toggle sound">
+              <i data-lucide="volume-x" class="sound-icon-off"></i>
+              <i data-lucide="volume-2" class="sound-icon-on" style="display:none;"></i>
+            </button>
+            <button class="video-control-btn" id="video-fullscreen-btn" aria-label="Fullscreen">
+              <i data-lucide="maximize"></i>
+            </button>
           </div>
         </div>
       </div>
-      <div class="gallery-item">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryHouse2.url %>" alt="<%= landingImages.galleryHouse2.alt %>">
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Contemporain</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryHouse3.url %>" alt="<%= landingImages.galleryHouse3.alt %>">
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Luxe</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gallery-item gallery-item-wide">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryHouse4.url %>" alt="<%= landingImages.galleryHouse4.alt %>">
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Villa Méditerranéenne</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryAfterHouse.url %>" alt="<%= landingImages.galleryAfterHouse.alt %>">
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Rénovation</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gallery-item">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryAfterLiving.url %>" alt="<%= landingImages.galleryAfterLiving.alt %>">
-          <div class="gallery-overlay">
-            <span class="gallery-tag">Intérieur Moderne</span>
-            <div class="gallery-actions">
-              <button class="gallery-btn"><i data-lucide="heart"></i></button>
-              <button class="gallery-btn"><i data-lucide="share-2"></i></button>
-            </div>
-          </div>
+
+      <!-- Right: sliding images column (opposite direction) -->
+      <div class="gallery-slide-col gallery-slide-right">
+        <div class="gallery-slide-track slide-down">
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse4.url %>" alt="<%= landingImages.galleryHouse4.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryAfterLiving.url %>" alt="<%= landingImages.galleryAfterLiving.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse1.url %>" alt="<%= landingImages.galleryHouse1.alt %>"></div>
+          <!-- duplicates for loop -->
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse4.url %>" alt="<%= landingImages.galleryHouse4.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryAfterLiving.url %>" alt="<%= landingImages.galleryAfterLiving.alt %>"></div>
+          <div class="gallery-slide-item"><img src="<%= landingImages.galleryHouse1.url %>" alt="<%= landingImages.galleryHouse1.alt %>"></div>
         </div>
       </div>
     </div>

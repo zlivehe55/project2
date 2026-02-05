@@ -938,34 +938,96 @@ function initSpecialistsSection() {
 }
 
 /**
- * Video sound toggle for gallery hero video
+ * Video sound toggle + fullscreen for gallery hero video
  */
 function initVideoSoundToggle() {
   const video = document.getElementById('gallery-hero-video');
-  const btn = document.getElementById('video-sound-toggle');
-  if (!video || !btn) return;
+  const soundBtn = document.getElementById('video-sound-toggle');
+  const fsBtn = document.getElementById('video-fullscreen-btn');
+  if (!video) return;
 
-  const iconOff = btn.querySelector('.sound-icon-off');
-  const iconOn = btn.querySelector('.sound-icon-on');
+  // Sound toggle
+  if (soundBtn) {
+    const iconOff = soundBtn.querySelector('.sound-icon-off');
+    const iconOn = soundBtn.querySelector('.sound-icon-on');
 
-  const updateIcons = () => {
-    if (video.muted) {
-      if (iconOff) iconOff.style.display = '';
-      if (iconOn) iconOn.style.display = 'none';
-      btn.classList.remove('unmuted');
-    } else {
-      if (iconOff) iconOff.style.display = 'none';
-      if (iconOn) iconOn.style.display = '';
-      btn.classList.add('unmuted');
-    }
-  };
+    const updateIcons = () => {
+      if (video.muted) {
+        if (iconOff) iconOff.style.display = '';
+        if (iconOn) iconOn.style.display = 'none';
+        soundBtn.classList.remove('unmuted');
+      } else {
+        if (iconOff) iconOff.style.display = 'none';
+        if (iconOn) iconOn.style.display = '';
+        soundBtn.classList.add('unmuted');
+      }
+    };
 
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    video.muted = !video.muted;
+    soundBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      video.muted = !video.muted;
+      updateIcons();
+    });
+
     updateIcons();
-  });
+  }
 
-  updateIcons();
+  // Fullscreen
+  if (fsBtn) {
+    fsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Pause the background video and remember its time
+      const wasPlaying = !video.paused;
+      const savedTime = video.currentTime;
+      const savedMuted = video.muted;
+      video.pause();
+
+      // Create overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'video-fullscreen-overlay';
+
+      const fsVideo = document.createElement('video');
+      fsVideo.src = video.src;
+      fsVideo.currentTime = savedTime;
+      fsVideo.autoplay = true;
+      fsVideo.loop = true;
+      fsVideo.playsInline = true;
+      fsVideo.controls = true;
+      fsVideo.muted = false;
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'video-fullscreen-close';
+      closeBtn.innerHTML = '✕';
+      closeBtn.setAttribute('aria-label', 'Close fullscreen');
+
+      overlay.appendChild(fsVideo);
+      overlay.appendChild(closeBtn);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+
+      const close = () => {
+        // Resume background video from where fullscreen left off
+        video.currentTime = fsVideo.currentTime;
+        video.muted = savedMuted;
+        fsVideo.pause();
+        overlay.remove();
+        document.body.style.overflow = '';
+        if (wasPlaying) video.play();
+      };
+
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', (ev) => {
+        if (ev.target === overlay) close();
+      });
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') {
+          close();
+          document.removeEventListener('keydown', handler);
+        }
+      });
+    });
+  }
 }
