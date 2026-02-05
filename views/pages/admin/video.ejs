@@ -1,0 +1,44 @@
+<div class="page-container admin-landing">
+  <div class="page-header">
+    <h1>Gallery Video</h1>
+    <p class="text-muted">Upload a video to replace the main gallery image on the landing page.</p>
+    <div style="margin-top: 12px; display: flex; gap: 8px;">
+      <a href="/admin/landing" class="btn btn-secondary btn-sm">Images</a>
+      <a href="/admin/specialists" class="btn btn-secondary btn-sm">Specialists</a>
+      <a href="/admin/video" class="btn btn-primary btn-sm">Video</a>
+      <a href="/admin/messages" class="btn btn-secondary btn-sm">Messages</a>
+    </div>
+  </div>
+
+  <div class="admin-asset-grid" style="max-width: 600px;">
+    <div class="admin-asset-card">
+      <div class="admin-asset-preview" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+        <% if (video && video.url) { %>
+          <video src="<%= video.url %>" controls muted style="width: 100%; max-height: 320px; border-radius: 8px;"></video>
+        <% } else { %>
+          <p class="text-muted" style="padding: 40px;">No video uploaded. The landing page will show the default image.</p>
+        <% } %>
+      </div>
+      <div class="admin-asset-body">
+        <form action="/admin/video" method="POST" enctype="multipart/form-data" class="admin-asset-form">
+          <label class="form-label">Upload video (MP4, WebM, MOV – max 50MB)</label>
+          <input type="file" name="video" class="form-input" accept="video/*" required>
+          <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 8px;">
+            <i data-lucide="upload"></i>
+            Upload Video
+          </button>
+        </form>
+
+        <% if (video && video.url) { %>
+          <form action="/admin/video/delete" method="POST" style="margin-top: 12px;">
+            <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Remove video? The default image will be shown instead.')">
+              <i data-lucide="trash-2"></i>
+              Remove Video
+            </button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+

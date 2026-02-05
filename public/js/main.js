@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initDraggableCarousel();
   initRoomsCarousel();
   initSpecialistsSection();
+  initVideoSoundToggle();
   
   // Fallback: ensure all content is visible after 2 seconds
   setTimeout(() => {
@@ -934,4 +935,37 @@ function initSpecialistsSection() {
 
   select.addEventListener('change', renderOptions);
   renderOptions();
+}
+
+/**
+ * Video sound toggle for gallery hero video
+ */
+function initVideoSoundToggle() {
+  const video = document.getElementById('gallery-hero-video');
+  const btn = document.getElementById('video-sound-toggle');
+  if (!video || !btn) return;
+
+  const iconOff = btn.querySelector('.sound-icon-off');
+  const iconOn = btn.querySelector('.sound-icon-on');
+
+  const updateIcons = () => {
+    if (video.muted) {
+      if (iconOff) iconOff.style.display = '';
+      if (iconOn) iconOn.style.display = 'none';
+      btn.classList.remove('unmuted');
+    } else {
+      if (iconOff) iconOff.style.display = 'none';
+      if (iconOn) iconOn.style.display = '';
+      btn.classList.add('unmuted');
+    }
+  };
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    video.muted = !video.muted;
+    updateIcons();
+  });
+
+  updateIcons();
 }

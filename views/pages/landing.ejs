@@ -326,8 +326,16 @@
     
     <div class="gallery-grid">
       <div class="gallery-item gallery-item-large">
-        <div class="gallery-image">
-          <img src="<%= landingImages.galleryHouse1.url %>" alt="<%= landingImages.galleryHouse1.alt %>">
+        <div class="gallery-image gallery-video-wrap">
+          <% if (typeof galleryVideoUrl !== 'undefined' && galleryVideoUrl) { %>
+            <video src="<%= galleryVideoUrl %>" autoplay muted loop playsinline class="gallery-video" id="gallery-hero-video"></video>
+            <button class="video-sound-toggle" id="video-sound-toggle" aria-label="Toggle sound">
+              <i data-lucide="volume-x" class="sound-icon-off"></i>
+              <i data-lucide="volume-2" class="sound-icon-on" style="display:none;"></i>
+            </button>
+          <% } else { %>
+            <img src="<%= landingImages.galleryHouse1.url %>" alt="<%= landingImages.galleryHouse1.alt %>">
+          <% } %>
           <div class="gallery-overlay">
             <span class="gallery-tag">Extérieur Moderne</span>
             <div class="gallery-actions">

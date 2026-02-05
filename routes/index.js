@@ -6,16 +6,21 @@ const LandingAsset = require('../models/LandingAsset');
 const SpecialistsConfig = require('../models/SpecialistsConfig');
 const { buildLandingImageMap } = require('../utils/landingAssets');
 const { mergeSpecialistsConfig } = require('../utils/specialistsConfig');
+const ContactMessage = require('../models/ContactMessage');
+const GalleryVideo = require('../models/GalleryVideo');
 
 // Landing Page
 router.get('/', async (req, res) => {
   let landingImages = buildLandingImageMap();
   let specialistsConfig = mergeSpecialistsConfig(null);
+  let galleryVideoUrl = '';
   try {
     const assets = await LandingAsset.find({});
     landingImages = buildLandingImageMap(assets);
     const storedSpecialists = await SpecialistsConfig.findOne({});
     specialistsConfig = mergeSpecialistsConfig(storedSpecialists);
+    const gv = await GalleryVideo.findOne({});
+    if (gv && gv.url) galleryVideoUrl = gv.url;
   } catch (err) {
     console.error('Landing assets load error:', err);
   }
@@ -29,7 +34,8 @@ router.get('/', async (req, res) => {
     styles: getStyles(),
     roomTypes: getRoomTypes(),
     landingImages,
-    specialistsConfig
+    specialistsConfig,
+    galleryVideoUrl
   });
 });
 
@@ -146,10 +152,16 @@ router.get('/contact', (req, res) => {
 
 // Contact Form Submit
 router.post('/contact', async (req, res) => {
-  const { name, email, subject, message } = req.body;
-  // TODO: Send email or save to database
-  req.flash('success_msg', 'Thank you for your message! We will get back to you soon.');
-  res.redirect('/contact');
+  try {
+    const { name, email, subject, message, category } = req.body;
+    await ContactMessage.create({ name, email, subject, message, category: category || '' });
+    req.flash('success_msg', 'Merci! Votre demande a été envoyée. Nous vous contacterons bientôt.');
+    res.redirect('/contact');
+  } catch (err) {
+    console.error('Contact form error:', err);
+    req.flash('error_msg', 'Une erreur est survenue. Veuillez réessayer.');
+    res.redirect('/contact');
+  }
 });
 
 // Privacy Policy

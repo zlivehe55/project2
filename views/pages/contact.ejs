@@ -11,6 +11,7 @@
 
     <div class="contact-card">
       <form action="/contact" method="POST" class="contact-form">
+        <input type="hidden" name="category" value="<%= selectedCategory || '' %>">
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Nom</label>
@@ -42,4 +43,5 @@
     </div>
   </div>
 </section>
+
 

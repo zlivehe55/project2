@@ -178,5 +178,112 @@ router.post('/specialists/options', async (req, res) => {
   }
 });
 
+// ==========================================
+// Gallery Video
+// ==========================================
+const GalleryVideo = require('../models/GalleryVideo');
+const multer = require('multer');
+const path = require('path');
+
+// Video upload (local – Cloudinary free doesn't support video well)
+const videoStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'public/uploads/landing'),
+  filename: (req, file, cb) => cb(null, 'gallery-video-' + Date.now() + path.extname(file.originalname))
+});
+const uploadVideo = multer({
+  storage: videoStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: (req, file, cb) => {
+    const ok = /mp4|webm|mov|avi/.test(path.extname(file.originalname).toLowerCase());
+    cb(ok ? null : new Error('Video files only'), ok);
+  }
+});
+
+router.get('/video', async (req, res) => {
+  const gv = await GalleryVideo.findOne({});
+  res.render('pages/admin/video', {
+    title: 'Gallery Video - Admin',
+    layout: 'layouts/minimal',
+    extraStyles: ['/css/dashboard.css'],
+    video: gv
+  });
+});
+
+router.post('/video', uploadVideo.single('video'), async (req, res) => {
+  try {
+    let gv = await GalleryVideo.findOne({});
+    if (!gv) gv = new GalleryVideo();
+
+    if (req.file) {
+      gv.url = '/uploads/landing/' + req.file.filename;
+      gv.publicId = req.file.filename;
+    }
+    gv.updatedAt = new Date();
+    await gv.save();
+
+    req.flash('success_msg', 'Gallery video updated.');
+    res.redirect('/admin/video');
+  } catch (err) {
+    console.error('Admin video upload error:', err);
+    req.flash('error_msg', 'Unable to upload video.');
+    res.redirect('/admin/video');
+  }
+});
+
+router.post('/video/delete', async (req, res) => {
+  try {
+    await GalleryVideo.deleteMany({});
+    req.flash('success_msg', 'Gallery video removed. Image fallback will be used.');
+    res.redirect('/admin/video');
+  } catch (err) {
+    console.error('Admin video delete error:', err);
+    req.flash('error_msg', 'Unable to delete video.');
+    res.redirect('/admin/video');
+  }
+});
+
+// ==========================================
+// Contact Messages
+// ==========================================
+const ContactMessage = require('../models/ContactMessage');
+
+router.get('/messages', async (req, res) => {
+  try {
+    const messages = await ContactMessage.find({}).sort({ createdAt: -1 });
+    res.render('pages/admin/messages', {
+      title: 'Contact Messages - Admin',
+      layout: 'layouts/minimal',
+      extraStyles: ['/css/dashboard.css'],
+      messages
+    });
+  } catch (err) {
+    console.error('Admin messages error:', err);
+    req.flash('error_msg', 'Unable to load messages.');
+    res.redirect('/admin');
+  }
+});
+
+router.post('/messages/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    await ContactMessage.findByIdAndUpdate(req.params.id, { status });
+    res.redirect('/admin/messages');
+  } catch (err) {
+    console.error('Admin message status error:', err);
+    res.redirect('/admin/messages');
+  }
+});
+
+router.post('/messages/:id/delete', async (req, res) => {
+  try {
+    await ContactMessage.findByIdAndDelete(req.params.id);
+    req.flash('success_msg', 'Message deleted.');
+    res.redirect('/admin/messages');
+  } catch (err) {
+    console.error('Admin message delete error:', err);
+    res.redirect('/admin/messages');
+  }
+});
+
 module.exports = router;
 
